@@ -68,6 +68,21 @@
             border-radius: 5px;
             color: #0072ff;
         }
+        .final-navigation {
+            text-align: center;
+            margin-top: 30px;
+        }
+        .final-navigation a {
+            padding: 10px 20px;
+            background-color: #0072ff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 0 10px;
+        }
+        .final-navigation a:hover {
+            background-color: #0056b3;
+        }
         @media (max-width: 600px) {
             .slide {
                 margin: 20px;
@@ -122,6 +137,11 @@
 <div class="navigation">
     <button onclick="prevSlide()">Previous</button>
     <button onclick="nextSlide()">Next</button>
+</div>
+
+<div class="final-navigation">
+    <a href="xss-quiz.html">Take the Quiz</a>
+    <a href="index.html">Return to Homepage</a>
 </div>
 
 <script>
