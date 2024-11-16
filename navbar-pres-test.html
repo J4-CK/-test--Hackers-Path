@@ -91,9 +91,12 @@
             h2 {
                 font-size: 1.5em;
             }
-        }    </style> 
+        }    </style>  
 </head>
 <body>
+
+<!-- This is where the navbar will be loaded -->
+<div id="navbar-placeholder"></div>
 
 <div class="slide active" id="slide1">
     <h2>What is a Strong Password?</h2>
@@ -130,7 +133,34 @@
 </div>
 
 <script>
-    /* Copy your existing script for slide navigation */
+    // Use JavaScript to fetch and insert the navbar
+    fetch('navbar.html')
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById('navbar-placeholder').innerHTML = data;
+        })
+        .catch(error => console.error('Error loading the navbar:', error));
+
+    // Your existing slide navigation script
+    let currentSlide = 1;
+    const slides = document.querySelectorAll('.slide');
+
+    function showSlide(n) {
+        slides.forEach(slide => slide.classList.remove('active'));
+        slides[n - 1].classList.add('active');
+    }
+
+    function nextSlide() {
+        currentSlide = (currentSlide % slides.length) + 1;
+        showSlide(currentSlide);
+    }
+
+    function prevSlide() {
+        currentSlide = (currentSlide - 2 + slides.length) % slides.length + 1;
+        showSlide(currentSlide);
+    }
+
+    showSlide(currentSlide);
 </script>
 
 </body>
