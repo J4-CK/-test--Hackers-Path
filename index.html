@@ -12,7 +12,7 @@
             padding: 0;
         }
         header {
-            background-color: #ffeb3b;
+            background-color: #f6e783;
             color: #37474f;
             padding: 20px;
             text-align: center;
@@ -22,6 +22,27 @@
             margin: 0;
             font-size: 2.5em;
         }
+
+        /* Roadmap navigation */
+        .roadmap {
+            display: flex;
+            justify-content: space-around;
+            background-color: #007bff;
+            color: white;
+            padding: 10px 0;
+        }
+        .roadmap a {
+            text-decoration: none;
+            color: white;
+            font-size: 1.1em;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .roadmap a:hover {
+            background-color: #0056b3;
+        }
+
         .container {
             margin: 20px auto;
             padding: 20px;
@@ -40,47 +61,52 @@
             opacity: 0.5;
             z-index: -1;
         }
-        .section {
+
+        /* Stats section styling */
+        .stats {
+            display: flex;
+            justify-content: space-between;
             margin: 20px 0;
+        }
+        .stats .box {
+            background-color: #f4f4f4;
+            border: 2px solid #ffeb3b;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            font-size: 1.2em;
+            color: #37474f;
+            flex: 1;
+        }
+
+        /* Lessons and Quizzes section */
+        .section {
+            margin: 30px 0;
         }
         .section h2 {
             color: #007bff;
+            font-size: 2em;
             border-bottom: 2px solid #007bff;
             padding-bottom: 10px;
+            margin-bottom: 15px;
         }
         .buttons {
-            display: flex;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             gap: 20px;
-            flex-wrap: wrap;
         }
         .buttons a {
-            display: inline-block;
-            padding: 15px 20px;
+            padding: 15px;
             background-color: #007bff;
             color: white;
             text-decoration: none;
             border-radius: 5px;
             font-size: 1.1em;
             transition: background-color 0.3s ease;
+            text-align: center;
         }
         .buttons a:hover {
             background-color: #0056b3;
-        }
-        .points {
-            display: flex;
-            gap: 20px;
-            justify-content: space-between;
-            margin: 20px 0;
-        }
-        .points .box {
-            background-color: #f4f4f4;
-            border: 2px solid #ffeb3b;
-            border-radius: 10px;
-            padding: 20px;
-            flex: 1;
-            text-align: center;
-            font-size: 1.2em;
-            color: #37474f;
         }
     </style>
 </head>
@@ -90,11 +116,19 @@
     <h1>CyberLesson Hub</h1>
 </header>
 
+<!-- Roadmap Section -->
+<div class="roadmap">
+    <a href="#">Home</a>
+    <a href="#">Lessons</a>
+    <a href="#">Quizzes</a>
+    <a href="#">Profile</a>
+</div>
+
 <div class="container">
     <img src="pikachu.png" class="pikachu-bg">
 
-    <!-- Daily and All-Time Points -->
-    <div class="points">
+    <!-- Player Stats Section -->
+    <div class="stats">
         <div class="box">
             <h3>Daily Points</h3>
             <p>0</p>
@@ -110,11 +144,9 @@
         <h2>Lessons</h2>
         <div class="buttons">
             <a href="xss-presentation.html">XSS Presentation</a>
-            <!-- New Button for navbar-pres-test.html -->
             <a href="navbar-pres-test.html">Navbar Test</a>
         </div>
     </div>
-
 
     <!-- Quizzes Section -->
     <div class="section">
