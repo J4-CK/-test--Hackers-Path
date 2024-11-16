@@ -3,58 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Homepage</title>
+    <title>XSS Course</title>
     <style>
         body {
             font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
+        }
+        header {
+            background-color: #007bff;
+            color: white;
+            padding: 20px;
+            text-align: center;
         }
         .container {
-            text-align: center;
+            margin: 20px auto;
+            padding: 20px;
+            max-width: 900px;
             background-color: white;
-            padding: 30px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-        }
-        h1 {
-            color: #007bff;
-            margin-bottom: 20px;
-        }
-        p {
-            color: #333;
-            margin-bottom: 30px;
-        }
-        .navigation {
             text-align: center;
         }
-        .navigation button {
+        a {
+            display: inline-block;
+            margin: 15px 0;
             padding: 10px 20px;
             background-color: #007bff;
             color: white;
-            border: none;
+            text-decoration: none;
             border-radius: 5px;
-            cursor: pointer;
+            transition: background-color 0.3s;
         }
-        .navigation button:hover {
+        a:hover {
             background-color: #0056b3;
         }
     </style>
 </head>
 <body>
 
+<header>
+    <h1>Welcome to the XSS Course</h1>
+</header>
+
 <div class="container">
-    <h1>Welcome to the Cross-Site Scripting (XSS) Presentation</h1>
-    <p>Explore an interactive presentation to understand XSS vulnerabilities, their types, and how to prevent them.</p>
-    <div class="navigation">
-        <button onclick="location.href='xss-presentation.html'">View Presentation</button>
-    </div>
+    <p>Learn about Cross-Site Scripting (XSS) and how to prevent it.</p>
+    <a href="xss-presentation.html">Start Presentation</a>
+    <a href="xss-quiz.html">Take the Quiz</a>
 </div>
 
 </body>
