@@ -3,53 +3,123 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XSS Course</title>
+    <title>CyberLesson Hub</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            background: linear-gradient(to bottom, #fefbd8, #dbeaff);
             margin: 0;
             padding: 0;
         }
         header {
-            background-color: #007bff;
-            color: white;
+            background-color: #ffeb3b;
+            color: #37474f;
             padding: 20px;
             text-align: center;
+            box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
         }
         .container {
             margin: 20px auto;
             padding: 20px;
             max-width: 900px;
             background-color: white;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            text-align: center;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
         }
-        a {
+        .pikachu-bg {
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 300px;
+            opacity: 0.5;
+            z-index: -1;
+        }
+        .section {
+            margin: 20px 0;
+        }
+        .section h2 {
+            color: #007bff;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+        }
+        .buttons {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .buttons a {
             display: inline-block;
-            margin: 15px 0;
-            padding: 10px 20px;
+            padding: 15px 20px;
             background-color: #007bff;
             color: white;
             text-decoration: none;
             border-radius: 5px;
-            transition: background-color 0.3s;
+            font-size: 1.1em;
+            transition: background-color 0.3s ease;
         }
-        a:hover {
+        .buttons a:hover {
             background-color: #0056b3;
+        }
+        .points {
+            display: flex;
+            gap: 20px;
+            justify-content: space-between;
+            margin: 20px 0;
+        }
+        .points .box {
+            background-color: #f4f4f4;
+            border: 2px solid #ffeb3b;
+            border-radius: 10px;
+            padding: 20px;
+            flex: 1;
+            text-align: center;
+            font-size: 1.2em;
+            color: #37474f;
         }
     </style>
 </head>
 <body>
 
 <header>
-    <h1>Welcome to the XSS Course</h1>
+    <h1>CyberLesson Hub</h1>
 </header>
 
 <div class="container">
-    <p>Learn about Cross-Site Scripting (XSS) and how to prevent it.</p>
-    <a href="xss-presentation.html">Start Presentation</a>
-    <a href="xss-quiz.html">Take the Quiz</a>
+    <img src="https://preview.redd.it/muf2r7se73a61.png?width=1080&crop=smart&auto=webp&s=8239974907b0f1b77e516bc32a5ce43b72f9eebe" alt="Pikachu" class="pikachu-bg">
+
+    <!-- Daily and All-Time Points -->
+    <div class="points">
+        <div class="box">
+            <h3>Daily Points</h3>
+            <p>0</p>
+        </div>
+        <div class="box">
+            <h3>All-Time Points</h3>
+            <p>0</p>
+        </div>
+    </div>
+
+    <!-- Lessons Section -->
+    <div class="section">
+        <h2>Lessons</h2>
+        <div class="buttons">
+            <a href="xss-presentation.html">XSS Presentation</a>
+        </div>
+    </div>
+
+    <!-- Quizzes Section -->
+    <div class="section">
+        <h2>Quizzes</h2>
+        <div class="buttons">
+            <a href="xss-quiz.html">XSS Quiz</a>
+        </div>
+    </div>
 </div>
 
 </body>
