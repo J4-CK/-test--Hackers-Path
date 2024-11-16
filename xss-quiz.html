@@ -3,176 +3,192 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cross-Site Scripting (XSS) - Engaging Presentation</title>
+    <title>Cross-Site Scripting (XSS) Course</title>
     <style>
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
             margin: 0;
             padding: 0;
-            background: linear-gradient(to right, #00c6ff, #0072ff);
+        }
+        header {
+            background-color: #007bff;
             color: white;
-            overflow: hidden;
-        }
-        .slide {
-            display: none;
             padding: 20px;
-            max-width: 800px;
-            margin: 50px auto;
-            background: rgba(255, 255, 255, 0.8);
-            border-radius: 10px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-            color: #333;
-            position: relative;
-            transition: opacity 0.5s ease;
+            text-align: center;
         }
-        .slide.active {
-            display: block;
-            opacity: 1;
-        }
-        .slide img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 10px;
+        .container {
+            margin: 20px auto;
+            padding: 20px;
+            max-width: 900px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
         h2 {
-            color: #0072ff;
-            text-align: center;
-            font-size: 2em;
-            margin-bottom: 10px;
+            color: #007bff;
         }
-        .navigation {
-            text-align: center;
-            margin-top: 20px;
+        p {
+            margin-bottom: 20px;
         }
-        .navigation button {
-            padding: 10px 20px;
-            background-color: #0072ff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin: 0 10px;
-            transition: background-color 0.3s ease;
+        .question {
+            margin: 30px 0;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-left: 5px solid #007bff;
         }
-        .navigation button:hover {
-            background-color: #0056b3;
-        }
-        ul {
+        .choices {
             list-style-type: none;
             padding: 0;
         }
-        ul li {
-            background: #e7f3ff;
-            margin: 10px 0;
-            padding: 15px;
-            border-radius: 5px;
-            color: #0072ff;
+        .choices li {
+            margin-bottom: 10px;
         }
-        .final-navigation {
-            text-align: center;
-            margin-top: 30px;
+        .choices input {
+            margin-right: 10px;
         }
-        .final-navigation a {
+        .match {
+            margin-bottom: 15px;
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+        }
+        button {
             padding: 10px 20px;
-            background-color: #0072ff;
+            background-color: #007bff;
             color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            margin: 0 10px;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
         }
-        .final-navigation a:hover {
+        button:hover {
             background-color: #0056b3;
         }
-        @media (max-width: 600px) {
-            .slide {
-                margin: 20px;
-                padding: 15px;
-            }
-            h2 {
-                font-size: 1.5em;
-            }
+        .navigation {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .navigation a {
+            text-decoration: none;
+            color: white;
+            padding: 10px 20px;
+            background-color: #007bff;
+            border-radius: 5px;
+            margin: 5px;
+        }
+        .navigation a:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
 <body>
 
-<div class="slide active" id="slide1">
+<header>
+    <h1>Cross-Site Scripting (XSS) - Course Content</h1>
+</header>
+
+<div class="container">
     <h2>What is Cross-Site Scripting (XSS)?</h2>
-    <img src="https://via.placeholder.com/800x300/0072ff/ffffff?text=XSS+Introduction" alt="XSS Introduction">
-    <p>Cross-Site Scripting (XSS) is a security vulnerability that allows attackers to inject malicious scripts into web pages viewed by other users. This can lead to stolen data, hijacked sessions, and redirection to malicious websites.</p>
-</div>
+    <p>
+        Cross-Site Scripting (XSS) is a vulnerability found in web applications where an attacker can inject malicious scripts into otherwise trusted websites. These scripts are executed by the victim's browser, allowing attackers to steal session cookies, modify webpage content, or redirect users to malicious sites.
+    </p>
 
-<div class="slide" id="slide2">
-    <h2>Types of XSS</h2>
-    <img src="https://via.placeholder.com/800x300/0072ff/ffffff?text=Types+of+XSS" alt="Types of XSS">
+    <div class="question">
+        <h3>Question: What does XSS stand for?</h3>
+        <ul class="choices">
+            <li><label><input type="radio" name="q1" value="0"> Cross-Site Scripting</label></li>
+            <li><label><input type="radio" name="q1" value="1"> Cross-Site Stealing</label></li>
+            <li><label><input type="radio" name="q1" value="2"> Cross-Server Scripting</label></li>
+        </ul>
+        <button onclick="checkAnswer('q1', 0)">Submit Answer</button>
+    </div>
+
+    <h2>Types of XSS Attacks</h2>
+    <p>
+        There are three main types of XSS attacks:
+    </p>
     <ul>
-        <li><b>Stored XSS:</b> The malicious script is permanently stored on the web server and shown to users when they visit the page.</li>
-        <li><b>Reflected XSS:</b> The script is reflected off the web server and sent to the user as part of a response.</li>
-        <li><b>DOM-based XSS:</b> The vulnerability exists in the client-side code (e.g., JavaScript) that dynamically modifies the webpage based on user input.</li>
+        <li><b>Stored XSS:</b> This occurs when the malicious script is permanently stored on the target server (e.g., in a database) and is displayed to users whenever they visit the infected page.</li>
+        <li><b>Reflected XSS:</b> This happens when the malicious script is immediately reflected back to the user as part of a search result or error message, and it is only executed temporarily.</li>
+        <li><b>DOM-based XSS:</b> This type of attack is executed when the web page’s client-side scripts process data from user input in an insecure way.</li>
     </ul>
-</div>
 
-<div class="slide" id="slide3">
+    <div class="question">
+        <h3>Matching Question: Match the XSS types to their descriptions</h3>
+        <div class="match">
+            <b>A:</b> Permanently stored on the server<br>
+            <b>B:</b> Reflected in a response to user input<br>
+            <b>C:</b> Based on client-side scripting<br>
+        </div>
+        <select name="match1">
+            <option value="0">Stored XSS</option>
+            <option value="1">Reflected XSS</option>
+            <option value="2">DOM-based XSS</option>
+        </select> corresponds to <b>A</b><br>
+        <select name="match2">
+            <option value="0">Stored XSS</option>
+            <option value="1">Reflected XSS</option>
+            <option value="2">DOM-based XSS</option>
+        </select> corresponds to <b>B</b><br>
+        <select name="match3">
+            <option value="0">Stored XSS</option>
+            <option value="1">Reflected XSS</option>
+            <option value="2">DOM-based XSS</option>
+        </select> corresponds to <b>C</b><br>
+        <button onclick="checkMatching()">Submit Matching</button>
+    </div>
+
     <h2>How to Prevent XSS</h2>
-    <img src="https://via.placeholder.com/800x300/0072ff/ffffff?text=Preventing+XSS" alt="Preventing XSS">
-    <ul>
-        <li><b>Input Validation:</b> Ensure that all user input is properly validated and sanitized before being processed or stored.</li>
-        <li><b>Output Encoding:</b> Encode user data when displaying it on a webpage to prevent it from being executed as a script.</li>
-        <li><b>Content Security Policy (CSP):</b> Implement a CSP to restrict the sources from which scripts can be loaded on your site.</li>
-    </ul>
-</div>
+    <p>
+        To prevent XSS attacks, developers should ensure that all user inputs are sanitized and validated before being reflected on a webpage. Additionally, using techniques like Content Security Policy (CSP) and encoding output can help mitigate the risks of XSS.
+    </p>
 
-<div class="slide" id="slide4">
-    <h2>XSS in Action</h2>
-    <img src="https://via.placeholder.com/800x300/0072ff/ffffff?text=XSS+in+Action" alt="XSS in Action">
-    <p>Here’s an example of XSS in action: an attacker can embed a malicious script in a comment field, which executes when another user views the comment. This could steal their session cookie, giving the attacker access to their account.</p>
-</div>
+    <div class="question">
+        <h3>Free Response: What is one method to prevent XSS attacks?</h3>
+        <textarea id="response1"></textarea><br>
+        <button onclick="checkFreeResponse()">Submit Response</button>
+    </div>
 
-<div class="slide" id="slide5">
     <h2>Conclusion</h2>
-    <img src="https://via.placeholder.com/800x300/0072ff/ffffff?text=Conclusion" alt="Conclusion">
-    <p>Cross-Site Scripting is a common vulnerability, but it can be mitigated with proper input validation, output encoding, and security measures like Content Security Policy (CSP). Stay alert for potential vulnerabilities and regularly audit your web applications.</p>
-</div>
+    <p>
+        Cross-Site Scripting is a dangerous and widespread vulnerability, but it can be mitigated with proper input validation, output encoding, and additional security measures like Content Security Policy (CSP).
+    </p>
 
-<div class="navigation">
-    <button onclick="prevSlide()">Previous</button>
-    <button onclick="nextSlide()">Next</button>
-</div>
-
-<div class="final-navigation">
-    <a href="xss-quiz.html">Take the Quiz</a>
-    <a href="index.html">Return to Homepage</a>
+    <div class="navigation">
+        <a href="index.html">Back to Index</a>
+        <a href="xss-presentation.html">Back to Presentation</a>
+    </div>
 </div>
 
 <script>
-    let currentSlide = 1;
-    const totalSlides = 5;
-
-    function showSlide(slideNumber) {
-        for (let i = 1; i <= totalSlides; i++) {
-            const slide = document.getElementById(`slide${i}`);
-            if (i === slideNumber) {
-                slide.classList.add('active');
-            } else {
-                slide.classList.remove('active');
-            }
+    function checkAnswer(question, correctValue) {
+        const selected = document.querySelector(`input[name="${question}"]:checked`);
+        if (selected && selected.value == correctValue) {
+            alert("Correct!");
+        } else {
+            alert("Incorrect, try again.");
         }
     }
 
-    function nextSlide() {
-        currentSlide++;
-        if (currentSlide > totalSlides) {
-            currentSlide = totalSlides;
+    function checkMatching() {
+        const match1 = document.querySelector('select[name="match1"]').value;
+        const match2 = document.querySelector('select[name="match2"]').value;
+        const match3 = document.querySelector('select[name="match3"]').value;
+
+        if (match1 == "0" && match2 == "1" && match3 == "2") {
+            alert("Correct! You've matched them perfectly.");
+        } else {
+            alert("Incorrect, please try again.");
         }
-        showSlide(currentSlide);
     }
 
-    function prevSlide() {
-        currentSlide--;
-        if (currentSlide < 1) {
-            currentSlide = 1;
+    function checkFreeResponse() {
+        const response = document.getElementById('response1').value.trim();
+        if (response.length > 0) {
+            alert("Thank you for your response!");
+        } else {
+            alert("Please enter a response.");
         }
-        showSlide(currentSlide);
     }
 </script>
 
