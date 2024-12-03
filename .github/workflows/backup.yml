@@ -15,4 +15,5 @@ jobs:
           git config --global user.name "MarcusProgramming"
           git add .
           git commit -m "Automated backup: $(date)"
-          git push origin main
+          git checkout -b backup
+          git push -u origin backup
