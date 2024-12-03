@@ -1,0 +1,15 @@
+name: Backup Workflow
+on:
+  schedule:
+    - cron: '0 0 * * *' # Runs daily at midnight
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Sync backup
+        run: |
+          git add .
+          git commit -m "Automated backup: $(date)"
+          git push origin main
