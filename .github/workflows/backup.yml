@@ -18,9 +18,8 @@ jobs:
       # Step 2: Configure Git credentials
       - name: Configure Git Credentials
         run: |
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git config --global user.name "GitHub Actions"
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+          git config --global user.email "marcusaheins@gmail.com"
+          git config --global user.name "MarcusProgramming"
 
       # Step 3: Create and switch to the backup branch (if it doesn't exist)
       - name: Checkout or create backup branch
