@@ -1,19 +1,35 @@
 name: Backup Workflow
+
 on:
   schedule:
     - cron: '0 0 * * *' # Runs daily at midnight
-  workflow_dispatch:
+  workflow_dispatch: # Allows manual triggering of the workflow
+
 jobs:
   backup:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      # Step 1: Checkout the main branch code
+      - name: Checkout main branch
         uses: actions/checkout@v3
+        with:
+          ref: main # Ensures we're checking out the main branch
+
+      # Step 2: Configure Git credentials
+      - name: Configure Git Credentials
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "GitHub Actions"
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+
+      # Step 3: Create and switch to the backup branch (if it doesn't exist)
+      - name: Checkout or create backup branch
+        run: |
+          git checkout backup || git checkout -b backup
+
+      # Step 4: Sync backup (commit and push changes)
       - name: Sync backup
         run: |
-          git config --global user.email "marcusaheins@gmail.com"
-          git config --global user.name "MarcusProgramming"
           git add .
-          git commit -m "Automated backup: $(date)"
-          git checkout -b backup
-          git push -u origin backup
+          git diff-index --quiet HEAD || git commit -m "Automated backup: $(date)"
+          git push origin backup # Push changes to the backup branch
