@@ -2,6 +2,7 @@ name: Backup Workflow
 on:
   schedule:
     - cron: '0 0 * * *' # Runs daily at midnight
+  workflow_dispatch:
 jobs:
   backup:
     runs-on: ubuntu-latest
