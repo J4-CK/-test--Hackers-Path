@@ -5,14 +5,74 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Hacker's Path</title>
     <style>
-        /* Your CSS here */
+        /* Body Styling */
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom, #fefbd8, #dbeaff);
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            color: #37474f;
+        }
+
+        /* Header Styling */
+        h1 {
+            margin-top: 50px;
+            color: #007bff;
+            font-size: 2.5em;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Login Container Styling */
+        .login-container {
+            margin: 50px auto;
+            padding: 20px;
+            max-width: 400px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Input Field Styling */
+        input {
+            width: 90%;
+            padding: 15px;
+            margin: 15px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        /* Button Styling */
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Error Message Styling */
+        #error {
+            color: red;
+            font-size: 0.9em;
+        }
     </style>
 </head>
 <body>
-    <h1>Login Page</h1>
-    <input type="text" id="username" placeholder="Enter username">
-    <button onclick="login()">Login</button>
-    <p id="error"></p>
-    <script src="js/auth.js"></script>
-</body>
-</html>
+    <h1>Hacker's Path</h1>
+    <div class="login-container">
+        <h2>Login</h2>
+        <input type="text" id="username" placeholder="Enter username">
+        <input type="password" id="password" placeholder="Enter password">
+        <button onclick="login()">Login</button>
+        <p id="error"></p>
+    </div>
+    <script 
