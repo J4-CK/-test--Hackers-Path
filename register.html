@@ -58,55 +58,58 @@
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-    <script>
-        const SUPABASE_URL = "https://hkjamfwhgbeqshaubnmr.supabase.co"; // Replace with your Supabase URL
-        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhramFtZndoZ2JlcXNoYXVibm1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ1OTM5MjQsImV4cCI6MjA1MDE2OTkyNH0.IKVfhgr0tCm7EzG6-L3Rai0gczCxRLQ5ll8uUMo6Jc4"; // Replace with your Supabase anon key
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+<script>
+    // Initialize Supabase
+    const SUPABASE_URL = "https://hkjamfwhgbeqshaubnmr.supabase.co"; // Replace with your Supabase URL
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhramFtZndoZ2JlcXNoYXVibm1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ1OTM5MjQsImV4cCI6MjA1MDE2OTkyNH0.IKVfhgr0tCm7EzG6-L3Rai0gczCxRLQ5ll8uUMo6Jc4"; // Replace with your Supabase anon key
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        async function register() {
-            const email = document.getElementById("email").value;
-            const password = document.getElementById("password").value;
-            const confirmPassword = document.getElementById("confirmPassword").value;
-            const error = document.getElementById("error");
-            const success = document.getElementById("success");
+    // Register function
+    async function register() {
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+        const confirmPassword = document.getElementById("confirmPassword").value;
+        const error = document.getElementById("error");
+        const success = document.getElementById("success");
 
-            error.textContent = "";
-            success.textContent = "";
+        error.textContent = "";
+        success.textContent = "";
 
-            // Validate inputs
-            if (!email || !password || !confirmPassword) {
-                error.textContent = "All fields are required.";
-                return;
-            }
-
-            if (password !== confirmPassword) {
-                error.textContent = "Passwords do not match.";
-                return;
-            }
-
-            try {
-                // Call Supabase signup
-                const { data, error: signUpError } = await supabase.auth.signUp({
-                    email,
-                    password,
-                });
-
-                if (signUpError) {
-                    // Detect duplicate email error
-                    if (signUpError.message.includes("duplicate key value")) {
-                        error.textContent = "This email is already registered. Please log in.";
-                        return;
-                    }
-                    throw signUpError;
-                }
-
-                success.textContent = "Registration successful! You can now log in.";
-            } catch (err) {
-                console.error("Registration Error:", err);
-                error.textContent = "Error: " + err.message;
-            }
+        // Validate inputs
+        if (!email || !password || !confirmPassword) {
+            error.textContent = "All fields are required.";
+            return;
         }
-    </script>
+
+        if (password !== confirmPassword) {
+            error.textContent = "Passwords do not match.";
+            return;
+        }
+
+        try {
+            // Call Supabase signup
+            const { data, error: signUpError } = await supabase.auth.signUp({
+                email,
+                password,
+            });
+
+            if (signUpError) {
+                // Detect duplicate email error
+                if (signUpError.message.includes("duplicate key value")) {
+                    error.textContent = "This email is already registered. Please log in.";
+                    return;
+                }
+                throw signUpError;
+            }
+
+            success.textContent = "Registration successful! You can now log in.";
+        } catch (err) {
+            console.error("Registration Error:", err);
+            error.textContent = "Error: " + err.message;
+        }
+    }
+</script>
+
 </head>
 <body>
     <h1>Register - Hacker's Path</h1>
