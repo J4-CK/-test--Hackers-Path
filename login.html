@@ -75,29 +75,39 @@
         <button onclick="login()">Login</button>
         <p id="error"></p>
     </div>
-    <script>
-        // Predefined users and passwords
-        const allowedUsers = {
-            user1: "password1",
-            user2: "password2",
-            user3: "password3"
-        };
+<script>
+    const SUPABASE_URL = "https://hkjamfwhgbeqshaubnmr.supabase.co";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhramFtZndoZ2JlcXNoYXVibm1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ1OTM5MjQsImV4cCI6MjA1MDE2OTkyNH0.IKVfhgr0tCm7EzG6-L3Rai0gczCxRLQ5ll8uUMo6Jc4>";
 
-        function login() {
-            const username = document.getElementById("username").value;
-            const password = document.getElementById("password").value;
-            const error = document.getElementById("error");
+    async function login() {
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+        const error = document.getElementById("error");
 
-            if (allowedUsers[username] && allowedUsers[username] === password) {
-                // Set logged-in status in localStorage
+        try {
+            // Fetch user data from Supabase
+            const response = await fetch(`$https://hkjamfwhgbeqshaubnmr.supabase.co/rest/v1/users?username=eq.${username}`, {
+                headers: {
+                    "apikey": SUPABASE_KEY,
+                    "Authorization": `Bearer ${SUPABASE_KEY}`,
+                },
+            });
+
+            const data = await response.json();
+
+            if (data.length > 0 && data[0].password === password) {
+                // Password matches, login successful
                 localStorage.setItem("isLoggedIn", "true");
-                // Redirect to the homepage or index.html
                 window.location.href = "index.html";
             } else {
-                // Show an error message
+                // Invalid username or password
                 error.textContent = "Invalid username or password. Please try again.";
             }
+        } catch (err) {
+            console.error("Error:", err);
+            error.textContent = "An error occurred. Please try again later.";
         }
-    </script>
+    }
+</script>
 </body>
 </html>
