@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Hacker's Path</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom, #fefbd8, #dbeaff);
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            color: #37474f;
+        }
+
+        .register-container {
+            margin: 50px auto;
+            padding: 20px;
+            max-width: 400px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        input {
+            width: 90%;
+            padding: 15px;
+            margin: 15px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #error {
+            color: red;
+            font-size: 0.9em;
+        }
+
+        #success {
+            color: green;
+            font-size: 0.9em;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script>
+        const SUPABASE_URL = "https://hkjamfwhgbeqshaubnmr.supabase.co"; // Replace with your Supabase URL
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhramFtZndoZ2JlcXNoYXVibm1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ1OTM5MjQsImV4cCI6MjA1MDE2OTkyNH0.IKVfhgr0tCm7EzG6-L3Rai0gczCxRLQ5ll8uUMo6Jc4"; // Replace with your Supabase anon key
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        async function register() {
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+            const confirmPassword = document.getElementById("confirmPassword").value;
+            const error = document.getElementById("error");
+            const success = document.getElementById("success");
+
+            error.textContent = "";
+            success.textContent = "";
+
+            // Validate inputs
+            if (!email || !password || !confirmPassword) {
+                error.textContent = "All fields are required.";
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                error.textContent = "Passwords do not match.";
+                return;
+            }
+
+            try {
+                // Call Supabase signup
+                const { data, error: signUpError } = await supabase.auth.signUp({
+                    email,
+                    password,
+                });
+
+                if (signUpError) {
+                    throw signUpError;
+                }
+
+                success.textContent = "Registration successful! You can now log in.";
+            } catch (err) {
+                console.error("Registration Error:", err);
+                error.textContent = "Error: " + err.message;
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Register - Hacker's Path</h1>
+    <div class="register-container">
+        <h2>Create an Account</h2>
+        <input type="email" id="email" placeholder="Enter your email" required>
+        <input type="password" id="password" placeholder="Enter your password" required>
+        <input type="password" id="confirmPassword" placeholder="Confirm your password" required>
+        <button onclick="register()">Register</button>
+        <p id="error"></p>
+        <p id="success"></p>
+    </div>
+</body>
+</html>
