@@ -64,11 +64,27 @@
             color: red;
             font-size: 0.9em;
         }
+
+        /* Link Styling */
+        .register-link {
+            margin-top: 15px;
+            font-size: 0.9em;
+        }
+
+        .register-link a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .register-link a:hover {
+            text-decoration: underline;
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     <script>
-        const SUPABASE_URL = "https://hkjamfwhgbeqshaubnmr.supabase.co";
-        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhramFtZndoZ2JlcXNoYXVibm1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ1OTM5MjQsImV4cCI6MjA1MDE2OTkyNH0.IKVfhgr0tCm7EzG6-L3Rai0gczCxRLQ5ll8uUMo6Jc4";
+        const SUPABASE_URL = "https://hkjamfwhgbeqshaubnmr.supabase.co"; // Replace with your Supabase URL
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhramFtZndoZ2JlcXNoYXVibm1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ1OTM5MjQsImV4cCI6MjA1MDE2OTkyNH0.IKVfhgr0tCm7EzG6-L3Rai0gczCxRLQ5ll8uUMo6Jc4"; // Replace with your Supabase anon key
         const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         async function login() {
@@ -111,6 +127,9 @@
         <input type="password" id="password" placeholder="Enter your password" required>
         <button onclick="login()">Login</button>
         <p id="error"></p>
+        <div class="register-link">
+            <p>Don't have an account? <a href="register.html">Create one here</a></p>
+        </div>
     </div>
 </body>
 </html>
