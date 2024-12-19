@@ -65,60 +65,52 @@
             font-size: 0.9em;
         }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script>
+        const SUPABASE_URL = "https://hkjamfwhgbeqshaubnmr.supabase.co";
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhramFtZndoZ2JlcXNoYXVibm1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ1OTM5MjQsImV4cCI6MjA1MDE2OTkyNH0.IKVfhgr0tCm7EzG6-L3Rai0gczCxRLQ5ll8uUMo6Jc4";
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        async function login() {
+            const email = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+            const error = document.getElementById("error");
+
+            // Validate empty fields
+            if (!email || !password) {
+                error.textContent = "Email and password cannot be empty.";
+                return;
+            }
+
+            try {
+                // Use Supabase for authentication
+                const { data, error: loginError } = await supabase.auth.signInWithPassword({
+                    email,
+                    password,
+                });
+
+                if (loginError) {
+                    throw loginError;
+                }
+
+                // Save session details
+                localStorage.setItem("supabaseSession", JSON.stringify(data));
+                window.location.href = "index.html";
+            } catch (err) {
+                console.error("Error:", err);
+                error.textContent = "Invalid email or password. Please try again.";
+            }
+        }
+    </script>
 </head>
 <body>
     <h1>Hacker's Path</h1>
     <div class="login-container">
         <h2>Login</h2>
-        <input type="text" id="username" placeholder="Enter username">
-        <input type="password" id="password" placeholder="Enter password">
+        <input type="email" id="username" placeholder="Enter your email" required>
+        <input type="password" id="password" placeholder="Enter your password" required>
         <button onclick="login()">Login</button>
         <p id="error"></p>
     </div>
-<script>
-    const SUPABASE_URL = "https://hkjamfwhgbeqshaubnmr.supabase.co";
-    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhramFtZndoZ2JlcXNoYXVibm1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ1OTM5MjQsImV4cCI6MjA1MDE2OTkyNH0.IKVfhgr0tCm7EzG6-L3Rai0gczCxRLQ5ll8uUMo6Jc4";
-
-    async function login() {
-        const username = document.getElementById("username").value;
-        const password = document.getElementById("password").value;
-        const error = document.getElementById("error");
-
-        // Validate empty fields
-        if (!username || !password) {
-            error.textContent = "Username and password cannot be empty.";
-            return;
-        }
-
-        try {
-            // Fetch user data from Supabase
-            const response = await fetch(`${SUPABASE_URL}/rest/v1/users?username=eq.${username}`, {
-                headers: {
-                    "apikey": SUPABASE_KEY,
-                    "Authorization": `Bearer ${SUPABASE_KEY}`,
-                },
-            });
-
-            // Check for response status
-            if (!response.ok) {
-                throw new Error(`Error: ${response.status}`);
-            }
-
-            const data = await response.json();
-
-            if (data.length > 0 && data[0].password === password) {
-                // Password matches, login successful
-                localStorage.setItem("isLoggedIn", "true");
-                window.location.href = "index.html";
-            } else {
-                // Invalid username or password
-                error.textContent = "Invalid username or password. Please try again.";
-            }
-        } catch (err) {
-            console.error("Error:", err);
-            error.textContent = "An error occurred. Please try again later.";
-        }
-    }
-</script>
 </body>
 </html>
