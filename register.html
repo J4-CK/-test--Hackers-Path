@@ -92,6 +92,11 @@
                 });
 
                 if (signUpError) {
+                    // Detect duplicate email error
+                    if (signUpError.message.includes("duplicate key value")) {
+                        error.textContent = "This email is already registered. Please log in.";
+                        return;
+                    }
                     throw signUpError;
                 }
 
