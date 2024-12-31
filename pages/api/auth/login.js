@@ -1,7 +1,7 @@
 const { createClient } = require('@supabase/supabase-js');
 const cookie = require('cookie');
 
-// Supabase setup
+// Supabase client
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_ANON_KEY
@@ -15,6 +15,7 @@ module.exports = async function handler(req, res) {
   const { email, password } = req.body;
 
   try {
+    // Authenticate user using Supabase
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -24,6 +25,7 @@ module.exports = async function handler(req, res) {
       return res.status(401).json({ error: error.message });
     }
 
+    // Set secure cookie for session management
     res.setHeader(
       'Set-Cookie',
       cookie.serialize('token', data.session.access_token, {
@@ -31,12 +33,13 @@ module.exports = async function handler(req, res) {
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'Strict',
         path: '/',
-        maxAge: 60 * 60 * 24 * 7,
+        maxAge: 60 * 60 * 24 * 7, // 7 days
       })
     );
 
     return res.status(200).json({ user: data.user });
   } catch (err) {
+    console.error('API Error:', err);
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 };
