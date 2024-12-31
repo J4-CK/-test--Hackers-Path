@@ -83,9 +83,7 @@
     </style>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     <script>
-        const SUPABASE_URL = "https://hkjamfwhgbeqshaubnmr.supabase.co"; // Replace with your Supabase URL
-        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhramFtZndoZ2JlcXNoYXVibm1yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ1OTM5MjQsImV4cCI6MjA1MDE2OTkyNH0.IKVfhgr0tCm7EzG6-L3Rai0gczCxRLQ5ll8uUMo6Jc4"; // Replace with your Supabase anon key
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
 
         async function login() {
             const email = document.getElementById("username").value;
