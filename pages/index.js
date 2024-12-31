@@ -5,6 +5,7 @@ export default function HomePage() {
   const router = useRouter();
   const [user, setUser] = useState(null);
 
+  // Fetch session on load
   useEffect(() => {
     async function checkSession() {
       const res = await fetch('/api/auth/session');
@@ -13,7 +14,7 @@ export default function HomePage() {
       if (res.ok) {
         setUser(data.user); // Set user data
       } else {
-        router.push('/login'); // Redirect if not authenticated
+        router.push('/login'); // Redirect to login if not authenticated
       }
     }
     checkSession();
@@ -29,14 +30,63 @@ export default function HomePage() {
       <head>
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Welcome - Hacker's Path</title>
+        <title>Hacker's Path</title>
         <link rel="stylesheet" href="/styles.css" />
       </head>
       <body>
-        <h1>Welcome to Hacker's Path</h1>
-        <p>Logged in as: {user?.email}</p>
-        <button onClick={handleLogout}>Logout</button>
-        <p>Lessons and quizzes will appear here!</p>
+        <header>
+          <h1>Hacker's Path</h1>
+        </header>
+
+        {/* Roadmap Section */}
+        <div className="roadmap">
+          <a href="/">Home</a>
+          <a href="/lessons">Lessons</a>
+          <a href="/quizzes">Quizzes</a>
+          <a href="/profile">Profile</a>
+        </div>
+
+        {/* Main Content Container */}
+        <div className="container">
+          <img src="/pikachu.png" className="pikachu-bg" alt="Background" />
+
+          {/* Player Stats Section */}
+          <div className="stats">
+            <div className="box">
+              <h3>Daily Points</h3>
+              <p>0</p>
+            </div>
+            <div className="box">
+              <h3>All-Time Points</h3>
+              <p>0</p>
+            </div>
+          </div>
+
+          {/* Lessons Section */}
+          <div className="section">
+            <h2>Lessons</h2>
+            <div className="buttons">
+              <a href="/xss-presentation">XSS Presentation</a>
+              <a href="/cybersecurity-presentation">What is Cybersecurity?</a>
+              <a href="/strong-passwords-presentation">Strong Passwords</a>
+            </div>
+          </div>
+
+          {/* Quizzes Section */}
+          <div className="section">
+            <h2>Quizzes</h2>
+            <div className="buttons">
+              <a href="/xss-quiz">XSS Quiz</a>
+              <a href="/cybersecurity-quiz">What is Cybersecurity? Quiz</a>
+              <a href="/strong-passwords-quiz">Strong Passwords Quiz</a>
+            </div>
+          </div>
+
+          {/* Logout Button */}
+          <button onClick={handleLogout} className="logout-btn">
+            Logout
+          </button>
+        </div>
       </body>
     </html>
   );
