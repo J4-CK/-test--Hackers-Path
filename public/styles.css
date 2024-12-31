@@ -2,21 +2,30 @@
 
 body {
   font-family: Arial, sans-serif;
-  background: linear-gradient(to bottom, #121212, #121255);
+  height: 100vh; /* Ensures body covers the full viewport height */
   margin: 0;
   padding: 0;
+  display: flex; /* Center content if needed */
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
   text-align: center;
   color: #37474f;
+
+  /* Smooth Gradient Background */
+  background: linear-gradient(to bottom, #121212, #121255);
+  background-repeat: no-repeat; /* Prevent repeating */
+  background-attachment: fixed; /* Keeps the gradient fixed during scrolling */
+  background-size: cover; /* Ensures it covers the full viewport */
 }
 
 /* Container Styling */
 .container {
   max-width: 400px;
-  margin: 50px auto;
   padding: 20px;
   background-color: white;
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  margin: 0 auto; /* Center horizontally within the viewport */
 }
 
 /* Input Fields */
