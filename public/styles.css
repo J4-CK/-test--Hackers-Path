@@ -1,21 +1,20 @@
-/* styles.css */
-
+/* General Body Styles */
 body {
   font-family: Arial, sans-serif;
-  height: 100vh; /* Ensures body covers the full viewport height */
+  height: 100vh; /* Full viewport height */
   margin: 0;
   padding: 0;
-  display: flex; /* Center content if needed */
-  justify-content: center; /* Center horizontally */
-  align-items: center; /* Center vertically */
   text-align: center;
   color: #37474f;
 
   /* Smooth Gradient Background */
   background: linear-gradient(to bottom, #121212, #121255);
-  background-repeat: no-repeat; /* Prevent repeating */
-  background-attachment: fixed; /* Keeps the gradient fixed during scrolling */
-  background-size: cover; /* Ensures it covers the full viewport */
+  background-repeat: no-repeat;
+  background-attachment: fixed; /* Keeps gradient fixed during scroll */
+  background-size: cover; /* Ensures gradient covers entire viewport */
+  display: flex;
+  flex-direction: column; /* Stack content vertically */
+  justify-content: center; /* Center vertically */
 }
 
 /* Container Styling */
@@ -25,7 +24,7 @@ body {
   background-color: white;
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  margin: 0 auto; /* Center horizontally within the viewport */
+  margin: 20px auto; /* Adds spacing around the box */
 }
 
 /* Input Fields */
@@ -57,4 +56,9 @@ button:hover {
 #error {
   color: red;
   font-size: 0.9em;
+}
+
+/* Additional Spacing for Content */
+p {
+  margin: 10px 0; /* Adds spacing between paragraphs and elements */
 }
