@@ -20,7 +20,7 @@ export default function LoginPage() {
       const result = await res.json();
 
       if (res.ok) {
-        router.push('/');
+        router.push('/'); // Redirect to homepage on success
       } else {
         setError(result.error || 'Login failed.');
       }
