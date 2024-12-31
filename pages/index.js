@@ -28,7 +28,7 @@ export default function HomePage() {
   return (
     <>
       <Head>
-        <link rel="stylesheet" href="/styles/global.css" />
+        <link rel="stylesheet" href="/styles/homepagestyle.css" />
       </Head>
       <header>
         <h1>Hacker's Path</h1>
