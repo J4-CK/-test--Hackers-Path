@@ -1,16 +1,12 @@
 {
-  "dependencies": {
-    "@supabase/supabase-js": "^2.47.10"
-  },
-  "name": "hackerspathnextjs",
+  "name": "hackers-path",
   "version": "1.0.0",
-  "main": "index.js",
-  "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "vercel dev",
+    "build": "vercel build",
+    "start": "vercel start"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": ""
+  "dependencies": {
+    "@supabase/supabase-js": "^2.0.0"
+  }
 }
