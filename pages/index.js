@@ -159,12 +159,12 @@ export default function HomePage() {
       </head>
       <body>
         <header>
-          <h1>Hacker's Path</h1>
+          <h1><a href="/">Hacker's Path</a></h1>
         </header>
 
         {/* Roadmap Section */}
         <div className="roadmap">
-          <a href="/">Home</a>
+          <a href="/leaderboard">Leaderboard</a>
           <a href="/lessons">Lessons</a>
           <a href="/quizzes">Quizzes</a>
           <a href="/profile">Profile</a>
