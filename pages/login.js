@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import Head from 'next/head'; // Allows including styles
+import './login.css'; // Import the styles
 
 export default function LoginPage() {
   const router = useRouter();
@@ -30,20 +30,29 @@ export default function LoginPage() {
     }
   }
 
-  return (
-    <>
-      <Head>
-        <link rel="stylesheet" href="/styles/login.css" />
-      </Head>
-      <div className="container">
-        <h2>Login</h2>
-        <form onSubmit={handleLogin}>
-          <input type="email" id="email" placeholder="Enter your email" required />
-          <input type="password" id="password" placeholder="Enter your password" required />
-          <button type="submit">Login</button>
-          {error && <p id="error">{error}</p>}
-        </form>
-      </div>
-    </>
-  );
+      return (
+        <div className="container">
+          <h2>Login</h2>
+          <form onSubmit={handleLogin}>
+            <input
+              type="email"
+              id="email"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            <input
+              type="password"
+              id="password"
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            <button type="submit">Login</button>
+            {error && <p id="error">{error}</p>}
+          </form>
+        </div>
+      );
 }
