@@ -1,7 +1,7 @@
-# Project Name: Cybersecurity Learning Platform
+# Hacker's Path
 
 ## Overview
-This repository contains the source code for the Cybersecurity Learning Platform, an educational web application designed to teach high school students fundamental cybersecurity concepts and skills. The platform is inspired by TryHackMe, Zybooks, and Duolingo, with lessons, quizzes, and interactive features.
+This repository contains the source code for the Cybersecurity Learning Platform 'Hacker's Path', an educational web application designed to teach high school students fundamental cybersecurity concepts and skills. The platform is inspired by TryHackMe, Zybooks, and Duolingo, with lessons, quizzes, and interactive features.
 
 ---
 
@@ -9,15 +9,13 @@ This repository contains the source code for the Cybersecurity Learning Platform
 - **Next.js** - React framework for building the front-end and handling server-side rendering.
 - **Vercel** - Deployment platform that integrates directly with Next.js for hosting.
 - **Supabase** - Backend-as-a-service for database management and authentication.
-- **AWS CloudWatch (optional)** - Logging service to monitor performance and activity.
-- **Elastic/Splunk (optional)** - Log monitoring and analysis.
 
 ---
 
 ## Languages Used
 - **HTML/CSS** - For structuring and styling web pages.
-- **JavaScript/TypeScript** - For functionality and interactivity on the front-end and back-end.
-- **SQL** - For database queries in Supabase.
+- **JavaScript** - For functionality and interactivity on the front-end and back-end.
+- **POSTGRESQL** - For database queries in Supabase.
 
 ---
 
@@ -26,7 +24,6 @@ This repository contains the source code for the Cybersecurity Learning Platform
 2. **Authentication:** User data is validated and authenticated via Supabase.
 3. **Database Access:** Supabase manages data storage, retrieving lessons, quizzes, and scores.
 4. **Dynamic Rendering:** Next.js dynamically generates content based on the database inputs.
-5. **Logging and Monitoring (Optional):** AWS CloudWatch or Elastic/Splunk track activity and errors.
 6. **Deployment and Hosting:** Vercel automates deployments and provides the hosting environment.
 
 ---
@@ -118,18 +115,5 @@ Workflow Example:
 
 ---
 
-## Contributions
-1. Fork the repository.
-2. Create a new branch.
-3. Submit a pull request.
-
----
-
 ## License
-This project is licensed under the [MIT License](LICENSE).
-
----
-
-## Contact
-For questions or support, contact us at [your-email@example.com].
-
+This project is licensed under the [test]
