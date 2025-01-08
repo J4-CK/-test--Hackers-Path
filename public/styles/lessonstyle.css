@@ -6,6 +6,33 @@ body {
     color: white;
     overflow: auto;
   }
+
+    /* Roadmap Navigation Styles */
+    .roadmap {
+        display: flex; /* Establishes flex container */
+        justify-content: space-between; /* Distributes buttons evenly */
+        align-items: stretch; /* Ensures buttons fill the container's height */
+        margin: -1px 1px; /* Adjusted margin for spacing */
+        background: #531d73; /* Background color */
+        padding: 15px; /* Padding inside the container */
+      }
+      
+      .roadmap a {
+        flex: 1; /* Allows buttons to grow and fill available space */
+        margin: 0 10px; /* Horizontal spacing between buttons */
+        padding: 10px 20px; /* Padding inside buttons */
+        text-decoration: none; /* Removes underline from links */
+        color: #e0e0e0; /* Text color */
+        background-color: #6a1b9a; /* Button background color */
+        border-radius: 5px; /* Rounded corners */
+        text-align: center; /* Centers text within buttons */
+        transition: all 0.3s ease; /* Smooth transition for hover effects */
+      }
+      
+      .roadmap a:hover {
+        background-color: #42155c; /* Background color on hover */
+        color: #ffffff; /* Text color on hover */
+      }
   
   .slide {
     padding: 20px;

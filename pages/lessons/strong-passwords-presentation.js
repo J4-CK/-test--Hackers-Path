@@ -81,6 +81,14 @@ export default function StrongPasswordsPresentation() {
       <header>
         <h1>Strong Passwords Presentation</h1>
       </header>
+      
+            {/* Roadmap Section */}
+            <div className="roadmap">
+        <a href="/leaderboard">Leaderboard</a>
+        <a href="/lessons">Lessons</a>
+        <a href="/quizzes">Quizzes</a>
+        <a href="/profile">Profile</a>
+      </div>
 
       {/* Slide Display */}
       <div className="slide active">
