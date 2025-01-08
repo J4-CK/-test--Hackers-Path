@@ -1,6 +1,6 @@
-import leaderboardData from '../data/leaderboard.json';
+import { fetchLeaderboard } from '../lib/fetchLeaderboard';
 
-export default function Leaderboard() {
+export default function Leaderboard({ players }) {
     return (
         <div style={{ fontFamily: 'Arial, sans-serif', textAlign: 'center', padding: '20px' }}>
             <div className="leaderboard">
@@ -14,7 +14,7 @@ export default function Leaderboard() {
                         </tr>
                     </thead>
                     <tbody>
-                        {leaderboardData.map((player, index) => (
+                        {players.map((player, index) => (
                             <tr
                                 key={player.id}
                                 style={index % 2 === 0 ? styles.evenRow : styles.oddRow}
@@ -31,12 +31,19 @@ export default function Leaderboard() {
     );
 }
 
+export async function getServerSideProps() {
+    const players = await fetchLeaderboard();
+    return {
+        props: { players },
+    };
+}
+
 const styles = {
     th: {
         backgroundColor: '#6a1b9a',
         color: 'white',
         padding: '10px',
-        textAlign: 'center',
+        textAlign: 'left',
     },
     td: {
         padding: '10px',
