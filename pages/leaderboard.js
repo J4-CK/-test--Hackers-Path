@@ -33,7 +33,7 @@ export default function Leaderboard() {
 
 const styles = {
     th: {
-        backgroundColor: '#4CAF50',
+        backgroundColor: '#6a1b9a',
         color: 'white',
         padding: '10px',
         textAlign: 'center',
