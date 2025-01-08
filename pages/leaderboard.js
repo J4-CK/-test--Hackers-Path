@@ -1,4 +1,4 @@
-import { fetchLeaderboard } from './api/auth/fetchLeaderboard';
+import { fetchLeaderboard } from './api/auth/leaderboard';
 
 export default function Leaderboard({ players }) {
     return (
