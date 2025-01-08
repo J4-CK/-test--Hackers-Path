@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cross-Site Scripting (XSS) - Engaging Presentation</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to right, #00c6ff, #0072ff);
+            color: white;
+            overflow: auto;
+        }
+        .slide {
+            display: none;
+            padding: 20px;
+            max-width: 800px;
+            margin: 50px auto;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            color: #333;
+            position: relative;
+            transition: opacity 0.5s ease;
+        }
+        .slide.active {
+            display: block;
+            opacity: 1;
+        }
+        .slide img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+        h2 {
+            color: #0072ff;
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        .navigation {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .navigation button {
+            padding: 10px 20px;
+            background-color: #0072ff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0 10px;
+            transition: background-color 0.3s ease;
+        }
+        .navigation button:hover {
+            background-color: #0056b3;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        ul li {
+            background: #e7f3ff;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 5px;
+            color: #0072ff;
+        }
+        .final-navigation {
+            text-align: center;
+            margin-top: 30px;
+        }
+        .final-navigation a {
+            padding: 10px 20px;
+            background-color: #0072ff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 0 10px;
+        }
+        .final-navigation a:hover {
+            background-color: #0056b3;
+        }
+        @media (max-width: 600px) {
+            .slide {
+                margin: 20px;
+                padding: 15px;
+            }
+            h2 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="slide active" id="slide1">
+    <h2>What is Cross-Site Scripting (XSS)?</h2>
+    <img src="https://via.placeholder.com/800x300/0072ff/ffffff?text=XSS+Introduction" alt="XSS Introduction">
+    <p>Cross-Site Scripting (XSS) is a security vulnerability that allows attackers to inject malicious scripts into web pages viewed by other users. This can lead to stolen data, hijacked sessions, and redirection to malicious websites.</p>
+</div>
+
+<div class="slide" id="slide2">
+    <h2>Types of XSS</h2>
+    <img src="https://via.placeholder.com/800x300/0072ff/ffffff?text=Types+of+XSS" alt="Types of XSS">
+    <ul>
+        <li><b>Stored XSS:</b> The malicious script is permanently stored on the web server and shown to users when they visit the page.</li>
+        <li><b>Reflected XSS:</b> The script is reflected off the web server and sent to the user as part of a response.</li>
+        <li><b>DOM-based XSS:</b> The vulnerability exists in the client-side code (e.g., JavaScript) that dynamically modifies the webpage based on user input.</li>
+    </ul>
+</div>
+
+<div class="slide" id="slide3">
+    <h2>How to Prevent XSS</h2>
+    <img src="https://via.placeholder.com/800x300/0072ff/ffffff?text=Preventing+XSS" alt="Preventing XSS">
+    <ul>
+        <li><b>Input Validation:</b> Ensure that all user input is properly validated and sanitized before being processed or stored.</li>
+        <li><b>Output Encoding:</b> Encode user data when displaying it on a webpage to prevent it from being executed as a script.</li>
+        <li><b>Content Security Policy (CSP):</b> Implement a CSP to restrict the sources from which scripts can be loaded on your site.</li>
+    </ul>
+</div>
+
+<div class="slide" id="slide4">
+    <h2>XSS in Action</h2>
+    <img src="https://via.placeholder.com/800x300/0072ff/ffffff?text=XSS+in+Action" alt="XSS in Action">
+    <p>Here’s an example of XSS in action: an attacker can embed a malicious script in a comment field, which executes when another user views the comment. This could steal their session cookie, giving the attacker access to their account.</p>
+</div>
+
+<div class="slide" id="slide5">
+    <h2>Conclusion</h2>
+    <img src="https://via.placeholder.com/800x300/0072ff/ffffff?text=Conclusion" alt="Conclusion">
+    <p>Cross-Site Scripting is a common vulnerability, but it can be mitigated with proper input validation, output encoding, and security measures like Content Security Policy (CSP). Stay alert for potential vulnerabilities and regularly audit your web applications.</p>
+</div>
+
+<div class="navigation">
+    <button onclick="prevSlide()">Previous</button>
+    <button onclick="nextSlide()">Next</button>
+</div>
+
+<div class="final-navigation">
+    <a href="xss-quiz.html">Take the Quiz</a>
+    <a href="index.html">Return to Homepage</a>
+</div>
+
+<script>
+    let currentSlide = 1;
+    const totalSlides = 5;
+
+    function showSlide(slideNumber) {
+        for (let i = 1; i <= totalSlides; i++) {
+            const slide = document.getElementById(`slide${i}`);
+            if (i === slideNumber) {
+                slide.classList.add('active');
+            } else {
+                slide.classList.remove('active');
+            }
+        }
+    }
+
+    function nextSlide() {
+        currentSlide++;
+        if (currentSlide > totalSlides) {
+            currentSlide = totalSlides;
+        }
+        showSlide(currentSlide);
+    }
+
+    function prevSlide() {
+        currentSlide--;
+        if (currentSlide < 1) {
+            currentSlide = 1;
+        }
+        showSlide(currentSlide);
+    }
+</script>
+
+</body>
+</html>
