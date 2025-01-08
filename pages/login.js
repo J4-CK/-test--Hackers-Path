@@ -3,14 +3,12 @@ import { useRouter } from 'next/router';
 
 export default function LoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState(''); // FIXED
-  const [password, setPassword] = useState(''); // FIXED
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
   async function handleLogin(e) {
     e.preventDefault();
-    const email = e.target.email.value; // Not needed if state is used
-    const password = e.target.password.value; // Not needed if state is used
 
     try {
       const res = await fetch('/api/auth/login', {
@@ -32,28 +30,38 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="container">
-      <h2>Login</h2>
-      <form onSubmit={handleLogin}>
-        <input
-          type="email"
-          id="email"
-          placeholder="Enter your email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)} // FIXED
-          required
-        />
-        <input
-          type="password"
-          id="password"
-          placeholder="Enter your password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)} // FIXED
-          required
-        />
-        <button type="submit">Login</button>
-        {error && <p id="error">{error}</p>}
-      </form>
+    <div className="section">
+      {/* Include External CSS */}
+      <link rel="stylesheet" href="/styles/teststyle.css" />
+      <header>
+        <h1><a href="#">Hacker's Path</a></h1>
+      </header>
+      <div className="section">
+        <h2>Login</h2>
+        <form onSubmit={handleLogin}>
+          <input
+            type="email"
+            id="email"
+            placeholder="Enter your email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <input
+            type="password"
+            id="password"
+            placeholder="Enter your password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <button type="submit" className="logout-btn">Login</button>
+          {error && <p id="error">{error}</p>}
+        </form>
+        <div className="register-link">
+          <p>Don't have an account? <a href="/register">Create one here</a></p>
+        </div>
+      </div>
     </div>
   );
 }
