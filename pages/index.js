@@ -62,7 +62,7 @@ export default function HomePage() {
           <div className="buttons">
             <a href="/xss-presentation">XSS Presentation</a>
             <a href="/cybersecurity-presentation">What is Cybersecurity?</a>
-            <a href="/strong-passwords-presentation">Strong Passwords</a>
+            <a href="lessons/strong-passwords-presentation">Strong Passwords</a>
           </div>
         </div>
 
