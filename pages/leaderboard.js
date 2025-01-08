@@ -32,11 +32,24 @@ export default function Leaderboard({ players }) {
 }
 
 export async function getServerSideProps() {
-    const players = await fetchLeaderboard();
-    return {
-        props: { players },
-    };
+    try {
+        const players = await fetchLeaderboard();
+
+        // Debug: Log fetched data
+        console.log('Fetched players:', players);
+
+        return {
+            props: { players },
+        };
+    } catch (error) {
+        console.error('Error in getServerSideProps:', error);
+
+        return {
+            props: { players: [] }, // Fallback to empty data
+        };
+    }
 }
+
 
 const styles = {
     th: {
