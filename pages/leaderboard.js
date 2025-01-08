@@ -8,7 +8,7 @@ export default function Leaderboard({ players }) {
                 <table style={{ margin: '0 auto', borderCollapse: 'collapse', width: '80%' }}>
                     <thead>
                         <tr>
-                            <th style={styles.th}>Rank</th>
+                            <th style={styles.th}>username</th>
                             <th style={styles.th}>Player</th>
                             <th style={styles.th}>Score</th>
                         </tr>
@@ -16,12 +16,12 @@ export default function Leaderboard({ players }) {
                     <tbody>
                         {players.map((player, index) => (
                             <tr
-                                key={player.id}
+                                key={player.user_id}
                                 style={index % 2 === 0 ? styles.evenRow : styles.oddRow}
                             >
                                 <td style={styles.td}>{index + 1}</td>
-                                <td style={styles.td}>{player.player_name}</td>
-                                <td style={styles.td}>{player.score}</td>
+                                <td style={styles.td}>{player.user_id}</td>
+                                <td style={styles.td}>{player.total_points}</td>
                             </tr>
                         ))}
                     </tbody>
