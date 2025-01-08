@@ -1,0 +1,163 @@
+/* General Body Styles */
+body {
+    font-family: Arial, sans-serif;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    color: #e0e0e0;
+    background: linear-gradient(to bottom, #121212, #1a1a2e);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+  }
+  
+  /* Header Styles */
+  header {
+    padding: .05px;
+    background: #531d73;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    margin-bottom: 0;
+    padding-bottom: 0.1px;
+  }
+  
+  header h1 a { /*title of page*/
+    color: #e0e0e0;
+    text-decoration: none;
+    font-size: 2em;
+    font-weight: bold;
+  }
+  
+  header h3 a {
+    color: #124523;
+    text-decoration: none;
+    font-size: 2em;
+    font-weight: bold;
+  }
+  
+  header h1 a:hover {
+    color: #8c30c2;
+    transition: all 2s ease;
+  }
+  
+  /* Roadmap Navigation Styles */
+  .roadmap {
+    display: flex; /* Establishes flex container */
+    justify-content: space-between; /* Distributes buttons evenly */
+    align-items: stretch; /* Ensures buttons fill the container's height */
+    margin: -1px 1px; /* Adjusted margin for spacing */
+    background: #531d73; /* Background color */
+    padding: 15px; /* Padding inside the container */
+  }
+  
+  .roadmap a {
+    flex: 1; /* Allows buttons to grow and fill available space */
+    margin: 0 10px; /* Horizontal spacing between buttons */
+    padding: 10px 20px; /* Padding inside buttons */
+    text-decoration: none; /* Removes underline from links */
+    color: #e0e0e0; /* Text color */
+    background-color: #6a1b9a; /* Button background color */
+    border-radius: 5px; /* Rounded corners */
+    text-align: center; /* Centers text within buttons */
+    transition: all 0.3s ease; /* Smooth transition for hover effects */
+  }
+  
+  .roadmap a:hover {
+    background-color: #42155c; /* Background color on hover */
+    color: #ffffff; /* Text color on hover */
+  }
+  
+  
+  /* Container Styles */
+  .container {
+    position: relative;
+    padding: 20px;
+  }
+  
+  /* Player Stats Section */
+  .stats {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 20px 0;
+  }
+  
+  .stats .box {
+    padding: 15px;
+    background: #222831;
+    border-radius: 8px;
+    width: 150px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  }
+  
+  .stats .box h3 {
+    margin: 0;
+    font-size: 1.2em;
+    color: #8c30c2;
+  }
+  
+  .stats .box p {
+    font-size: 1.5em;
+    margin: 10px 0 0;
+    font-weight: bold;
+  }
+  
+  /* Section Styles */
+  .section {
+    margin: 20px auto;
+    padding: 20px;
+    max-width: 800px;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  }
+  
+  .section h2 {
+    color: #ffffff;
+    margin-bottom: 15px;
+  }
+  
+  .buttons {
+    display: flex; /* Establishes flex container */
+    justify-content: space-between; /* Distributes buttons evenly */
+    gap: 10px; /* Adds space between buttons */
+  }
+  
+  .buttons a {
+    flex: 1; /* Allows buttons to grow and fill available space */
+    padding: 10px 20px; /* Padding inside buttons */
+    text-decoration: none; /* Removes underline from links */
+    color: #ffffff; /* Text color */
+    background-color: #71279c; /* Button background color */
+    border: 1px solid transparent; /* Border styling */
+    border-radius: 8px; /* Rounded corners */
+    text-align: center; /* Centers text within buttons */
+    transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition for hover effects */
+  }
+  
+  .buttons a:hover {
+    background: #42155c; /* Background color on hover */
+    color: #ffffff; /* Text color on hover */
+  }
+  
+  
+  /* Logout Button */
+  .logout-btn {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background: #e94560;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .logout-btn:hover {
+    background: #6e0f16;
+    color: #ffffff;
+  }
+  ::contentReference[oaicite:0]{index=0}
+   
+  
