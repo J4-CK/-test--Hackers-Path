@@ -75,7 +75,7 @@ export default function StrongPasswordsPresentation() {
     <div>
       <Head>
         <title>Strong Passwords - Presentation</title>
-        <link rel="stylesheet" href="/styles/homepagestyle.css" />
+        <link rel="stylesheet" href="/styles/lessonstyle.css" />
       </Head>
 
       <header>
