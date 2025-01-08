@@ -56,7 +56,7 @@ const styles = {
         backgroundColor: '#6a1b9a',
         color: 'white',
         padding: '10px',
-        textAlign: 'left',
+        textAlign: 'center',
     },
     td: {
         padding: '10px',
