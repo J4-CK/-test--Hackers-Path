@@ -32,7 +32,7 @@ export default function LoginPage() {
   return (
     <div className="section">
       {/* Include External CSS */}
-      <link rel="stylesheet" href="/styles/teststyle.css" />
+      <link rel="stylesheet" href="/styles/login.css" />
       <header>
         <h1><a href="#">Hacker's Path</a></h1>
       </header>
