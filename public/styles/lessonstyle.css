@@ -2,7 +2,86 @@ body {
     font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
-    background: linear-gradient(to right, #00c6ff, #0072ff);
+    background: linear-gradient(to bottom, #812fb1, #3b1452);
+    color: white;
+    overflow: auto;
+  }
+  
+  .slide {
+    padding: 20px;
+    max-width: 800px;
+    margin: 50px auto;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    color: #333;
+    position: relative;
+    transition: opacity 0.5s ease;
+  }
+  header {
+  width: 100%; /* Full width */
+  padding: 20px; /* Padding inside the box */
+  background: #2c103b; 
+  color: white; /* Text color */
+  text-align: center; /* Center-align the text */
+  border-radius: 0 0 20px 20px; /* Curved edges at the bottom only */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Drop shadow for depth */
+}
+
+header h1 {
+  margin: 0; /* Remove default margin */
+  font-size: 2.5em; /* Increase font size */
+  font-weight: bold; /* Make the text bold */
+}
+  
+
+  h2 {
+    color: #000000;
+    text-align: center;
+    font-size: 2em;
+    margin-bottom: 10px;
+  }
+  
+  .navigation {
+    text-align: center;
+    margin-top: 20px;
+  }
+  
+  .navigation button {
+    padding: 10px 20px;
+    background-color: #531d73;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 0 10px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .navigation button:hover {
+    background-color: #531d73;
+  }
+  
+  .final-navigation {
+    text-align: center;
+    margin-top: 30px;
+  }
+  
+  .final-navigation a {
+    padding: 10px 20px;
+    background-color: #531d73;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    margin: 0 10px;
+  }
+  
+  .final-navigation a:hover {
+    background-color: #body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(to right, #9e3ad8, #531d73);
     color: white;
     overflow: auto;
   }
@@ -20,7 +99,7 @@ body {
   }
   
   h2 {
-    color: #0072ff;
+    color: #531d73;
     text-align: center;
     font-size: 2em;
     margin-bottom: 10px;
@@ -33,7 +112,7 @@ body {
   
   .navigation button {
     padding: 10px 20px;
-    background-color: #0072ff;
+    background-color: #531d73;
     color: white;
     border: none;
     border-radius: 5px;
@@ -43,7 +122,7 @@ body {
   }
   
   .navigation button:hover {
-    background-color: #0056b3;
+    background-color: #531d73;
   }
   
   .final-navigation {
@@ -53,7 +132,7 @@ body {
   
   .final-navigation a {
     padding: 10px 20px;
-    background-color: #0072ff;
+    background-color: #531d73;
     color: white;
     text-decoration: none;
     border-radius: 5px;
@@ -61,6 +140,8 @@ body {
   }
   
   .final-navigation a:hover {
-    background-color: #0056b3;
+    background-color: #531d73;
+  }
+  ;
   }
   
