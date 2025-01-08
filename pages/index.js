@@ -31,7 +31,7 @@ export default function HomePage() {
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Hacker's Path</title>
-        <style jsx global>{
+        <style jsx global>{`
           /* General Body Styles */
           body {
             font-family: Arial, sans-serif;
@@ -45,7 +45,7 @@ export default function HomePage() {
             background-attachment: fixed;
             background-size: cover;
           }
-        }</style>
+        `}</style>
       </head>
       <body>
         <header>
