@@ -8,8 +8,8 @@ export default function Leaderboard({ players }) {
                 <table style={{ margin: '0 auto', borderCollapse: 'collapse', width: '80%' }}>
                     <thead>
                         <tr>
-                            <th style={styles.th}>username</th>
-                            <th style={styles.th}>Player</th>
+                            <th style={styles.th}>Rank</th>
+                            <th style={styles.th}>User ID</th>
                             <th style={styles.th}>Score</th>
                         </tr>
                     </thead>
