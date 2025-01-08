@@ -1,4 +1,4 @@
-import { supabase } from './supabaseClient';
+import { supabase } from './login';
 
 export async function fetchLeaderboard() {
     const { data, error } = await supabase
