@@ -36,7 +36,7 @@ const styles = {
         backgroundColor: '#4CAF50',
         color: 'white',
         padding: '10px',
-        textAlign: 'left',
+        textAlign: 'center',
     },
     td: {
         padding: '10px',
