@@ -13,26 +13,32 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Parse the token from cookies
+    // Parse cookies
     const cookies = req.headers.cookie ? cookie.parse(req.headers.cookie) : {};
     const token = cookies.token;
 
     if (!token) {
       console.error("No token provided");
-      return res.status(401).json({ error: "Unauthorized" });
+      return res.status(401).json({ error: "Unauthorized: No token found" });
     }
 
-    // Validate session and get user ID
-    const { data: sessionUser, error: sessionError } = await supabase.auth.getUser(token);
+    console.log("Token received:", token);
 
-    if (sessionError) {
-      console.error("Session validation failed:", sessionError.message);
-      return res.status(401).json({ error: "Invalid session token" });
+    // Validate token and get session user
+    const { data: sessionUser, error: sessionError } = await supabase.auth.getUser(token);
+    if (sessionError || !sessionUser) {
+      console.error("Session validation failed:", sessionError?.message);
+      return res.status(401).json({ error: "Unauthorized: Invalid or expired token" });
     }
 
     const userId = sessionUser.id;
 
-    // Fetch profile data from 'profiles' table
+    if (!userId) {
+      console.error("User ID is undefined");
+      return res.status(400).json({ error: "User ID is missing in session" });
+    }
+
+    // Fetch profile data
     const { data: profile, error: profileError } = await supabase
       .from("profiles")
       .select("username")
@@ -44,7 +50,7 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: "Error fetching profile data" });
     }
 
-    // Fetch leaderboard data from 'leaderboard' table
+    // Fetch leaderboard data
     const { data: leaderboard, error: leaderboardError } = await supabase
       .from("leaderboard")
       .select("streak, total_points, region")
@@ -56,7 +62,7 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: "Error fetching leaderboard data" });
     }
 
-    // Return the combined user data
+    // Return combined user data
     return res.status(200).json({
       user: {
         email: sessionUser.email,
@@ -67,7 +73,7 @@ export default async function handler(req, res) {
       },
     });
   } catch (err) {
-    console.error("Internal Server Error:", err);
+    console.error("Internal Server Error:", err.message);
     return res.status(500).json({ error: "Internal Server Error" });
   }
 }
