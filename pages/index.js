@@ -8,13 +8,18 @@ export default function HomePage() {
   // Fetch session on load
   useEffect(() => {
     async function checkSession() {
-      const res = await fetch('/api/auth/session');
-      const data = await res.json();
-
-      if (res.ok) {
-        setUser(data.user); // Set user data
-      } else {
-        router.push('/login'); // Redirect to login if not authenticated
+      try {
+        const res = await fetch('/api/auth/session');
+        if (res.ok) {
+          const data = await res.json();
+          setUser(data.user); // Set user data
+        } else {
+          console.error("Session validation failed:", await res.json());
+          router.push('/login'); // Redirect to login if not authenticated
+        }
+      } catch (error) {
+        console.error("Error checking session:", error);
+        router.push('/login'); // Redirect on error
       }
     }
     checkSession();
@@ -22,13 +27,32 @@ export default function HomePage() {
 
   // Handle logout
   async function handleLogout() {
-    await fetch('/api/auth/logout', { method: 'POST' });
-    router.push('/login'); // Redirect to login after logout
+    try {
+      const res = await fetch('/api/auth/logout', { method: 'POST' });
+      if (res.ok) {
+        router.push('/login'); // Redirect to login after logout
+      } else {
+        console.error("Logout failed");
+      }
+    } catch (error) {
+      console.error("Error logging out:", error);
+    }
+  }
+
+  if (!user) {
+    return (
+      <div>
+        <link rel="stylesheet" href="/styles/homepagestyle.css" />
+        <header>
+          <h1><a href="/">Hacker's Path</a></h1>
+        </header>
+        <div className="loading">Loading...</div>
+      </div>
+    );
   }
 
   return (
     <div>
-      {/* Link to external CSS */}
       <link rel="stylesheet" href="/styles/homepagestyle.css" />
       <header>
         <h1><a href="/">Hacker's Path</a></h1>
