@@ -5,6 +5,7 @@ export default function HomePage() {
   const router = useRouter();
   const [user, setUser] = useState(null);
 
+  
   // Fetch session on load
   useEffect(() => {
     async function checkSession() {
