@@ -13,17 +13,16 @@ export default function ProfilePage() {
       try {
         const res = await fetch("/api/auth/session");
         const data = await res.json();
-
+  
         if (res.ok) {
           setUser(data.user); // Set the user data
         } else {
-          router.push("/login"); // Redirect to login if not authenticated
+          console.error("Session validation failed:", data.error);
+          router.push("/login");
         }
       } catch (err) {
-        console.error("Error fetching user data:", err);
+        console.error("Error fetching session:", err);
         router.push("/login");
-      } finally {
-        setLoading(false);
       }
     }
     fetchUserData();
