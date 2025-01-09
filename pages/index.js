@@ -9,12 +9,19 @@ export default function HomePage() {
   useEffect(() => {
     async function checkSession() {
       try {
-        const res = await fetch('/api/auth/session');
+        console.log("Fetching session...");
+        const res = await fetch('/api/auth/session', {
+          credentials: 'include', // Ensure cookies are sent
+        });
+        console.log("Session response status:", res.status);
+
         if (res.ok) {
           const data = await res.json();
+          console.log("Session data:", data);
           setUser(data.user); // Set user data
         } else {
-          console.error("Session validation failed:", await res.json());
+          const errorData = await res.json();
+          console.error("Session validation failed:", errorData);
           router.push('/login'); // Redirect to login if not authenticated
         }
       } catch (error) {
@@ -30,15 +37,17 @@ export default function HomePage() {
     try {
       const res = await fetch('/api/auth/logout', { method: 'POST' });
       if (res.ok) {
+        console.log("Logout successful.");
         router.push('/login'); // Redirect to login after logout
       } else {
-        console.error("Logout failed");
+        console.error("Logout failed.");
       }
     } catch (error) {
       console.error("Error logging out:", error);
     }
   }
 
+  // Render loading state
   if (!user) {
     return (
       <div>
@@ -46,11 +55,12 @@ export default function HomePage() {
         <header>
           <h1><a href="/">Hacker's Path</a></h1>
         </header>
-        <div className="loading">Loading...</div>
+        <div className="loading">Checking session... Please wait.</div>
       </div>
     );
   }
 
+  // Render authenticated page
   return (
     <div>
       <link rel="stylesheet" href="/styles/homepagestyle.css" />
