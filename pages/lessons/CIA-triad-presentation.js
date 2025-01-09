@@ -7,15 +7,6 @@ export default function CIATriadLesson() {
         <title>CIA Triad Lesson</title>
         <link rel="stylesheet" href="/styles/lessonstyle.css" />
       </Head>
-
-      /* Roadmap Section *
-      <div className="roadmap">
-        <a href="/leaderboard">Leaderboard</a>
-        <a href="/lessons">Lessons</a>
-        <a href="/quizzes">Quizzes</a>
-        <a href="/profile">Profile</a>
-      </div>
-
       <header>
         <h1>CIA Triad Lesson</h1>
       </header>
@@ -60,11 +51,6 @@ export default function CIATriadLesson() {
           <li>How can data integrity be maintained?</li>
           <li>What is an example of ensuring availability?</li>
         </ul>
-      </div>
-            {/* Final Navigation */}
-            <div className="final-navigation">
-        <a href="/lessons/strong-passwords-quiz">Take the Quiz</a>
-        <a href="/">Return to Homepage</a>
       </div>
     </>
   );

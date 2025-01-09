@@ -94,7 +94,7 @@ export default function HomePage() {
         <div className="section">
           <h2>Lessons</h2>
           <div className="buttons">
-            <a href="/lessons/CIA-triad-presentation">CIA Triad Presentation</a>
+            <a href="/xss-presentation">XSS Presentation</a>
             <a href="/cybersecurity-presentation">What is Cybersecurity?</a>
             <a href="lessons/strong-passwords-presentation">Strong Passwords</a>
           </div>
