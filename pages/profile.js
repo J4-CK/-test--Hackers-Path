@@ -5,7 +5,7 @@ import Head from "next/head";
 export default function ProfilePage() {
   const router = useRouter();
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true); // Loading state for better UX
+  const [loading, setLoading] = useState(true);
 
   // Fetch session on load
   useEffect(() => {
@@ -15,13 +15,13 @@ export default function ProfilePage() {
         const data = await res.json();
 
         if (res.ok) {
-          setUser(data.user); // Set user data
+          setUser(data.user); // Set the user data
         } else {
           router.push("/login"); // Redirect to login if not authenticated
         }
       } catch (err) {
         console.error("Error fetching user data:", err);
-        router.push("/login"); // Redirect on error
+        router.push("/login");
       } finally {
         setLoading(false);
       }
@@ -34,7 +34,7 @@ export default function ProfilePage() {
     try {
       const res = await fetch("/api/auth/logout", { method: "POST" });
       if (res.ok) {
-        router.push("/login"); // Redirect to login after logout
+        router.push("/login");
       } else {
         console.error("Logout failed");
       }
@@ -49,7 +49,7 @@ export default function ProfilePage() {
       <div>
         <Head>
           <title>Loading...</title>
-          <link rel="stylesheet" href="/styles/homepagestyle.css" />
+          <link rel="stylesheet" href="/styles/profilestyle.css" />
         </Head>
         <div className="loading">Loading...</div>
       </div>
@@ -62,19 +62,18 @@ export default function ProfilePage() {
       <div>
         <Head>
           <title>Unauthorized</title>
-          <link rel="stylesheet" href="/styles/homepagestyle.css" />
+          <link rel="stylesheet" href="/styles/profilestyle.css" />
         </Head>
         <div className="loading">You are not logged in. Redirecting...</div>
       </div>
     );
   }
 
-  // Render the profile page with user details
   return (
     <div>
       <Head>
         <title>Profile - Hacker's Path</title>
-        <link rel="stylesheet" href="/styles/homepagestyle.css" />
+        <link rel="stylesheet" href="/styles/profilestyle.css" />
       </Head>
 
       <header>
@@ -95,7 +94,7 @@ export default function ProfilePage() {
         <div className="stats">
           <div className="box">
             <h3>Username</h3>
-            <p>{user.username || "N/A"}</p>
+            <p>{user.user_metadata.username || "N/A"}</p>
           </div>
           <div className="box">
             <h3>Email</h3>
@@ -103,7 +102,7 @@ export default function ProfilePage() {
           </div>
           <div className="box">
             <h3>Membership</h3>
-            <p>{user.membership || "N/A"}</p>
+            <p>{user.user_metadata.membership || "N/A"}</p>
           </div>
         </div>
 
@@ -112,7 +111,7 @@ export default function ProfilePage() {
           <h2>Current Streak</h2>
           <div className="buttons">
             <div className="box">
-              <h3>{user.streak || 0} Days</h3>
+              <h3>{user.user_metadata.streak || 0} Days</h3>
             </div>
           </div>
         </div>
@@ -120,8 +119,9 @@ export default function ProfilePage() {
         {/* Recent Activity */}
         <div className="section">
           <h2>Recent Activity</h2>
-          {user.recentActivity && user.recentActivity.length > 0 ? (
-            user.recentActivity.map((activity, index) => (
+          {user.user_metadata.recentActivity &&
+          user.user_metadata.recentActivity.length > 0 ? (
+            user.user_metadata.recentActivity.map((activity, index) => (
               <div key={index} className="box">
                 <h3>{activity.action}</h3>
                 <p>{activity.description}</p>
