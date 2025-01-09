@@ -62,7 +62,7 @@ export default function ProfilePage() {
       <div>
         <Head>
           <title>Unauthorized</title>
-          <link rel="stylesheet" href="/styles/profilestyle.css" />
+          <link rel="stylesheet" href="/styles/homepagestyle.css" />
         </Head>
         <div className="loading">You are not logged in. Redirecting...</div>
       </div>
@@ -74,7 +74,7 @@ export default function ProfilePage() {
     <div>
       <Head>
         <title>Profile - Hacker's Path</title>
-        <link rel="stylesheet" href="/styles/profilestyle.css" />
+        <link rel="stylesheet" href="/styles/homepagestyle.css" />
       </Head>
 
       <header>
