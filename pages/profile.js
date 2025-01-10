@@ -7,6 +7,7 @@ export default function ProfilePage() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  
   // Fetch session on load
   useEffect(() => {
     async function fetchUserData() {
