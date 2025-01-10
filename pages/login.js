@@ -30,24 +30,38 @@ export default function LoginPage() {
   }
 
   return (
-    <div style={{ padding: '20px', textAlign: 'center' }}>
-      <h1>Login</h1>
-      <form onSubmit={handleLogin}>
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <button type="submit">Login</button>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-      </form>
+    <div className="section">
+      {/* Include External CSS */}
+      <link rel="stylesheet" href="/styles/login.css" />
+      <header>
+        <h1><a href="#">Hacker's Path</a></h1>
+      </header>
+      <div className="section">
+        <h2>Login</h2>
+        <form onSubmit={handleLogin}>
+          <input
+            type="email"
+            id="email"
+            placeholder="Enter your email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <input
+            type="password"
+            id="password"
+            placeholder="Enter your password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <button type="submit" className="logout-btn">Login</button>
+          {error && <p id="error">{error}</p>}
+        </form>
+        <div className="register-link">
+          <p>Don't have an account? <a href="/register">Create one here</a></p>
+        </div>
+      </div>
     </div>
   );
 }

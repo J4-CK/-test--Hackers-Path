@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cross-Site Scripting (XSS) Course</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #007bff;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .container {
+            margin: 20px auto;
+            padding: 20px;
+            max-width: 900px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            color: #007bff;
+        }
+        p {
+            margin-bottom: 20px;
+        }
+        .question {
+            margin: 30px 0;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-left: 5px solid #007bff;
+        }
+        .choices {
+            list-style-type: none;
+            padding: 0;
+        }
+        .choices li {
+            margin-bottom: 10px;
+        }
+        .choices input {
+            margin-right: 10px;
+        }
+        .match {
+            margin-bottom: 15px;
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .navigation {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .navigation a {
+            text-decoration: none;
+            color: white;
+            padding: 10px 20px;
+            background-color: #007bff;
+            border-radius: 5px;
+            margin: 5px;
+        }
+        .navigation a:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Cross-Site Scripting (XSS) - Course Content</h1>
+</header>
+
+<div class="container">
+    <h2>What is Cross-Site Scripting (XSS)?</h2>
+    <p>
+        Cross-Site Scripting (XSS) is a vulnerability found in web applications where an attacker can inject malicious scripts into otherwise trusted websites. These scripts are executed by the victim's browser, allowing attackers to steal session cookies, modify webpage content, or redirect users to malicious sites.
+    </p>
+
+    <div class="question">
+        <h3>Question: What does XSS stand for?</h3>
+        <ul class="choices">
+            <li><label><input type="radio" name="q1" value="0"> Cross-Site Scripting</label></li>
+            <li><label><input type="radio" name="q1" value="1"> Cross-Site Stealing</label></li>
+            <li><label><input type="radio" name="q1" value="2"> Cross-Server Scripting</label></li>
+        </ul>
+        <button onclick="checkAnswer('q1', 0)">Submit Answer</button>
+    </div>
+
+    <h2>Types of XSS Attacks</h2>
+    <p>
+        There are three main types of XSS attacks:
+    </p>
+    <ul>
+        <li><b>Stored XSS:</b> This occurs when the malicious script is permanently stored on the target server (e.g., in a database) and is displayed to users whenever they visit the infected page.</li>
+        <li><b>Reflected XSS:</b> This happens when the malicious script is immediately reflected back to the user as part of a search result or error message, and it is only executed temporarily.</li>
+        <li><b>DOM-based XSS:</b> This type of attack is executed when the web page’s client-side scripts process data from user input in an insecure way.</li>
+    </ul>
+
+    <div class="question">
+        <h3>Matching Question: Match the XSS types to their descriptions</h3>
+        <div class="match">
+            <b>A:</b> Permanently stored on the server<br>
+            <b>B:</b> Reflected in a response to user input<br>
+            <b>C:</b> Based on client-side scripting<br>
+        </div>
+        <select name="match1">
+            <option value="0">Stored XSS</option>
+            <option value="1">Reflected XSS</option>
+            <option value="2">DOM-based XSS</option>
+        </select> corresponds to <b>A</b><br>
+        <select name="match2">
+            <option value="0">Stored XSS</option>
+            <option value="1">Reflected XSS</option>
+            <option value="2">DOM-based XSS</option>
+        </select> corresponds to <b>B</b><br>
+        <select name="match3">
+            <option value="0">Stored XSS</option>
+            <option value="1">Reflected XSS</option>
+            <option value="2">DOM-based XSS</option>
+        </select> corresponds to <b>C</b><br>
+        <button onclick="checkMatching()">Submit Matching</button>
+    </div>
+
+    <h2>How to Prevent XSS</h2>
+    <p>
+        To prevent XSS attacks, developers should ensure that all user inputs are sanitized and validated before being reflected on a webpage. Additionally, using techniques like Content Security Policy (CSP) and encoding output can help mitigate the risks of XSS.
+    </p>
+
+    <div class="question">
+        <h3>Free Response: What is one method to prevent XSS attacks?</h3>
+        <textarea id="response1"></textarea><br>
+        <button onclick="checkFreeResponse()">Submit Response</button>
+    </div>
+
+    <h2>Conclusion</h2>
+    <p>
+        Cross-Site Scripting is a dangerous and widespread vulnerability, but it can be mitigated with proper input validation, output encoding, and additional security measures like Content Security Policy (CSP).
+    </p>
+
+    <div class="navigation">
+        <a href="index.html">Back to Index</a>
+        <a href="xss-presentation.html">Back to Presentation</a>
+    </div>
+</div>
+
+<script>
+    function checkAnswer(question, correctValue) {
+        const selected = document.querySelector(`input[name="${question}"]:checked`);
+        if (selected && selected.value == correctValue) {
+            alert("Correct!");
+        } else {
+            alert("Incorrect, try again.");
+        }
+    }
+
+    function checkMatching() {
+        const match1 = document.querySelector('select[name="match1"]').value;
+        const match2 = document.querySelector('select[name="match2"]').value;
+        const match3 = document.querySelector('select[name="match3"]').value;
+
+        if (match1 == "0" && match2 == "1" && match3 == "2") {
+            alert("Correct! You've matched them perfectly.");
+        } else {
+            alert("Incorrect, please try again.");
+        }
+    }
+
+    function checkFreeResponse() {
+        const response = document.getElementById('response1').value.trim();
+        if (response.length > 0) {
+            alert("Thank you for your response!");
+        } else {
+            alert("Please enter a response.");
+        }
+    }
+</script>
+
+</body>
+</html>
