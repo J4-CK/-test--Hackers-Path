@@ -24,21 +24,31 @@ export default async function handler(req, res) {
 
     if (!token) {
       console.error("No token found in cookies");
-      return res.status(401).json({ error: "Unauthorized: No token found" });
+      return res.status(401).json({ error: "Unauthorized: No token provided" });
     }
 
     console.log("Token received:", token);
+
+    // Decode the token for debugging purposes
+    const jwt = require("jsonwebtoken");
+    const decoded = jwt.decode(token);
+    console.log("Decoded token:", decoded);
+
+    if (decoded?.exp * 1000 < Date.now()) {
+      console.error("Token expired:", decoded.exp);
+      return res.status(401).json({ error: "Unauthorized: Token expired" });
+    }
 
     // Validate token and get session user
     const { data: sessionUser, error: sessionError } = await supabase.auth.getUser(token);
     if (sessionError) {
       console.error("Session validation failed:", sessionError.message);
-      return res.status(401).json({ error: "Unauthorized: Invalid or expired token" });
+      return res.status(401).json({ error: "Unauthorized: Invalid token" });
     }
 
     console.log("Session user data:", sessionUser);
 
-    const userId = sessionUser.id;
+    const userId = sessionUser?.id;
 
     if (!userId) {
       console.error("User ID is undefined or missing in session");
@@ -56,10 +66,9 @@ export default async function handler(req, res) {
 
     if (profileError) {
       console.error(`Error fetching profile for user ID ${userId}:`, profileError.message);
-      return res.status(500).json({ error: "Error fetching profile data" });
+    } else {
+      console.log("Profile data:", profile);
     }
-
-    console.log("Profile data:", profile);
 
     // Fetch leaderboard data
     const { data: leaderboard, error: leaderboardError } = await supabase
@@ -70,19 +79,18 @@ export default async function handler(req, res) {
 
     if (leaderboardError) {
       console.error(`Error fetching leaderboard data for user ID ${userId}:`, leaderboardError.message);
-      return res.status(500).json({ error: "Error fetching leaderboard data" });
+    } else {
+      console.log("Leaderboard data:", leaderboard);
     }
 
-    console.log("Leaderboard data:", leaderboard);
-
-    // Return combined user data
+    // Return combined user data (handle missing data gracefully)
     return res.status(200).json({
       user: {
         email: sessionUser.email,
-        username: profile.username || "N/A",
-        streak: leaderboard.streak || 0,
-        totalPoints: leaderboard.total_points || 0,
-        region: leaderboard.region || "N/A",
+        username: profile?.username || "N/A",
+        streak: leaderboard?.streak || 0,
+        totalPoints: leaderboard?.total_points || 0,
+        region: leaderboard?.region || "N/A",
       },
     });
   } catch (err) {
