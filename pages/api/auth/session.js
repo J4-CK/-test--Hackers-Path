@@ -8,17 +8,22 @@ const supabase = createClient(
 );
 
 export default async function handler(req, res) {
+  console.log("Incoming request:", req.method, req.url);
+
   if (req.method !== "GET") {
+    console.error("Invalid request method:", req.method);
     return res.status(405).json({ error: "Method not allowed" });
   }
 
   try {
     // Parse cookies
     const cookies = req.headers.cookie ? cookie.parse(req.headers.cookie) : {};
+    console.log("Parsed cookies:", cookies);
+
     const token = cookies.token;
 
     if (!token) {
-      console.error("No token provided");
+      console.error("No token found in cookies");
       return res.status(401).json({ error: "Unauthorized: No token found" });
     }
 
@@ -26,17 +31,21 @@ export default async function handler(req, res) {
 
     // Validate token and get session user
     const { data: sessionUser, error: sessionError } = await supabase.auth.getUser(token);
-    if (sessionError || !sessionUser) {
-      console.error("Session validation failed:", sessionError?.message);
+    if (sessionError) {
+      console.error("Session validation failed:", sessionError.message);
       return res.status(401).json({ error: "Unauthorized: Invalid or expired token" });
     }
+
+    console.log("Session user data:", sessionUser);
 
     const userId = sessionUser.id;
 
     if (!userId) {
-      console.error("User ID is undefined");
+      console.error("User ID is undefined or missing in session");
       return res.status(400).json({ error: "User ID is missing in session" });
     }
+
+    console.log("User ID:", userId);
 
     // Fetch profile data
     const { data: profile, error: profileError } = await supabase
@@ -46,9 +55,11 @@ export default async function handler(req, res) {
       .single();
 
     if (profileError) {
-      console.error("Error fetching profile:", profileError.message);
+      console.error(`Error fetching profile for user ID ${userId}:`, profileError.message);
       return res.status(500).json({ error: "Error fetching profile data" });
     }
+
+    console.log("Profile data:", profile);
 
     // Fetch leaderboard data
     const { data: leaderboard, error: leaderboardError } = await supabase
@@ -58,9 +69,11 @@ export default async function handler(req, res) {
       .single();
 
     if (leaderboardError) {
-      console.error("Error fetching leaderboard:", leaderboardError.message);
+      console.error(`Error fetching leaderboard data for user ID ${userId}:`, leaderboardError.message);
       return res.status(500).json({ error: "Error fetching leaderboard data" });
     }
+
+    console.log("Leaderboard data:", leaderboard);
 
     // Return combined user data
     return res.status(200).json({
@@ -73,7 +86,7 @@ export default async function handler(req, res) {
       },
     });
   } catch (err) {
-    console.error("Internal Server Error:", err.message);
+    console.error("Unhandled error occurred:", err.message);
     return res.status(500).json({ error: "Internal Server Error" });
   }
 }
