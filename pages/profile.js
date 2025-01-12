@@ -50,7 +50,7 @@ export default function ProfilePage() {
       <div>
         <Head>
           <title>Loading...</title>
-          <link rel="stylesheet" href="/styles/profilestyle.css" />
+          <link rel="stylesheet" href="/styles/homepagestyle.css" />
         </Head>
         <div className="loading">Loading...</div>
       </div>
@@ -63,7 +63,7 @@ export default function ProfilePage() {
       <div>
         <Head>
           <title>Unauthorized</title>
-          <link rel="stylesheet" href="/styles/profilestyle.css" />
+          <link rel="stylesheet" href="/styles/homepagestyle.css" />
         </Head>
         <div className="loading">You are not logged in. Redirecting...</div>
       </div>
@@ -74,7 +74,7 @@ export default function ProfilePage() {
     <div>
       <Head>
         <title>Profile - Hacker's Path</title>
-        <link rel="stylesheet" href="/styles/profilestyle.css" />
+        <link rel="stylesheet" href="/styles/homepagestyle.css" />
       </Head>
 
       <header>
@@ -91,55 +91,53 @@ export default function ProfilePage() {
       </div>
 
       <div className="container">
-        {/* User Details */}
-        <div className="stats">
-          <div className="box">
-            <h3>Username</h3>
-            <p>{user.username || "N/A"}</p>
-          </div>
-          <div className="box">
-            <h3>Email</h3>
-            <p>{user.email || "N/A"}</p>
-          </div>
-          <div className="box">
-            <h3>Region</h3>
-            <p>{user.region || "N/A"}</p>
-          </div>
-        </div>
-
-        {/* Current Streak */}
+        {/* User Details Section */}
         <div className="section">
-          <h2>Current Streak</h2>
-          <div className="buttons">
-            <div className="box">
-              <h3>{user.streak || 0} Days</h3>
+          <h2>Profile Details</h2>
+          <div className="profile-details">
+            <div className="detail-item">
+              <h3>Username:</h3>
+              <p>{user.username || "N/A"}</p>
+            </div>
+            <div className="detail-item">
+              <h3>Email:</h3>
+              <p>{user.email || "N/A"}</p>
+            </div>
+            <div className="detail-item">
+              <h3>Region:</h3>
+              <p>{user.region || "N/A"}</p>
             </div>
           </div>
         </div>
 
-        {/* Total Points */}
+        {/* Stats Section */}
         <div className="section">
-          <h2>Total Points</h2>
-          <div className="buttons">
-            <div className="box">
-              <h3>{user.totalPoints || 0}</h3>
+          <h2>Stats</h2>
+          <div className="stats">
+            <div className="stat-item">
+              <h3>Current Streak</h3>
+              <p>{user.streak || 0} Days</p>
+            </div>
+            <div className="stat-item">
+              <h3>Total Points</h3>
+              <p>{user.totalPoints || 0}</p>
             </div>
           </div>
         </div>
 
-        {/* Recent Activity */}
+        {/* Recent Activity Section */}
         <div className="section">
           <h2>Recent Activity</h2>
           {user.recentActivity && user.recentActivity.length > 0 ? (
             user.recentActivity.map((activity, index) => (
-              <div key={index} className="box">
+              <div key={index} className="activity-item">
                 <h3>{activity.action}</h3>
                 <p>{activity.description}</p>
                 <p>{activity.date}</p>
               </div>
             ))
           ) : (
-            <div className="box">No recent activity to show.</div>
+            <p>No recent activity to show.</p>
           )}
         </div>
 
