@@ -41,8 +41,8 @@ export default function HomePage() {
       {/* Roadmap Section */}
       <div className="roadmap">
         <a href="/leaderboard">Leaderboard</a>
-        <a href="/lessons">Lessons</a>
-        <a href="/quizzes">Quizzes</a>
+        <a href="/htmllessons/lessons.html">Lessons</a>
+        <a href="/htmlquiz/quizzes.html">Quizzes</a>
         {/* Display the user's username on the "Profile" button */}
         <a href="/profile">{user.username ? `Profile (${user.username})` : 'Profile'}</a>
       </div>
