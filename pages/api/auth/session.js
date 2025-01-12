@@ -53,7 +53,8 @@ export default async function handler(req, res) {
       return res.status(401).json({ error: "Unauthorized: Invalid token" });
     }
 
-    const userId = sessionUser?.id;
+    const userId = sessionUser?.user?.id; // Updated to access the correct field
+
     if (!userId) {
       console.error("User ID is undefined or missing in session:", sessionUser);
       return res.status(400).json({ error: "User ID is missing in session" });
@@ -90,7 +91,7 @@ export default async function handler(req, res) {
     // Return combined user data (handle missing data gracefully)
     return res.status(200).json({
       user: {
-        email: sessionUser.email,
+        email: sessionUser.user.email,
         username: profile?.username || "N/A",
         streak: leaderboard?.streak || 0,
         totalPoints: leaderboard?.total_points || 0,
