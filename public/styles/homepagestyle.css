@@ -140,7 +140,29 @@ body {
     background: #42155c; /* Background color on hover */
     color: #ffffff; /* Text color on hover */
   }
-  
+
+.profile-details {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  text-align: left;
+  margin: 20px auto;
+  max-width: 600px;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.detail-item h3 {
+  color: #8c30c2;
+  margin-bottom: 5px;
+}
+
+.detail-item p {
+  color: #e0e0e0;
+  margin: 0;
+}
   
   /* Logout Button */
   .logout-btn {
