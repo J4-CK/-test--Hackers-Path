@@ -26,6 +26,10 @@ export default function HomePage() {
     router.push('/login'); // Redirect to login after logout
   }
 
+  if (!user) {
+    return <div>Loading...</div>; // Show loading spinner or fallback UI
+  }
+
   return (
     <div>
       {/* Link to external CSS */}
@@ -39,7 +43,8 @@ export default function HomePage() {
         <a href="/leaderboard">Leaderboard</a>
         <a href="/lessons">Lessons</a>
         <a href="/quizzes">Quizzes</a>
-        <a href="/profile">Profile</a>
+        {/* Display the user's username on the "Profile" button */}
+        <a href="/profile">{user.username ? `Profile (${user.username})` : 'Profile'}</a>
       </div>
 
       {/* Main Content Container */}
@@ -48,11 +53,11 @@ export default function HomePage() {
         <div className="stats">
           <div className="box">
             <h3>Daily Points</h3>
-            <p>0</p>
+            <p>{user.streak || 0}</p>
           </div>
           <div className="box">
             <h3>All-Time Points</h3>
-            <p>0</p>
+            <p>{user.totalPoints || 0}</p>
           </div>
         </div>
 
