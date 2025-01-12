@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 
 export default function RegisterPage() {
   const router = useRouter();
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -16,7 +17,7 @@ export default function RegisterPage() {
     setSuccess('');
 
     // Validate inputs
-    if (!email || !password || !confirmPassword) {
+    if (!username || !email || !password || !confirmPassword) {
       setError('All fields are required.');
       return;
     }
@@ -30,7 +31,7 @@ export default function RegisterPage() {
       const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ username, email, password }),
       });
 
       const result = await res.json();
@@ -56,6 +57,14 @@ export default function RegisterPage() {
       <div className="section">
         <h2>Register</h2>
         <form onSubmit={handleRegister}>
+          <input
+            type="text"
+            id="username"
+            placeholder="Enter your username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
+          />
           <input
             type="email"
             id="email"
