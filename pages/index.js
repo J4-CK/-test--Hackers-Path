@@ -65,8 +65,8 @@ export default function HomePage() {
         <div className="section">
           <h2>Lessons</h2>
           <div className="buttons">
-            <a href="/xss-presentation">XSS Presentation</a>
-            <a href="/cybersecurity-presentation">What is Cybersecurity?</a>
+            <a href="/htmllessons/xss-presentation">XSS Presentation</a>
+            <a href="/htmllessons/WhatisCybersecurity.html">What is Cybersecurity?</a>
             <a href="lessons/strong-passwords-presentation">Strong Passwords</a>
           </div>
         </div>
@@ -75,9 +75,9 @@ export default function HomePage() {
         <div className="section">
           <h2>Quizzes</h2>
           <div className="buttons">
-            <a href="/xss-quiz">XSS Quiz</a>
-            <a href="/cybersecurity-quiz">What is Cybersecurity? Quiz</a>
-            <a href="/strong-passwords-quiz">Strong Passwords Quiz</a>
+            <a href="/htmlquiz/xss-quiz">XSS Quiz</a>
+            <a href="/htmlquiz/cybersecurity-quiz">What is Cybersecurity? Quiz</a>
+            <a href="/htmlquiz/strong-passwords-quiz">Strong Passwords Quiz</a>
           </div>
         </div>
 
