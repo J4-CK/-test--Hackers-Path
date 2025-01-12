@@ -13,7 +13,7 @@ export default function ProfilePage() {
       try {
         const res = await fetch("/api/auth/session");
         const data = await res.json();
-  
+
         if (res.ok) {
           setUser(data.user); // Set the user data
         } else {
@@ -23,6 +23,8 @@ export default function ProfilePage() {
       } catch (err) {
         console.error("Error fetching session:", err);
         router.push("/login");
+      } finally {
+        setLoading(false); // Stop loading indicator
       }
     }
     fetchUserData();
@@ -93,15 +95,15 @@ export default function ProfilePage() {
         <div className="stats">
           <div className="box">
             <h3>Username</h3>
-            <p>{user.user_metadata.username || "N/A"}</p>
+            <p>{user.username || "N/A"}</p>
           </div>
           <div className="box">
             <h3>Email</h3>
             <p>{user.email || "N/A"}</p>
           </div>
           <div className="box">
-            <h3>Membership</h3>
-            <p>{user.user_metadata.membership || "N/A"}</p>
+            <h3>Region</h3>
+            <p>{user.region || "N/A"}</p>
           </div>
         </div>
 
@@ -110,7 +112,17 @@ export default function ProfilePage() {
           <h2>Current Streak</h2>
           <div className="buttons">
             <div className="box">
-              <h3>{user.user_metadata.streak || 0} Days</h3>
+              <h3>{user.streak || 0} Days</h3>
+            </div>
+          </div>
+        </div>
+
+        {/* Total Points */}
+        <div className="section">
+          <h2>Total Points</h2>
+          <div className="buttons">
+            <div className="box">
+              <h3>{user.totalPoints || 0}</h3>
             </div>
           </div>
         </div>
@@ -118,9 +130,8 @@ export default function ProfilePage() {
         {/* Recent Activity */}
         <div className="section">
           <h2>Recent Activity</h2>
-          {user.user_metadata.recentActivity &&
-          user.user_metadata.recentActivity.length > 0 ? (
-            user.user_metadata.recentActivity.map((activity, index) => (
+          {user.recentActivity && user.recentActivity.length > 0 ? (
+            user.recentActivity.map((activity, index) => (
               <div key={index} className="box">
                 <h3>{activity.action}</h3>
                 <p>{activity.description}</p>
