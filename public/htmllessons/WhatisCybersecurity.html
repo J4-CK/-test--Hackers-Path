@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What is Cybersecurity? - Engaging Presentation</title>
+    <style> 
+body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to right, #00c6ff, #0072ff);
+            color: white;
+            overflow: auto;
+        }
+        .slide {
+            display: none;
+            padding: 20px;
+            max-width: 800px;
+            margin: 50px auto;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            color: #333;
+            position: relative;
+            transition: opacity 0.5s ease;
+        }
+        .slide.active {
+            display: block;
+            opacity: 1;
+        }
+        .slide img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+        h2 {
+            color: #0072ff;
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        .navigation {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .navigation button {
+            padding: 10px 20px;
+            background-color: #0072ff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0 10px;
+            transition: background-color 0.3s ease;
+        }
+        .navigation button:hover {
+            background-color: #0056b3;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        ul li {
+            background: #e7f3ff;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 5px;
+            color: #0072ff;
+        }
+        .final-navigation {
+            text-align: center;
+            margin-top: 30px;
+        }
+        .final-navigation a {
+            padding: 10px 20px;
+            background-color: #0072ff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 0 10px;
+        }
+        .final-navigation a:hover {
+            background-color: #0056b3;
+        }
+        @media (max-width: 600px) {
+            .slide {
+                margin: 20px;
+                padding: 15px;
+            }
+            h2 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="slide active" id="slide1">
+    <h2>What is Cybersecurity?</h2>
+    <img src="https://via.placeholder.com/800x300/0072ff/ffffff?text=What+is+Cybersecurity" alt="What is Cybersecurity">
+    <p>Cybersecurity is the practice of protecting computers, networks, and data from unauthorized access or attacks. It is essential to keep information safe in our digital world.</p>
+</div>
+
+<div class="slide" id="slide2">
+    <h2>Why is Cybersecurity Important?</h2>
+    <img src="https://via.placeholder.com/800x300/0072ff/ffffff?text=Importance+of+Cybersecurity" alt="Importance of Cybersecurity">
+    <p>Cyberattacks can lead to stolen information, financial loss, and harm to individuals and organizations. Strong cybersecurity measures protect us from these threats.</p>
+</div>
+
+<div class="slide" id="slide3">
+    <h2>Key Cybersecurity Terms</h2>
+    <ul>
+        <li><b>Hacker:</b> Someone who gains unauthorized access to systems.</li>
+        <li><b>Malware:</b> Malicious software that harms devices or data.</li>
+        <li><b>Firewall:</b> A security system that monitors and controls network traffic.</li>
+    </ul>
+</div>
+
+<div class="navigation">
+    <button onclick="prevSlide()">Previous</button>
+    <button onclick="nextSlide()">Next</button>
+</div>
+
+<div class="final-navigation">
+    <a href="cybersecurity-quiz.html">Take the Quiz</a>
+    <a href="index.html">Return to Homepage</a>
+</div>
+
+<script>
+    /* Copy your existing script for slide navigation */
+</script>
+
+</body>
+</html>
