@@ -9,6 +9,7 @@ export async function fetchLeaderboard() {
     const { data, error } = await supabase
         .from('leaderboard')
         .select('*, accounts(name)')
+        .join('accounts', 'user_id', 'name')
         .order('total_points', { ascending: false })
         .limit(20);
 
