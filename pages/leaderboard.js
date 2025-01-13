@@ -9,7 +9,7 @@ export default function Leaderboard({ players }) {
                     <thead>
                         <tr>
                             <th style={styles.th}>Rank</th>
-                            <th style={styles.th}>User ID</th>
+                            <th style={styles.th}>Username</th>
                             <th style={styles.th}>Score</th>
                         </tr>
                     </thead>
@@ -20,7 +20,7 @@ export default function Leaderboard({ players }) {
                                 style={index % 2 === 0 ? styles.evenRow : styles.oddRow}
                             >
                                 <td style={styles.td}>{index + 1}</td>
-                                <td style={styles.td}>{player.user_id}</td>
+                                <td style={styles.td}>{player.name}</td>
                                 <td style={styles.td}>{player.total_points}</td>
                             </tr>
                         ))}
