@@ -8,7 +8,7 @@ export const supabase = createClient(supabaseUrl, supabaseKey);
 export async function fetchLeaderboard() {
     const { data, error } = await supabase
         .from('leaderboard')
-        .select('total_points, accounts(name)')
+        .select('*')
         .order('total_points', { ascending: false })
         .limit(20);
 
@@ -16,9 +16,6 @@ export async function fetchLeaderboard() {
         console.error('Error fetching leaderboard:', error);
         return [];
     }
-    console.log('Supabase query result:', data); // Debug log
-    return data.map((entry) => ({
-        name: entry.accounts.name,
-        total_points: entry.total_points,
-    }));
+
+    return data;
 }
