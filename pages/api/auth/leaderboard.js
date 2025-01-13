@@ -16,7 +16,7 @@ export async function fetchLeaderboard() {
         console.error('Error fetching leaderboard:', error);
         return [];
     }
-
+    console.log('Supabase query result:', data); // Debug log
     return data.map((entry) => ({
         name: entry.accounts.name,
         total_points: entry.total_points,
