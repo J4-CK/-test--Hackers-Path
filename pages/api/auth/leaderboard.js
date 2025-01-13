@@ -18,7 +18,7 @@ export async function fetchLeaderboard() {
     }
 
     return data.map((entry) => ({
-        name: entry.users.name,
+        name: entry.accounts.name,
         total_points: entry.total_points,
     }));
 }
