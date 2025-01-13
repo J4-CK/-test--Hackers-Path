@@ -8,8 +8,7 @@ export const supabase = createClient(supabaseUrl, supabaseKey);
 export async function fetchLeaderboard() {
     const { data, error } = await supabase
         .from('leaderboard')
-        .select('*, accounts(name)')
-        .join('accounts', 'user_id', 'name')
+        .select('total_points, accounts(name)')
         .order('total_points', { ascending: false })
         .limit(20);
 
