@@ -1,0 +1,99 @@
+/* General Quiz Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(to bottom, #812fb1, #3b1452);
+    color: black;
+    overflow: auto;
+  }
+
+.container {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Quiz Header */
+.quiz-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.quiz-header h1 {
+  font-size: 2rem;
+  color: #333;
+}
+
+.quiz-header p {
+  font-size: 1rem;
+  color: #666;
+}
+
+/* Question Styles */
+.question {
+  font-size: 1.2rem;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+/* Answer Options */
+.options {
+  list-style-type: none;
+  padding: 0;
+}
+
+.options li {
+  margin: 10px 0;
+}
+
+.options input[type="radio"] {
+  margin-right: 10px;
+}
+
+/* Buttons */
+.button {
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 1rem;
+  color: #fff;
+  background-color: #007BFF;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.button:hover {
+  background-color: #0056b3;
+}
+
+/* Feedback Styles */
+.feedback {
+  margin-top: 20px;
+  font-size: 1rem;
+}
+
+.feedback.correct {
+  color: #28a745;
+}
+
+.feedback.incorrect {
+  color: #dc3545;
+}
+
+/* Progress */
+.progress {
+  margin-top: 20px;
+}
+
+.progress-bar {
+  height: 20px;
+  background-color: #007BFF;
+  width: 0;
+  border-radius: 10px;
+  transition: width 0.3s ease-in-out;
+}
