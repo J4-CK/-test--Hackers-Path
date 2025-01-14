@@ -43,14 +43,7 @@ export default function CIATriadLesson() {
           <li>Implementing redundancy in critical systems.</li>
           <li>Protecting against Denial-of-Service (DoS) attacks.</li>
         </ul>
-
-        <h2>Quiz: Test Your Knowledge</h2>
-        <p>Answer the following questions to test your understanding of the CIA Triad:</p>
-        <ul>
-          <li>What does the "C" in CIA stand for?</li>
-          <li>How can data integrity be maintained?</li>
-          <li>What is an example of ensuring availability?</li>
-        </ul>
+    
       </div>
     </>
   );
