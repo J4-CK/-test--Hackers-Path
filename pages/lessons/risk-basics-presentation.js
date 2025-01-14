@@ -9,7 +9,6 @@ export default function RiskBasicsLesson() {
       title: "What is Risk?",
       content: (
         <>
-          <h2>What is Risk?</h2>
           <p>Risk is simply the possibility of something bad happening. Every decision you make has risk involved. </p>
           <p>For example, think about riding a bike. You can move much faster, travel farther, and sometimes use the road. However, the chance of injury is higher compared to walking.</p>
           <p><b>Risk tolerance</b> is the amount of risk someone is willing to take. Each person has a different level of risk tolerance.</p>
