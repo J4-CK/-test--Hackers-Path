@@ -6,6 +6,12 @@ const supabase = createClient(
   process.env.SUPABASE_ANON_KEY
 );
 
+// Supabase Admin client for user deletion (Service Role Key)
+const adminSupabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY
+);
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -47,43 +53,45 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: authError.message });
     }
 
+    const userId = authData.user.id;
+
     // Insert into profiles table
     const { error: profileError } = await supabase.from('profiles').insert([
-      { id: authData.user.id, username },
+      { id: userId, username },
     ]);
 
     if (profileError) {
-      await supabase.auth.api.deleteUser(authData.user.id);
+      await adminSupabase.auth.admin.deleteUser(userId);
       return res.status(400).json({ error: profileError.message });
     }
 
     // Insert default values into accounts table
     const { error: accountsError } = await supabase.from('accounts').insert([
-      { user_id: authData.user.id, name: username, region: 'default', completion: 0 },
+      { user_id: userId, name: username, region: 'default', completion: 0 },
     ]);
 
     if (accountsError) {
-      await supabase.auth.api.deleteUser(authData.user.id);
+      await adminSupabase.auth.admin.deleteUser(userId);
       return res.status(400).json({ error: accountsError.message });
     }
 
     // Insert default values into leaderboard table
     const { error: leaderboardError } = await supabase.from('leaderboard').insert([
-      { user_id: authData.user.id, region: 'default', monthly_points: 0, streak: 0, total_points: 0 },
+      { user_id: userId, region: 'default', monthly_points: 0, streak: 0, total_points: 0 },
     ]);
 
     if (leaderboardError) {
-      await supabase.auth.api.deleteUser(authData.user.id);
+      await adminSupabase.auth.admin.deleteUser(userId);
       return res.status(400).json({ error: leaderboardError.message });
     }
 
     // Insert default values into completion table
     const { error: completionError } = await supabase.from('completion').insert([
-      { user_id: authData.user.id, lesson_id: 0, complete: 0, total_score: 0 },
+      { user_id: userId, lesson_id: 0, complete: 0, total_score: 0 },
     ]);
 
     if (completionError) {
-      await supabase.auth.api.deleteUser(authData.user.id);
+      await adminSupabase.auth.admin.deleteUser(userId);
       return res.status(400).json({ error: completionError.message });
     }
 
