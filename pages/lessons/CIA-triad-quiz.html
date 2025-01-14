@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz Example</title>
+  <link rel="stylesheet" href="quizstyle.css">
+</head>
+<body>
+  <div class="container">
+    <div class="quiz-header">
+      <h1>CIA Triad Quiz</h1>
+      <p>Test your knowledge of the CIA Triad</p>
+    </div>
+
+    <form id="quiz-form">
+      <!-- Multiple Choice Question -->
+      <div class="question-container">
+        <p class="question">1. What are the three components of the CIA Triad?</p>
+        <ul class="options">
+          <li>
+            <label>
+              <input type="radio" name="q1" value="correct">
+              Confidentiality, Integrity, Availability
+            </label>
+          </li>
+          <li>
+            <label>
+              <input type="radio" name="q1" value="incorrect">
+              Confidentiality, Integrity, Accuracy
+            </label>
+          </li>
+          <li>
+            <label>
+              <input type="radio" name="q1" value="incorrect">
+              Comfortability, Integrity, Availability
+            </label>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Short Answer Question -->
+      <div class="question-container">
+        <p class="question">2. What is an attack against availability called?</p>
+        <input type="text" name="q2" class="short-answer" placeholder="Your answer here">
+      </div>
+
+      <!-- Matching Question -->
+      <div class="question-container">
+        <p class="question">3. Match each aspect of the CIA triad to its definition:</p>
+        <ul class="matching">
+          <li>
+            <label>1. Confidentiality</label>
+            <select name="q3_1">
+              <option value="">Select</option>
+              <option value="correct">Protecting Sensitive Data from Unauthorized Access</option>
+              <option value="incorrect">Hiding Data from Everybody</option>
+              <option value="incorrect">Making and Keeping Agreements</option>
+            </select>
+          </li>
+          <li>
+            <label>2. Integrity</label>
+            <select name="q3_2">
+              <option value="">Select</option>
+              <option value="incorrect">Keeping People Honest</option>
+              <option value="correct">Data Remains Accurate and the Same</option>
+              <option value="incorrect">Keeping Data Whole and Undivided</option>
+            </select>
+          </li>
+          <li>
+            <label>3. Availability</label>
+            <select name="q3_3">
+              <option value="">Select</option>
+              <option value="incorrect">Systems and Data are Accessible to Everybody at All Times</option>
+              <option value="incorrect">The Freedom to Do Any Action</option>
+              <option value="correct">Systems and Data are Accessible When Needed By Authorized People</option>
+            </select>
+          </li>
+        </ul>
+      </div>
+
+      <button type="button" class="button" onclick="checkAnswers()">Submit</button>
+    </form>
+
+    <!-- Feedback Section -->
+    <div id="feedback" class="feedback"></div>
+
+    <!-- Progress Bar -->
+    <div class="progress">
+      <div id="progress-bar" class="progress-bar"></div>
+    </div>
+  </div>
+
+  <script src="ciatriadquiz.js"></script>
+</body>
+</html>
