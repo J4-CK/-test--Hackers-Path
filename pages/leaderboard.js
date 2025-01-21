@@ -3,24 +3,23 @@ import { fetchLeaderboard } from './api/auth/leaderboard';
 export default function Leaderboard({ players }) {
     return (
         <>
-          <Head>
-            <title>Hacker's Path</title>
-            <link rel="stylesheet" href="/styles/homepagestyle.css" />
-            </Head>
-           <div>
-           <header>
-           <h1><a href="/">Hacker's Path</a></h1>
-           </header>
-          </div>
-        </>
-
-          <div className="roadmap">
-            <a href="/leaderboard">Leaderboard</a>
-            <a href="/htmllessons/lessons.html">Lessons</a>
-            <a href="/htmlquiz/quizzes.html">Quizzes</a>
-            {/* Display the user's username on the "Profile" button */}
-            <a href="/profile">{user.username ? `Profile (${user.username})` : 'Profile'}</a>
-        </div>
+  <Head>
+    <title>Hacker's Path</title>
+    <link rel="stylesheet" href="/styles/homepagestyle.css" />
+  </Head>
+  <div>
+    <header>
+      <h1><a href="/">Hacker's Path</a></h1>
+    </header>
+  </div>
+  <div className="roadmap">
+    <a href="/leaderboard">Leaderboard</a>
+    <a href="/htmllessons/lessons.html">Lessons</a>
+    <a href="/htmlquiz/quizzes.html">Quizzes</a>
+    {/* Display the user's username on the "Profile" button */}
+    <a href="/profile">{user.username ? `Profile (${user.username})` : 'Profile'}</a>
+  </div>
+</>
         
         <div style={{ fontFamily: 'Arial, sans-serif', textAlign: 'center', padding: '20px' }}>
             <div className="leaderboard">
