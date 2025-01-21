@@ -14,8 +14,6 @@ export default function Leaderboard({ players }) {
           </div>
         </>
 
-    
-          {/* Roadmap Section */}
           <div className="roadmap">
             <a href="/leaderboard">Leaderboard</a>
             <a href="/htmllessons/lessons.html">Lessons</a>
