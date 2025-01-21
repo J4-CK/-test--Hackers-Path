@@ -2,7 +2,6 @@ import { fetchLeaderboard } from './api/auth/leaderboard';
 
 export default function Leaderboard({ players }) {
     return (
-        <>
   <Head>
     <title>Hacker's Path</title>
     <link rel="stylesheet" href="/styles/homepagestyle.css" />
@@ -19,7 +18,6 @@ export default function Leaderboard({ players }) {
     {/* Display the user's username on the "Profile" button */}
     <a href="/profile">{user.username ? `Profile (${user.username})` : 'Profile'}</a>
   </div>
-</>
         
         <div style={{ fontFamily: 'Arial, sans-serif', textAlign: 'center', padding: '20px' }}>
             <div className="leaderboard">
