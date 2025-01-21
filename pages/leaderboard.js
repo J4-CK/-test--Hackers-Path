@@ -45,6 +45,7 @@ export default function Leaderboard({ players }) {
     </div>
   </div>
 );
+}
 
 export async function getServerSideProps() {
     try {
