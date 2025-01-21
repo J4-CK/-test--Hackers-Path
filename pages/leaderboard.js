@@ -3,12 +3,12 @@ import { fetchLeaderboard } from './api/auth/leaderboard';
 export default function Leaderboard({ players }) {
     return (
         <div>
-          {/* Link to external CSS */}
-          <link rel="stylesheet" href="/styles/homepagestyle.css" />
-          <header>
+            {/* Link to external CSS */}
+            <header>
             <h1><a href="/">Hacker's Path</a></h1>
-          </header>
+            </header>
         </div>
+
     
           {/* Roadmap Section */}
           <div className="roadmap">
