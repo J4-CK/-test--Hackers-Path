@@ -8,7 +8,7 @@ export default function Leaderboard({ players }) {
   </Head>
   <div>
     <header>
-      <h1><a href="/">Hacker's Path</a></h1>
+      <h1><a href="/index">Hacker's Path</a></h1>
     </header>
   </div>
   <div className="roadmap">
