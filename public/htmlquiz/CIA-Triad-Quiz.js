@@ -1,66 +1,46 @@
-if (typeof window !== "undefined" && typeof document !== "undefined") {
-  // Wait for the DOM to fully load
-  document.addEventListener("DOMContentLoaded", () => {
-    // Reference elements
-    const form = document.getElementById("quiz-form");
-    const feedback = document.getElementById("feedback");
-    const progressBar = document.getElementById("progress-bar")  ;
+document.addEventListener("DOMContentLoaded", () => {
+  console.log("CIA-Triad-Quiz.js loaded successfully.");
 
-    //Debug
-    console.log("Checking Elements:");
-    console.log("Form:", form);
-    console.log("Feedback:", feedback);
-    console.log("Progress Bar:", progressBar);
-  
-    // Ensure elements exist before continuing
-    if (!form || !feedback || !progressBar) {
-      console.error("Error: Missing required elements (form, feedback, progress bar).");
-      return;
-    }
+  const form = document.getElementById("quiz-form");
+  const feedback = document.getElementById("feedback");
+  const progressBar = document.getElementById("progress-bar");
 
-    // Define correct answers
-    const correctAnswers = {
-      q1: "correct", // Multiple choice
-      q2: "denial of service", // Short answer
-      q3_1: "correct", // Matching: Confidentiality
-      q3_2: "correct", // Matching: Integrity
-      q3_3: "correct", // Matching: Availability
-    };
+  if (!form || !feedback || !progressBar) {
+    console.error("Error: Missing required elements. Check HTML IDs.");
+    return;
+  }
 
-    // Function to check answers
-    function checkAnswers(event) {
-      event.preventDefault(); // Prevent form submission
-      console.log("Form submitted. Running checkAnswers()...");
+  const correctAnswers = {
+    q1: "correct",
+    q2: "denial of service",
+    q3_1: "correct",
+    q3_2: "correct",
+    q3_3: "correct",
+  };
 
-      const formData = new FormData(form); // Collect form data
-      console.log("Form Data:", Object.fromEntries(formData.entries()));
-    
-      let score = 0;
-      let totalQuestions = Object.keys(correctAnswers).length;
+  function checkAnswers(event) {
+    event.preventDefault();
+    console.log("Form submitted. Checking answers...");
 
-      // Check answers
-      for (let [key, value] of formData.entries()) {
-        console.log(`Checking ${key}:`, value);
-        // For short answer, compare trimmed and case-insensitive values
-        if (correctAnswers[key]?.toLowerCase() === value.trim().toLowerCase()) {
-          score++;
-        }
+    const formData = new FormData(form);
+    let score = 0;
+    let totalQuestions = Object.keys(correctAnswers).length;
+
+    for (let [key, value] of formData.entries()) {
+      if (correctAnswers[key]?.toLowerCase() === value.trim().toLowerCase()) {
+        score++;
       }
-      // Ensure feedback element is visible
-      feedback.style.display = "block"; 
-      feedback.textContent = `You scored ${score} out of ${totalQuestions}.`;
-      feedback.className = "feedback";
-      feedback.classList.remove("correct", "incorrect");
-      feedback.classList.add(score === totalQuestions ? "correct" : "incorrect");
-
-      // Ensure progress bar is visible and updates
-      const progressPercentage = (score / totalQuestions) * 100;
-      progressBar.style.width = `${progressPercentage}%`;
-      progressBar.style.display = "block";
     }
 
-    // Attach event listener to the form
-    form.addEventListener("submit", checkAnswers);
-    console.log("Script Successfully Loaded");
-  });
-}
+    feedback.style.display = "block";
+    feedback.textContent = `You scored ${score} out of ${totalQuestions}.`;
+    feedback.classList.toggle("correct", score === totalQuestions);
+    feedback.classList.toggle("incorrect", score !== totalQuestions);
+
+    const progressPercentage = (score / totalQuestions) * 100;
+    progressBar.style.width = `${progressPercentage}%`;
+    progressBar.style.display = "block";
+  }
+
+  form.addEventListener("submit", checkAnswers);
+});
