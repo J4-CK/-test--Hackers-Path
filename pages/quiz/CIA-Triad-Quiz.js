@@ -38,7 +38,7 @@ export default function CIATriadQuiz() {
     <div>
       <Head>
         <title>CIA Triad Quiz</title>
-        <link rel="stylesheet" href="/styles/quizstyle.css" />
+        <link rel="stylesheet" href="/styles/lessonstyle.css" />
       </Head>
 
       <header>
