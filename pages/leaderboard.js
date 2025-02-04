@@ -18,7 +18,7 @@ export default function Leaderboard({ players }) {
       <a href="/htmllessons/lessons.html">Lessons</a>
       <a href="/htmlquiz/quizzes.html">Quizzes</a>
       {/* Display the user's username on the "Profile" button */}
-      <a href="/profile">{user.username ? `Profile (${user.username})` : 'Profile'}</a>
+      <a href="/profile">{players.length > 0 ? `Profile (${players[0].username || 'User'})` : 'Profile'}</a>
     </div>
 
     <div style={{ fontFamily: 'Arial, sans-serif', textAlign: 'center', padding: '20px' }}>
