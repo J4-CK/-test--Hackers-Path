@@ -1,4 +1,5 @@
 import { fetchLeaderboard } from './api/auth/leaderboard';
+import Head from 'next/head';
 
 export default function Leaderboard({ players }) {
     return (
