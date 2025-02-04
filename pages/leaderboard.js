@@ -36,7 +36,7 @@ export default function Leaderboard({ players }) {
             {players.map((player, index) => (
               <tr key={player.user_id} style={index % 2 === 0 ? styles.evenRow : styles.oddRow}>
                 <td style={styles.td}>{index + 1}</td>
-                <td style={styles.td}>{player.user_id}</td>
+                <td style={styles.td}>{player.name}</td>
                 <td style={styles.td}>{player.total_points}</td>
               </tr>
             ))}
