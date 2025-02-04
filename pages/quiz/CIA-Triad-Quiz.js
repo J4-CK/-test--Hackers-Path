@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Head from "next/head";
+import "../styles/homepagestyle.css";
 
 export default function CIATriadQuiz() {
   const [answers, setAnswers] = useState({ q1: "", q2: "", q3_1: "", q3_2: "", q3_3: "" });
@@ -52,41 +53,40 @@ export default function CIATriadQuiz() {
         <a href="/profile">Profile</a>
       </div>
 
-      <form onSubmit={handleSubmit}>
-        <label>
-          Question 1: What does CIA stand for?
-          <input type="text" name="q1" value={answers.q1} onChange={handleChange} />
-        </label>
+      <div className="quiz-container">
+        <h2>Test your knowledge of the CIA Triad</h2>
+        <form onSubmit={handleSubmit}>
+          <div className="question">
+            <p>1. What are the three components of the CIA Triad?</p>
+            <label><input type="radio" name="q1" value="Confidentiality, Integrity, Availability" onChange={handleChange} /> Confidentiality, Integrity, Availability</label>
+            <label><input type="radio" name="q1" value="Confidentiality, Integrity, Accuracy" onChange={handleChange} /> Confidentiality, Integrity, Accuracy</label>
+            <label><input type="radio" name="q1" value="Comfortability, Integrity, Availability" onChange={handleChange} /> Comfortability, Integrity, Availability</label>
+          </div>
 
-        <label>
-          Question 2: What type of attack affects Availability?
-          <input type="text" name="q2" value={answers.q2} onChange={handleChange} />
-        </label>
+          <div className="question">
+            <p>2. What is an attack against availability called?</p>
+            <input type="text" name="q2" value={answers.q2} onChange={handleChange} />
+          </div>
 
-        <label>
-          Question 3.1: Is integrity an important part of security?
-          <input type="text" name="q3_1" value={answers.q3_1} onChange={handleChange} />
-        </label>
+          <div className="question">
+            <p>3. Match each aspect of the CIA triad to its definition:</p>
+            <ul>
+              <li>1. Confidentiality <select name="q3_1" onChange={handleChange}><option value="">Select</option><option value="correct">Correct</option></select></li>
+              <li>2. Integrity <select name="q3_2" onChange={handleChange}><option value="">Select</option><option value="correct">Correct</option></select></li>
+              <li>3. Availability <select name="q3_3" onChange={handleChange}><option value="">Select</option><option value="correct">Correct</option></select></li>
+            </ul>
+          </div>
 
-        <label>
-          Question 3.2: Is confidentiality important in cybersecurity?
-          <input type="text" name="q3_2" value={answers.q3_2} onChange={handleChange} />
-        </label>
+          <button type="submit" className="submit-btn">Submit</button>
+        </form>
 
-        <label>
-          Question 3.3: Should availability be maintained at all times?
-          <input type="text" name="q3_3" value={answers.q3_3} onChange={handleChange} />
-        </label>
-
-        <button type="submit">Submit</button>
-      </form>
-
-      {score !== null && (
-        <div className="feedback">
-          <p>You scored {score} out of {Object.keys(correctAnswers).length}.</p>
-          <div className="progress-bar" style={{ width: `${progress}%` }}></div>
-        </div>
-      )}
+        {score !== null && (
+          <div className="feedback">
+            <p>You scored {score} out of {Object.keys(correctAnswers).length}.</p>
+            <div className="progress-bar" style={{ width: `${progress}%` }}></div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
