@@ -78,6 +78,7 @@ const styles = {
     td: {
         padding: '10px',
         borderBottom: '1px solid #ddd',
+        color: '#000',
     },
     evenRow: {
         backgroundColor: '#f9f9f9',
@@ -86,3 +87,4 @@ const styles = {
         backgroundColor: '#fff',
     },
 };
+
