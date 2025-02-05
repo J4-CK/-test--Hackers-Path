@@ -14,10 +14,8 @@ export default function LessonTemplate() {
       content: (
         <>
           <p className="lesson-text">Lesson introduction or explanation goes here.</p>
-          <ul>
-            <p className="lesson-text"><b>Key Concept 1:</b> Brief explanation.</p>
-            <p className="lesson-text"><b>Key Concept 2:</b> Another explanation.</p>
-          </ul>
+          <div className="lesson-text"><b>Key Concept 1:</b> Brief explanation.</div>
+          <div className="lesson-text"><b>Key Concept 2:</b> Another explanation.</div>
         </>
       ),
     },
@@ -27,10 +25,8 @@ export default function LessonTemplate() {
         <>
           <h2 className="lesson-text">Subtopic Title</h2>
           <p className="lesson-text">Details about this topic go here.</p>
-          <ul>
-            <p className="lesson-text">Example bullet point.</p>
-            <li className="lesson-text">Another example.</li>
-          </ul>
+          <div className="lesson-text">Example bullet point.</div>
+          <div className="lesson-text">Another example.</div>
         </>
       ),
     },
@@ -38,6 +34,7 @@ export default function LessonTemplate() {
 
   const nextSection = () => setCurrentSection((currentSection + 1) % sections.length);
   const prevSection = () => setCurrentSection((currentSection - 1 + sections.length) % sections.length);
+  const goToSection = (index) => setCurrentSection(index);
 
   return (
     <div className="lesson-wrapper">
@@ -65,7 +62,9 @@ export default function LessonTemplate() {
           <h3>Lesson Progress</h3>
           <ul>
             {sections.map((section, index) => (
-              <li key={index} className={index === currentSection ? "active" : ""}>{section.title}</li>
+              <li key={index} className={index === currentSection ? "active" : ""} onClick={() => goToSection(index)}>
+                {section.title}
+              </li>
             ))}
           </ul>
         </div>
