@@ -58,8 +58,8 @@ export default function LessonTemplate() {
         <a href="/profile">Profile</a>
       </div>
 
-      {/* Main Content Layout */}
-      <div className="lesson-layout">
+      {/* Main Lesson Content in a Larger Box */}
+      <div className="lesson-container">
         {/* Sidebar for Lesson Progress */}
         <div className="lesson-sidebar">
           <h3>Lesson Progress</h3>
