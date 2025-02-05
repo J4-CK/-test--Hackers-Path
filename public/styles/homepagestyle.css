@@ -420,6 +420,31 @@ body {
     color: #000; /* Ensures text is visible on a white background */
     font-size: 1.2em;
 }
+.lesson-sidebar ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.lesson-sidebar li {
+    padding: 10px;
+    background: #444; /* Dark grey for inactive items */
+    color: white; /* White text for visibility */
+    margin-bottom: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+.lesson-sidebar li.active {
+    background: #531d73; /* Keep active as purple */
+    color: white;
+    font-weight: bold;
+}
+
+.lesson-sidebar li:hover {
+    background: #666; /* Slightly lighter grey on hover */
+}
+
 
   ::contentReference[oaicite:0]{index=0}
    
