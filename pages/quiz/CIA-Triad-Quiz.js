@@ -1,6 +1,5 @@
 import { useState } from "react";
 import Head from "next/head";
-import "../styles/homepagestyle.css";
 
 export default function CIATriadQuiz() {
   const [answers, setAnswers] = useState({ q1: "", q2: "", q3_1: "", q3_2: "", q3_3: "" });
