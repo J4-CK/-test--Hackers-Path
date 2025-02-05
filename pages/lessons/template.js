@@ -15,8 +15,8 @@ export default function LessonTemplate() {
         <>
           <p className="lesson-text">Lesson introduction or explanation goes here.</p>
           <ul>
-            <li className="lesson-text"><b>Key Concept 1:</b> Brief explanation.</li>
-            <li className="lesson-text"><b>Key Concept 2:</b> Another explanation.</li>
+            <p className="lesson-text"><b>Key Concept 1:</b> Brief explanation.</p>
+            <p className="lesson-text"><b>Key Concept 2:</b> Another explanation.</p>
           </ul>
         </>
       ),
@@ -28,7 +28,7 @@ export default function LessonTemplate() {
           <h2 className="lesson-text">Subtopic Title</h2>
           <p className="lesson-text">Details about this topic go here.</p>
           <ul>
-            <li className="lesson-text">Example bullet point.</li>
+            <p className="lesson-text">Example bullet point.</p>
             <li className="lesson-text">Another example.</li>
           </ul>
         </>
