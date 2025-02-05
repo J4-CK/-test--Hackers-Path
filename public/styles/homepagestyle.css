@@ -409,6 +409,18 @@ body {
     background: #42155c;
 }
 
+.centered-navigation {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.lesson-text {
+    color: #000; /* Ensures text is visible on a white background */
+    font-size: 1.2em;
+}
+
   ::contentReference[oaicite:0]{index=0}
    
   
