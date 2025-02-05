@@ -13,10 +13,10 @@ export default function LessonTemplate() {
       title: "Lesson Title - Section 1",
       content: (
         <>
-          <p>Lesson introduction or explanation goes here.</p>
+          <p className="lesson-text">Lesson introduction or explanation goes here.</p>
           <ul>
-            <li><b>Key Concept 1:</b> Brief explanation.</li>
-            <li><b>Key Concept 2:</b> Another explanation.</li>
+            <li className="lesson-text"><b>Key Concept 1:</b> Brief explanation.</li>
+            <li className="lesson-text"><b>Key Concept 2:</b> Another explanation.</li>
           </ul>
         </>
       ),
@@ -25,11 +25,11 @@ export default function LessonTemplate() {
       title: "Lesson Title - Section 2",
       content: (
         <>
-          <h2>Subtopic Title</h2>
-          <p>Details about this topic go here.</p>
+          <h2 className="lesson-text">Subtopic Title</h2>
+          <p className="lesson-text">Details about this topic go here.</p>
           <ul>
-            <li>Example bullet point.</li>
-            <li>Another example.</li>
+            <li className="lesson-text">Example bullet point.</li>
+            <li className="lesson-text">Another example.</li>
           </ul>
         </>
       ),
@@ -72,19 +72,19 @@ export default function LessonTemplate() {
 
         {/* Lesson Content */}
         <div className="lesson-content">
-          <h2>{sections[currentSection].title}</h2>
+          <h2 className="lesson-text">{sections[currentSection].title}</h2>
           {sections[currentSection].content}
         </div>
       </div>
 
-      {/* Navigation Buttons */}
-      <div className="lesson-navigation">
+      {/* Centered Navigation Buttons */}
+      <div className="lesson-navigation centered-navigation">
         <button onClick={prevSection} disabled={currentSection === 0}>Previous</button>
         <button onClick={nextSection} disabled={currentSection === sections.length - 1}>Next</button>
       </div>
 
-      {/* Final Navigation */}
-      <div className="final-navigation">
+      {/* Centered Final Navigation */}
+      <div className="final-navigation centered-navigation">
         <a href="/quizzes/example-quiz" className="quiz-link">Take the Quiz</a>
         <a href="/" className="home-link">Return to Homepage</a>
       </div>
