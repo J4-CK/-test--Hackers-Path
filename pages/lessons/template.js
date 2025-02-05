@@ -34,20 +34,19 @@ export default function LessonTemplate() {
         </>
       ),
     },
-    // Add more sections as needed
   ];
 
   const nextSection = () => setCurrentSection((currentSection + 1) % sections.length);
   const prevSection = () => setCurrentSection((currentSection - 1 + sections.length) % sections.length);
 
   return (
-    <div>
+    <div className="lesson-page">
       <Head>
         <title>Lesson Template</title>
         <link rel="stylesheet" href="/styles/homepagestyle.css" />
       </Head>
 
-      <header>
+      <header className="lesson-header">
         <h1>Hacker's Path</h1>
       </header>
 
@@ -59,22 +58,33 @@ export default function LessonTemplate() {
         <a href="/profile">Profile</a>
       </div>
 
-      {/* Main Lesson Section */}
+      {/* Lesson Content */}
       <div className="lesson-container">
-        <h2>{sections[currentSection].title}</h2>
-        {sections[currentSection].content}
+        <div className="lesson-sidebar">
+          <h3>Lesson Progress</h3>
+          <ul>
+            {sections.map((section, index) => (
+              <li key={index} className={index === currentSection ? "active" : ""}>{section.title}</li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="lesson-content">
+          <h2>{sections[currentSection].title}</h2>
+          {sections[currentSection].content}
+        </div>
       </div>
 
       {/* Navigation Buttons */}
-      <div className="navigation">
-        <button onClick={prevSection}>Previous</button>
-        <button onClick={nextSection}>Next</button>
+      <div className="lesson-navigation">
+        <button onClick={prevSection} disabled={currentSection === 0}>Previous</button>
+        <button onClick={nextSection} disabled={currentSection === sections.length - 1}>Next</button>
       </div>
 
       {/* Final Navigation */}
       <div className="final-navigation">
-        <a href="/quizzes/example-quiz">Take the Quiz</a>
-        <a href="/">Return to Homepage</a>
+        <a href="/quizzes/example-quiz" className="quiz-link">Take the Quiz</a>
+        <a href="/" className="home-link">Return to Homepage</a>
       </div>
     </div>
   );
