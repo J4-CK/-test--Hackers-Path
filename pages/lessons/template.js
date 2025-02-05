@@ -40,13 +40,13 @@ export default function LessonTemplate() {
   const prevSection = () => setCurrentSection((currentSection - 1 + sections.length) % sections.length);
 
   return (
-    <div className="lesson-page">
+    <div className="lesson-wrapper">
       <Head>
         <title>Lesson Template</title>
         <link rel="stylesheet" href="/styles/homepagestyle.css" />
       </Head>
 
-      <header className="lesson-header">
+      <header className="main-header">
         <h1>Hacker's Path</h1>
       </header>
 
@@ -58,8 +58,9 @@ export default function LessonTemplate() {
         <a href="/profile">Profile</a>
       </div>
 
-      {/* Lesson Content */}
-      <div className="lesson-container">
+      {/* Main Content Layout */}
+      <div className="lesson-layout">
+        {/* Sidebar for Lesson Progress */}
         <div className="lesson-sidebar">
           <h3>Lesson Progress</h3>
           <ul>
@@ -69,6 +70,7 @@ export default function LessonTemplate() {
           </ul>
         </div>
 
+        {/* Lesson Content */}
         <div className="lesson-content">
           <h2>{sections[currentSection].title}</h2>
           {sections[currentSection].content}
