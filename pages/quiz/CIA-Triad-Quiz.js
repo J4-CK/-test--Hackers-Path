@@ -54,25 +54,25 @@ export default function CIATriadQuiz() {
 
       <div className="quiz-container">
         <h2>Test your knowledge of the CIA Triad</h2>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="quiz-form">
           <div className="question">
-            <p>1. What are the three components of the CIA Triad?</p>
-            <label><input type="radio" name="q1" value="Confidentiality, Integrity, Availability" onChange={handleChange} /> Confidentiality, Integrity, Availability</label>
-            <label><input type="radio" name="q1" value="Confidentiality, Integrity, Accuracy" onChange={handleChange} /> Confidentiality, Integrity, Accuracy</label>
-            <label><input type="radio" name="q1" value="Comfortability, Integrity, Availability" onChange={handleChange} /> Comfortability, Integrity, Availability</label>
+            <p><b>1. What are the three components of the CIA Triad?</b></p>
+            <label className="radio-option"><input type="radio" name="q1" value="Confidentiality, Integrity, Availability" onChange={handleChange} /> Confidentiality, Integrity, Availability</label>
+            <label className="radio-option"><input type="radio" name="q1" value="Confidentiality, Integrity, Accuracy" onChange={handleChange} /> Confidentiality, Integrity, Accuracy</label>
+            <label className="radio-option"><input type="radio" name="q1" value="Comfortability, Integrity, Availability" onChange={handleChange} /> Comfortability, Integrity, Availability</label>
           </div>
 
           <div className="question">
-            <p>2. What is an attack against availability called?</p>
-            <input type="text" name="q2" value={answers.q2} onChange={handleChange} />
+            <p><b>2. What is an attack against availability called?</b></p>
+            <input type="text" name="q2" value={answers.q2} onChange={handleChange} className="text-input" />
           </div>
 
           <div className="question">
-            <p>3. Match each aspect of the CIA triad to its definition:</p>
-            <ul>
-              <li>1. Confidentiality <select name="q3_1" onChange={handleChange}><option value="">Select</option><option value="correct">Correct</option></select></li>
-              <li>2. Integrity <select name="q3_2" onChange={handleChange}><option value="">Select</option><option value="correct">Correct</option></select></li>
-              <li>3. Availability <select name="q3_3" onChange={handleChange}><option value="">Select</option><option value="correct">Correct</option></select></li>
+            <p><b>3. Match each aspect of the CIA triad to its definition:</b></p>
+            <ul className="match-list">
+              <li>1. Confidentiality <select name="q3_1" onChange={handleChange} className="dropdown"><option value="">Select</option><option value="correct">Correct</option></select></li>
+              <li>2. Integrity <select name="q3_2" onChange={handleChange} className="dropdown"><option value="">Select</option><option value="correct">Correct</option></select></li>
+              <li>3. Availability <select name="q3_3" onChange={handleChange} className="dropdown"><option value="">Select</option><option value="correct">Correct</option></select></li>
             </ul>
           </div>
 
@@ -81,8 +81,10 @@ export default function CIATriadQuiz() {
 
         {score !== null && (
           <div className="feedback">
-            <p>You scored {score} out of {Object.keys(correctAnswers).length}.</p>
-            <div className="progress-bar" style={{ width: `${progress}%` }}></div>
+            <p><b>You scored {score} out of {Object.keys(correctAnswers).length}.</b></p>
+            <div className="progress-bar-container">
+              <div className="progress-bar" style={{ width: `${progress}%` }}></div>
+            </div>
           </div>
         )}
       </div>
