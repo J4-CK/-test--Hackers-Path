@@ -43,8 +43,8 @@ export default function LessonTemplate() {
         <link rel="stylesheet" href="/styles/homepagestyle.css" />
       </Head>
 
-      <header className="main-header">
-        <h1>Hacker's Path</h1>
+      <header>
+        <h1><a href="/">Hacker's Path</a></h1>
       </header>
 
       {/* Roadmap Navigation */}
