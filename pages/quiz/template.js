@@ -1,10 +1,12 @@
 import { useState } from "react";
 import Head from "next/head";
+import { useRouter } from "next/router";
 
 export default function QuizTemplate() {
   const [answers, setAnswers] = useState({});
   const [score, setScore] = useState(null);
   const [progress, setProgress] = useState(0);
+  const router = useRouter();
 
   const correctAnswers = {};
 
@@ -31,23 +33,24 @@ export default function QuizTemplate() {
   return (
     <div>
       <Head>
-        <title>Quiz Template</title>
+        <title>Quiz Title</title>
         <link rel="stylesheet" href="/styles/homepagestyle.css" />
       </Head>
 
       <header>
-        <h1>Quiz Title</h1>
+        <h1>Hacker's Path</h1>
       </header>
 
+      {/* Roadmap Navigation */}
       <div className="roadmap">
         <a href="/leaderboard">Leaderboard</a>
-        <a href="/lessons">Lessons</a>
-        <a href="/quizzes">Quizzes</a>
+        <a href="/htmllessons/lessons.html">Lessons</a>
+        <a href="/htmlquiz/quizzes.html">Quizzes</a>
         <a href="/profile">Profile</a>
       </div>
 
       <div className="quiz-container">
-        <h2>Quiz Instructions or Description</h2>
+        <h2>Quiz Title</h2>
         <form onSubmit={handleSubmit} className="quiz-form">
           <div className="question">
             <p><b>1. Multiple Choice Question?</b></p>
@@ -76,12 +79,6 @@ export default function QuizTemplate() {
                 <option value="Definition 2">Definition 2</option>
                 <option value="Definition 3">Definition 3</option>
               </select></li>
-              <li>3. Term 3 <select name="q3_3" onChange={handleChange} className="dropdown">
-                <option value="">Select</option>
-                <option value="Definition 1">Definition 1</option>
-                <option value="Definition 2">Definition 2</option>
-                <option value="Definition 3">Definition 3</option>
-              </select></li>
             </ul>
           </div>
 
@@ -96,8 +93,12 @@ export default function QuizTemplate() {
             </div>
           </div>
         )}
+
+        {/* Return to Lesson Button */}
+        <div className="final-navigation">
+          <a href="/lessons/example-lesson">Return to Lesson</a>
+        </div>
       </div>
     </div>
   );
 }
-
