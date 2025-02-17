@@ -54,7 +54,7 @@ export default async function handler(req, res) {
 
     // Step 3: Insert into profiles table (Ensure id matches auth.uid())
     const { error: profileError } = await supabase.from('profiles').insert([
-      { id: userId, username },
+      { id: userId, username }
     ]);
 
     if (profileError) {
@@ -65,7 +65,7 @@ export default async function handler(req, res) {
 
     // Step 4: Insert into accounts table
     const { error: accountsError } = await supabase.from('accounts').insert([
-      { user_id: userId, name: username, region: 'default', completion: 0 },
+      { user_id: userId, name: username, region: 'default', completion: 0 }
     ]);
 
     if (accountsError) {
@@ -76,7 +76,7 @@ export default async function handler(req, res) {
 
     // Step 5: Insert into leaderboard table
     const { error: leaderboardError } = await supabase.from('leaderboard').insert([
-      { user_id: userId, region: 'default', monthly_points: 0, streak: 0, total_points: 0 },
+      { user_id: userId, region: 'default', monthly_points: 0, streak: 0, total_points: 0 }
     ]);
 
     if (leaderboardError) {
@@ -87,7 +87,7 @@ export default async function handler(req, res) {
 
     // Step 6: Insert into completion table
     const { error: completionError } = await supabase.from('completion').insert([
-      { user_id: userId, lesson_id: 0, complete: 0, total_score: 0 },
+      { user_id: userId, lesson_id: 0, complete: 0, total_score: 0 }
     ]);
 
     if (completionError) {
