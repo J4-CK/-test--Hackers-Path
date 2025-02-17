@@ -23,28 +23,8 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Email, username, and password are required.' });
   }
 
-  // Input Validation
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
-    return res.status(400).json({ error: 'Invalid email format.' });
-  }
-
-  const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
-  if (!passwordRegex.test(password)) {
-    return res.status(400).json({
-      error: 'Password must be at least 8 characters long, include one letter, one number, and one special character.',
-    });
-  }
-
-  const usernameRegex = /^[a-zA-Z0-9_]{3,20}$/;
-  if (!usernameRegex.test(username)) {
-    return res.status(400).json({
-      error: 'Username must be 3-20 characters long and contain only letters, numbers, or underscores.',
-    });
-  }
-
   try {
-    // Step 1: Create a new user in Supabase Auth
+    // Step 1: Register the user
     const { data: authData, error: authError } = await supabase.auth.signUp({
       email,
       password,
@@ -54,18 +34,39 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: authError.message });
     }
 
-    // Step 2: Retrieve authenticated session to ensure auth.uid() is available
+    const userId = authData?.user?.id;
+    if (!userId) {
+      return res.status(400).json({ error: 'User registration failed. No user ID returned.' });
+    }
+
+    console.log("User successfully registered:", userId);
+
+    // Step 2: Manually Sign In the user to get a session
+    const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (signInError) {
+      console.error("Sign-in error:", signInError);
+      await adminSupabase.auth.admin.deleteUser(userId);
+      return res.status(400).json({ error: "Sign-in failed after registration. Please try logging in manually." });
+    }
+
+    console.log("User successfully signed in:", signInData?.user?.id);
+
+    // Step 3: Fetch the authenticated session
     const { data: session, error: sessionError } = await supabase.auth.getSession();
 
     if (!session || !session.user) {
-      await adminSupabase.auth.admin.deleteUser(authData.user.id);
+      console.error("Session retrieval failed:", sessionError);
+      await adminSupabase.auth.admin.deleteUser(userId);
       return res.status(401).json({ error: 'User authentication failed. Please try again.' });
     }
 
-    const userId = session.user.id;
-    console.log("Authenticated User ID:", userId);
+    console.log("Authenticated Session:", session);
 
-    // Step 3: Insert into profiles table (Ensures id matches auth.uid())
+    // Step 4: Insert into profiles table (Ensure id matches auth.uid())
     const { error: profileError } = await supabase.from('profiles').insert([
       { id: userId, username },
     ]);
@@ -76,7 +77,7 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: profileError.message });
     }
 
-    // Step 4: Insert default values into accounts table
+    // Step 5: Insert into accounts table
     const { error: accountsError } = await supabase.from('accounts').insert([
       { user_id: userId, name: username, region: 'default', completion: 0 },
     ]);
@@ -87,7 +88,7 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: accountsError.message });
     }
 
-    // Step 5: Insert default values into leaderboard table
+    // Step 6: Insert into leaderboard table
     const { error: leaderboardError } = await supabase.from('leaderboard').insert([
       { user_id: userId, region: 'default', monthly_points: 0, streak: 0, total_points: 0 },
     ]);
@@ -98,7 +99,7 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: leaderboardError.message });
     }
 
-    // Step 6: Insert default values into completion table
+    // Step 7: Insert into completion table
     const { error: completionError } = await supabase.from('completion').insert([
       { user_id: userId, lesson_id: 0, complete: 0, total_score: 0 },
     ]);
