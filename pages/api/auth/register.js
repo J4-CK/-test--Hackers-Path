@@ -55,7 +55,7 @@ export default async function handler(req, res) {
 
     // Step 3: Insert into profiles table (Ensure id matches auth.uid())
     const { error: profileError } = await supabase.from('profiles').insert([
-      { id: userId, username }
+      { id: userId, username: String(username) } // Ensure username is a string
     ]);
 
     if (profileError) {
@@ -64,10 +64,17 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: profileError.message });
     }
 
-    // Step 4: Insert into accounts table
-    const { error: accountsError } = await supabase.from('accounts').insert([
-      { user_id: userId, name: username, region: 'default', completion: 0 }
-    ]);
+    // Step 4: Insert into accounts table (Fixing JSON array issue)
+    const accountData = {
+      user_id: String(userId),  // Ensure it's a string
+      name: String(username),   // Ensure it's a string
+      region: "default",
+      completion: 0 // Ensure this is an integer
+    };
+
+    console.log("Inserting into accounts:", accountData);
+
+    const { error: accountsError } = await supabase.from('accounts').insert([accountData]);
 
     if (accountsError) {
       console.error("Accounts Insert Error:", accountsError.details || accountsError.message);
@@ -76,9 +83,17 @@ export default async function handler(req, res) {
     }
 
     // Step 5: Insert into leaderboard table
-    const { error: leaderboardError } = await supabase.from('leaderboard').insert([
-      { user_id: userId, region: 'default', monthly_points: 0, streak: 0, total_points: 0 }
-    ]);
+    const leaderboardData = {
+      user_id: String(userId),
+      region: "default",
+      monthly_points: 0,
+      streak: 0,
+      total_points: 0
+    };
+
+    console.log("Inserting into leaderboard:", leaderboardData);
+
+    const { error: leaderboardError } = await supabase.from('leaderboard').insert([leaderboardData]);
 
     if (leaderboardError) {
       console.error("Leaderboard Insert Error:", leaderboardError.details || leaderboardError.message);
@@ -87,9 +102,16 @@ export default async function handler(req, res) {
     }
 
     // Step 6: Insert into completion table
-    const { error: completionError } = await supabase.from('completion').insert([
-      { user_id: userId, lesson_id: 0, complete: 0, total_score: 0 }
-    ]);
+    const completionData = {
+      user_id: String(userId),
+      lesson_id: 0,
+      complete: 0,
+      total_score: 0
+    };
+
+    console.log("Inserting into completion:", completionData);
+
+    const { error: completionError } = await supabase.from('completion').insert([completionData]);
 
     if (completionError) {
       console.error("Completion Insert Error:", completionError.details || completionError.message);
