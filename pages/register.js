@@ -1,102 +1,104 @@
-import { useState } from 'react';
-import { useRouter } from 'next/router';
+import { createClient } from '@supabase/supabase-js';
 
-export default function RegisterPage() {
-  const router = useRouter();
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+// Supabase client setup
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_ANON_KEY
+);
 
-  async function handleRegister(e) {
-    e.preventDefault();
+// Supabase Admin client for user deletion (Service Role Key)
+const adminSupabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY
+);
 
-    setError('');
-    setSuccess('');
-
-    // Validate inputs
-    if (!username || !email || !password || !confirmPassword) {
-      setError('All fields are required.');
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      setError('Passwords do not match.');
-      return;
-    }
-
-    try {
-      const res = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, email, password }),
-      });
-
-      const result = await res.json();
-
-      if (res.ok) {
-        setSuccess('Registration successful! Redirecting to login...');
-        setTimeout(() => router.push('/login'), 2000);
-      } else {
-        setError(result.error || 'Registration failed.');
-      }
-    } catch (err) {
-      setError('An error occurred. Please try again.');
-    }
+export default async function handler(req, res) {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  return (
-    <div className="section">
-      {/* Include External CSS */}
-      <link rel="stylesheet" href="/styles/login.css" />
-      <header>
-        <h1><a href="#">Hacker's Path</a></h1>
-      </header>
-      <div className="section">
-        <h2>Register</h2>
-        <form onSubmit={handleRegister}>
-          <input
-            type="text"
-            id="username"
-            placeholder="Enter your username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
-          <input
-            type="email"
-            id="email"
-            placeholder="Enter your email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <input
-            type="password"
-            id="password"
-            placeholder="Enter your password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-          <input
-            type="password"
-            id="confirmPassword"
-            placeholder="Confirm your password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            required
-          />
-          <button type="submit" className="logout-btn">Register</button>
-          {error && <p id="error">{error}</p>}
-          {success && <p id="success">{success}</p>}
-        </form>
-        <div className="login-link">
-          <p>Already have an account? <a href="/login">Login here</a></p>
-        </div>
-      </div>
-    </div>
-  );
+  const { email, password, username } = req.body;
+
+  if (!email || !password || !username) {
+    return res.status(400).json({ error: 'Email, username, and password are required.' });
+  }
+
+  try {
+    // Step 1: Register the user
+    const { data: authData, error: authError } = await supabase.auth.signUp({
+      email,
+      password,
+    });
+
+    if (authError) {
+      return res.status(400).json({ error: authError.message });
+    }
+
+    const userId = authData?.user?.id;
+    if (!userId) {
+      return res.status(400).json({ error: 'User registration failed. No user ID returned.' });
+    }
+
+    console.log("User successfully registered:", userId);
+
+    // Step 2: Retrieve the authenticated user instead of session
+    const { data: userData, error: userError } = await supabase.auth.getUser();
+
+    if (userError || !userData?.user?.id) {
+      console.error("User retrieval error:", userError);
+      await adminSupabase.auth.admin.deleteUser(userId);
+      return res.status(401).json({ error: 'User authentication failed. Please try again.' });
+    }
+
+    console.log("Authenticated User ID:", userData.user.id);
+
+    // Step 3: Insert into profiles table (Ensure id matches auth.uid())
+    const { error: profileError } = await supabase.from('profiles').insert([
+      { id: userId, username },
+    ]);
+
+    if (profileError) {
+      console.error("Profile Insert Error:", profileError);
+      await adminSupabase.auth.admin.deleteUser(userId);
+      return res.status(400).json({ error: profileError.message });
+    }
+
+    // Step 4: Insert into accounts table
+    const { error: accountsError } = await supabase.from('accounts').insert([
+      { user_id: userId, name: username, region: 'default', completion: 0 },
+    ]);
+
+    if (accountsError) {
+      console.error("Accounts Insert Error:", accountsError);
+      await adminSupabase.auth.admin.deleteUser(userId);
+      return res.status(400).json({ error: accountsError.message });
+    }
+
+    // Step 5: Insert into leaderboard table
+    const { error: leaderboardError } = await supabase.from('leaderboard').insert([
+      { user_id: userId, region: 'default', monthly_points: 0, streak: 0, total_points: 0 },
+    ]);
+
+    if (leaderboardError) {
+      console.error("Leaderboard Insert Error:", leaderboardError);
+      await adminSupabase.auth.admin.deleteUser(userId);
+      return res.status(400).json({ error: leaderboardError.message });
+    }
+
+    // Step 6: Insert into completion table
+    const { error: completionError } = await supabase.from('completion').insert([
+      { user_id: userId, lesson_id: 0, complete: 0, total_score: 0 },
+    ]);
+
+    if (completionError) {
+      console.error("Completion Insert Error:", completionError);
+      await adminSupabase.auth.admin.deleteUser(userId);
+      return res.status(400).json({ error: completionError.message });
+    }
+
+    return res.status(200).json({ message: 'Registration successful!', user: userData.user });
+  } catch (err) {
+    console.error('API Error:', err);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
 }
