@@ -45,8 +45,8 @@ export default async function handler(req, res) {
     let streak = streakData?.streak || 0;
     let lastUpdate = streakData?.last_streak_update ? new Date(streakData.last_streak_update) : null;
     const now = new Date();
-    
-    // Convert to CST (Central Standard Time, UTC-6)
+
+    // Convert to CST
     const cstNow = new Date(now.toLocaleString("en-US", { timeZone: "America/Chicago" }));
     const lastCstUpdate = lastUpdate ? new Date(lastUpdate.toLocaleString("en-US", { timeZone: "America/Chicago" })) : null;
 
@@ -56,7 +56,6 @@ export default async function handler(req, res) {
       lastMidnight.setHours(0, 0, 0, 0);
 
       if (lastCstUpdate < lastMidnight) {
-        // If last update was before today, reset or increase streak
         const yesterdayMidnight = new Date(lastMidnight);
         yesterdayMidnight.setDate(yesterdayMidnight.getDate() - 1);
 
@@ -66,7 +65,6 @@ export default async function handler(req, res) {
           streak = 1; // Reset streak
         }
 
-        // Update streak in DB
         await supabase
           .from("streak_tracking")
           .upsert({
@@ -76,7 +74,6 @@ export default async function handler(req, res) {
           });
       }
     } else {
-      // First-time streak entry
       streak = 1;
       await supabase
         .from("streak_tracking")
@@ -87,7 +84,6 @@ export default async function handler(req, res) {
         });
     }
 
-    // Return user data
     return res.status(200).json({
       user: {
         email: sessionUser.user.email,
