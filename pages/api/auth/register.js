@@ -35,11 +35,12 @@ export default async function handler(req, res) {
     }
 
     const userId = authData?.user?.id;
+
+    console.log("Debug: User ID before inserting into profiles:", userId);
+
     if (!userId) {
       return res.status(400).json({ error: 'User registration failed. No user ID returned.' });
     }
-
-    console.log("User successfully registered:", userId);
 
     // Step 2: Retrieve the authenticated user instead of session
     const { data: userData, error: userError } = await supabase.auth.getUser();
@@ -58,7 +59,7 @@ export default async function handler(req, res) {
     ]);
 
     if (profileError) {
-      console.error("Profile Insert Error:", profileError);
+      console.error("Profile Insert Error:", profileError.details || profileError.message);
       await adminSupabase.auth.admin.deleteUser(userId);
       return res.status(400).json({ error: profileError.message });
     }
@@ -69,7 +70,7 @@ export default async function handler(req, res) {
     ]);
 
     if (accountsError) {
-      console.error("Accounts Insert Error:", accountsError);
+      console.error("Accounts Insert Error:", accountsError.details || accountsError.message);
       await adminSupabase.auth.admin.deleteUser(userId);
       return res.status(400).json({ error: accountsError.message });
     }
@@ -80,7 +81,7 @@ export default async function handler(req, res) {
     ]);
 
     if (leaderboardError) {
-      console.error("Leaderboard Insert Error:", leaderboardError);
+      console.error("Leaderboard Insert Error:", leaderboardError.details || leaderboardError.message);
       await adminSupabase.auth.admin.deleteUser(userId);
       return res.status(400).json({ error: leaderboardError.message });
     }
@@ -91,7 +92,7 @@ export default async function handler(req, res) {
     ]);
 
     if (completionError) {
-      console.error("Completion Insert Error:", completionError);
+      console.error("Completion Insert Error:", completionError.details || completionError.message);
       await adminSupabase.auth.admin.deleteUser(userId);
       return res.status(400).json({ error: completionError.message });
     }
