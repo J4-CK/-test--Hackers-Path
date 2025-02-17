@@ -41,32 +41,18 @@ export default async function handler(req, res) {
 
     console.log("User successfully registered:", userId);
 
-    // Step 2: Manually Sign In the user to get a session
-    const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    // Step 2: Retrieve the authenticated user instead of session
+    const { data: userData, error: userError } = await supabase.auth.getUser();
 
-    if (signInError) {
-      console.error("Sign-in error:", signInError);
-      await adminSupabase.auth.admin.deleteUser(userId);
-      return res.status(400).json({ error: "Sign-in failed after registration. Please try logging in manually." });
-    }
-
-    console.log("User successfully signed in:", signInData?.user?.id);
-
-    // Step 3: Fetch the authenticated session
-    const { data: session, error: sessionError } = await supabase.auth.getSession();
-
-    if (!session || !session.user) {
-      console.error("Session retrieval failed:", sessionError);
+    if (userError || !userData?.user?.id) {
+      console.error("User retrieval error:", userError);
       await adminSupabase.auth.admin.deleteUser(userId);
       return res.status(401).json({ error: 'User authentication failed. Please try again.' });
     }
 
-    console.log("Authenticated Session:", session);
+    console.log("Authenticated User ID:", userData.user.id);
 
-    // Step 4: Insert into profiles table (Ensure id matches auth.uid())
+    // Step 3: Insert into profiles table (Ensure id matches auth.uid())
     const { error: profileError } = await supabase.from('profiles').insert([
       { id: userId, username },
     ]);
@@ -77,7 +63,7 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: profileError.message });
     }
 
-    // Step 5: Insert into accounts table
+    // Step 4: Insert into accounts table
     const { error: accountsError } = await supabase.from('accounts').insert([
       { user_id: userId, name: username, region: 'default', completion: 0 },
     ]);
@@ -88,7 +74,7 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: accountsError.message });
     }
 
-    // Step 6: Insert into leaderboard table
+    // Step 5: Insert into leaderboard table
     const { error: leaderboardError } = await supabase.from('leaderboard').insert([
       { user_id: userId, region: 'default', monthly_points: 0, streak: 0, total_points: 0 },
     ]);
@@ -99,7 +85,7 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: leaderboardError.message });
     }
 
-    // Step 7: Insert into completion table
+    // Step 6: Insert into completion table
     const { error: completionError } = await supabase.from('completion').insert([
       { user_id: userId, lesson_id: 0, complete: 0, total_score: 0 },
     ]);
@@ -110,7 +96,7 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: completionError.message });
     }
 
-    return res.status(200).json({ message: 'Registration successful!', user: authData.user });
+    return res.status(200).json({ message: 'Registration successful!', user: userData.user });
   } catch (err) {
     console.error('API Error:', err);
     return res.status(500).json({ error: 'Internal Server Error' });
