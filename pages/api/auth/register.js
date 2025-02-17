@@ -44,6 +44,7 @@ export default async function handler(req, res) {
   }
 
   try {
+    // Step 1: Create a new user in Supabase Auth
     const { data: authData, error: authError } = await supabase.auth.signUp({
       email,
       password,
@@ -53,44 +54,57 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: authError.message });
     }
 
-    const userId = authData.user.id;
+    // Step 2: Retrieve authenticated session to ensure auth.uid() is available
+    const { data: session, error: sessionError } = await supabase.auth.getSession();
 
-    // Insert into profiles table
+    if (!session || !session.user) {
+      await adminSupabase.auth.admin.deleteUser(authData.user.id);
+      return res.status(401).json({ error: 'User authentication failed. Please try again.' });
+    }
+
+    const userId = session.user.id;
+    console.log("Authenticated User ID:", userId);
+
+    // Step 3: Insert into profiles table (Ensures id matches auth.uid())
     const { error: profileError } = await supabase.from('profiles').insert([
       { id: userId, username },
     ]);
 
     if (profileError) {
+      console.error("Profile Insert Error:", profileError);
       await adminSupabase.auth.admin.deleteUser(userId);
       return res.status(400).json({ error: profileError.message });
     }
 
-    // Insert default values into accounts table
+    // Step 4: Insert default values into accounts table
     const { error: accountsError } = await supabase.from('accounts').insert([
       { user_id: userId, name: username, region: 'default', completion: 0 },
     ]);
 
     if (accountsError) {
+      console.error("Accounts Insert Error:", accountsError);
       await adminSupabase.auth.admin.deleteUser(userId);
       return res.status(400).json({ error: accountsError.message });
     }
 
-    // Insert default values into leaderboard table
+    // Step 5: Insert default values into leaderboard table
     const { error: leaderboardError } = await supabase.from('leaderboard').insert([
       { user_id: userId, region: 'default', monthly_points: 0, streak: 0, total_points: 0 },
     ]);
 
     if (leaderboardError) {
+      console.error("Leaderboard Insert Error:", leaderboardError);
       await adminSupabase.auth.admin.deleteUser(userId);
       return res.status(400).json({ error: leaderboardError.message });
     }
 
-    // Insert default values into completion table
+    // Step 6: Insert default values into completion table
     const { error: completionError } = await supabase.from('completion').insert([
       { user_id: userId, lesson_id: 0, complete: 0, total_score: 0 },
     ]);
 
     if (completionError) {
+      console.error("Completion Insert Error:", completionError);
       await adminSupabase.auth.admin.deleteUser(userId);
       return res.status(400).json({ error: completionError.message });
     }
