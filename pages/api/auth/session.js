@@ -35,21 +35,64 @@ export default async function handler(req, res) {
       .eq("id", userId)
       .single();
 
-    // Fetch leaderboard data
-    const { data: leaderboard } = await supabase
-      .from("leaderboard")
-      .select("streak, total_points, region")
+    // Fetch streak data
+    const { data: streakData } = await supabase
+      .from("streak_tracking")
+      .select("streak, last_streak_update")
       .eq("user_id", userId)
       .single();
 
-    // Return combined user data
+    let streak = streakData?.streak || 0;
+    let lastUpdate = streakData?.last_streak_update ? new Date(streakData.last_streak_update) : null;
+    const now = new Date();
+    
+    // Convert to CST (Central Standard Time, UTC-6)
+    const cstNow = new Date(now.toLocaleString("en-US", { timeZone: "America/Chicago" }));
+    const lastCstUpdate = lastUpdate ? new Date(lastUpdate.toLocaleString("en-US", { timeZone: "America/Chicago" })) : null;
+
+    // Check if streak needs updating
+    if (lastCstUpdate) {
+      const lastMidnight = new Date(cstNow);
+      lastMidnight.setHours(0, 0, 0, 0);
+
+      if (lastCstUpdate < lastMidnight) {
+        // If last update was before today, reset or increase streak
+        const yesterdayMidnight = new Date(lastMidnight);
+        yesterdayMidnight.setDate(yesterdayMidnight.getDate() - 1);
+
+        if (lastCstUpdate >= yesterdayMidnight) {
+          streak += 1; // Continue streak
+        } else {
+          streak = 1; // Reset streak
+        }
+
+        // Update streak in DB
+        await supabase
+          .from("streak_tracking")
+          .upsert({
+            user_id: userId,
+            last_streak_update: cstNow.toISOString(),
+            streak
+          });
+      }
+    } else {
+      // First-time streak entry
+      streak = 1;
+      await supabase
+        .from("streak_tracking")
+        .insert({
+          user_id: userId,
+          last_streak_update: cstNow.toISOString(),
+          streak
+        });
+    }
+
+    // Return user data
     return res.status(200).json({
       user: {
         email: sessionUser.user.email,
         username: profile?.username || "N/A",
-        streak: leaderboard?.streak || 0,
-        totalPoints: leaderboard?.total_points || 0,
-        region: leaderboard?.region || "N/A",
+        streak,
       },
     });
   } catch (err) {
