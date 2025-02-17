@@ -35,14 +35,13 @@ export default async function handler(req, res) {
     }
 
     const userId = authData?.user?.id;
-
     console.log("Debug: User ID before inserting into profiles:", userId);
 
     if (!userId) {
       return res.status(400).json({ error: 'User registration failed. No user ID returned.' });
     }
 
-    // Step 2: Retrieve the authenticated user instead of session
+    // Step 2: Retrieve the authenticated user
     const { data: userData, error: userError } = await supabase.auth.getUser();
 
     if (userError || !userData?.user?.id) {
@@ -53,68 +52,74 @@ export default async function handler(req, res) {
 
     console.log("Authenticated User ID:", userData.user.id);
 
-    // Step 3: Insert into profiles table (Ensure id matches auth.uid())
+    // Step 3: Insert into profiles
     const { error: profileError } = await supabase.from('profiles').insert([
-      { id: userId, username: String(username) } // Ensure username is a string
+      { id: `${userId}`, username: `${username}` }
     ]);
 
     if (profileError) {
-      console.error("Profile Insert Error:", profileError.details || profileError.message);
+      console.error("Profile Insert Error:", profileError);
       await adminSupabase.auth.admin.deleteUser(userId);
       return res.status(400).json({ error: profileError.message });
     }
 
-    // Step 4: Insert into accounts table (Fixing JSON array issue)
-    const accountData = {
-      user_id: String(userId),  // Ensure it's a string
-      name: String(username),   // Ensure it's a string
-      region: "default",
-      completion: 0 // Ensure this is an integer
-    };
+    // Step 4: Insert into accounts (Fix JSON array error)
+    const accountData = [
+      {
+        user_id: `${userId}`,
+        name: `${username}`,
+        region: "default",
+        completion: 0
+      }
+    ];
+    
+    console.log("Debug Insert Data for Accounts:", JSON.stringify(accountData));
 
-    console.log("Inserting into accounts:", accountData);
-
-    const { error: accountsError } = await supabase.from('accounts').insert([accountData]);
+    const { error: accountsError } = await supabase.from("accounts").insert(accountData);
 
     if (accountsError) {
-      console.error("Accounts Insert Error:", accountsError.details || accountsError.message);
+      console.error("Accounts Insert Error:", accountsError);
       await adminSupabase.auth.admin.deleteUser(userId);
       return res.status(400).json({ error: accountsError.message });
     }
 
-    // Step 5: Insert into leaderboard table
-    const leaderboardData = {
-      user_id: String(userId),
-      region: "default",
-      monthly_points: 0,
-      streak: 0,
-      total_points: 0
-    };
+    // Step 5: Insert into leaderboard
+    const leaderboardData = [
+      {
+        user_id: `${userId}`,
+        region: "default",
+        monthly_points: 0,
+        streak: 0,
+        total_points: 0
+      }
+    ];
 
-    console.log("Inserting into leaderboard:", leaderboardData);
+    console.log("Debug Insert Data for Leaderboard:", JSON.stringify(leaderboardData));
 
-    const { error: leaderboardError } = await supabase.from('leaderboard').insert([leaderboardData]);
+    const { error: leaderboardError } = await supabase.from("leaderboard").insert(leaderboardData);
 
     if (leaderboardError) {
-      console.error("Leaderboard Insert Error:", leaderboardError.details || leaderboardError.message);
+      console.error("Leaderboard Insert Error:", leaderboardError);
       await adminSupabase.auth.admin.deleteUser(userId);
       return res.status(400).json({ error: leaderboardError.message });
     }
 
-    // Step 6: Insert into completion table
-    const completionData = {
-      user_id: String(userId),
-      lesson_id: 0,
-      complete: 0,
-      total_score: 0
-    };
+    // Step 6: Insert into completion
+    const completionData = [
+      {
+        user_id: `${userId}`,
+        lesson_id: 0,
+        complete: 0,
+        total_score: 0
+      }
+    ];
 
-    console.log("Inserting into completion:", completionData);
+    console.log("Debug Insert Data for Completion:", JSON.stringify(completionData));
 
-    const { error: completionError } = await supabase.from('completion').insert([completionData]);
+    const { error: completionError } = await supabase.from("completion").insert(completionData);
 
     if (completionError) {
-      console.error("Completion Insert Error:", completionError.details || completionError.message);
+      console.error("Completion Insert Error:", completionError);
       await adminSupabase.auth.admin.deleteUser(userId);
       return res.status(400).json({ error: completionError.message });
     }
