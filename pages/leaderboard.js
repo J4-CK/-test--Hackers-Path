@@ -76,8 +76,8 @@ export default function Leaderboard({ players }) {
         {/* Logged-in User Table */}
         {loggedInUser && (
           <div className="leaderboard" style={{ marginTop: '40px' }}>
-            <h1>Your Stats</h1>
-            <table style={{ margin: '0 auto', borderCollapse: 'collapse', width: '50%' }}>
+            <h1>Your Ranking</h1>
+            <table style={{ margin: '0 auto', borderCollapse: 'collapse', width: '80%' }}>
               <thead>
                 <tr>
                   <th style={styles.th}>Rank</th>
