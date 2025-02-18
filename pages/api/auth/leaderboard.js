@@ -8,13 +8,15 @@ export const supabase = createClient(supabaseUrl, supabaseKey);
 export async function fetchLeaderboard() {
     const { data, error } = await supabase
         .from('accounts')
-        .select('*')
-        .order('total_points', { ascending: false })
+        .select('user_id, username, total_points') // Ensure correct fields
+        .order('total_points', { ascending: false });
 
     if (error) {
         console.error('Error fetching leaderboard:', error);
         return [];
     }
 
+    console.log("Fetched Data from Supabase:", data); // Debugging
     return data;
 }
+
