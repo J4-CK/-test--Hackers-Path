@@ -27,6 +27,9 @@ export default function Leaderboard({ players }) {
     return <div>Loading...</div>; // Show loading spinner or fallback UI
   }
 
+  // Find the logged-in user in the leaderboard data
+  const loggedInUser = players.find(player => player.name === user.username);
+
   return (
     <div>
       <Head>
@@ -47,6 +50,7 @@ export default function Leaderboard({ players }) {
       </div>
 
       <div style={{ fontFamily: 'Arial, sans-serif', textAlign: 'center', padding: '20px' }}>
+        {/* Top 20 Leaderboard */}
         <div className="leaderboard">
           <h1>Top 20 Leaderboard</h1>
           <table style={{ margin: '0 auto', borderCollapse: 'collapse', width: '80%' }}>
@@ -68,6 +72,31 @@ export default function Leaderboard({ players }) {
             </tbody>
           </table>
         </div>
+
+        {/* Logged-in User Table */}
+        {loggedInUser && (
+          <div className="leaderboard" style={{ marginTop: '40px' }}>
+            <h1>Your Stats</h1>
+            <table style={{ margin: '0 auto', borderCollapse: 'collapse', width: '50%' }}>
+              <thead>
+                <tr>
+                  <th style={styles.th}>Rank</th>
+                  <th style={styles.th}>Username</th>
+                  <th style={styles.th}>Score</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style={styles.evenRow}>
+                  <td style={styles.td}>
+                    {players.findIndex(player => player.name === user.username) + 1}
+                  </td>
+                  <td style={styles.td}>{loggedInUser.name}</td>
+                  <td style={styles.td}>{loggedInUser.total_points}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </div>
   );
