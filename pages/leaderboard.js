@@ -9,16 +9,21 @@ const [user, setUser] = useState(null);
 
 useEffect(() => {
     async function checkSession() {
-  const res = await fetch('/api/auth/session');
-  const data = await res.json();
-  console.log("Session Data:", data); // Debugging
+        const res = await fetch('/api/auth/session');
+        const data = await res.json();
+        console.log("Session Data:", data); // Debugging
 
-  if (res.ok && data.user) {
-    setUser(data.user);
-  } else {
-    router.push('/login');
-  }
-}
+        if (res.ok && data.user) {
+            setUser(data.user);
+        } else {
+            router.push('/login');
+        }
+    }
+
+    checkSession(); // Call the function
+
+}, [router]); // <-- Missing dependency array was already present, but function lacked closure
+
 
 
     if (!user) {
