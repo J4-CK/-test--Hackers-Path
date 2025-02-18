@@ -33,14 +33,10 @@ export default function Leaderboard({ players }) {
     }
   }
 
-  checkSession(); // <-- This should be inside useEffect
-
-}, [router]); // Ensure dependencies are correct
-
+  checkSession(); // This function call should be inside the useEffect block
+}, [router]); // <-- This is correctly placed
 
 
-    checkSession();
-  }, [router]);
 
   if (!user) {
     return <div>Loading...</div>; // Show loading state
