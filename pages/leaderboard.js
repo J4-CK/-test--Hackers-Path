@@ -33,8 +33,10 @@ export default function Leaderboard({ players }) {
     }
   }
 
-  checkSession();
-}, [router]);
+  checkSession(); // <-- This should be inside useEffect
+
+}, [router]); // Ensure dependencies are correct
+
 
 
     checkSession();
