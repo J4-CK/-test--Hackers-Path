@@ -80,8 +80,11 @@ export async function getServerSideProps() {
     // Debug: Log fetched data
     console.log('Fetched players:', players);
 
+    // Limit the array to the top 20 players
+    const topPlayers = players.slice(0, 20);
+
     return {
-      props: { players },
+      props: { players: topPlayers },
     };
   } catch (error) {
     console.error('Error in getServerSideProps:', error);
@@ -91,6 +94,7 @@ export async function getServerSideProps() {
     };
   }
 }
+
 
 const styles = {
   th: {
