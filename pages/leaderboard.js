@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
 export default function Leaderboard({ players }) {
-    const router = useRouter();
+const router = useRouter();
 const [user, setUser] = useState(null);
 
 useEffect(() => {
@@ -20,6 +20,10 @@ useEffect(() => {
     }
     checkSession();
   }, [router]);
+
+    if (!user) {
+        return <div>Loading...</div>; // Show loading spinner or fallback UI
+    }
     
     return (
   <div>
