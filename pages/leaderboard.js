@@ -17,26 +17,24 @@ export default function Leaderboard({ players }) {
 
       if (res.ok && data.user) {
         setUser(data.user);
+
+        // Fetch leaderboard only after user session is set
+        const leaderboard = await fetchLeaderboard();
+        setLeaderboardData(leaderboard);
+
+        // Find the logged-in user's entry
+        const userData = leaderboard.find(player => player.username === data.user.username);
+        setUserEntry(userData);
       } else {
         router.push('/login');
       }
     }
 
-    async function getLeaderboard() {
-      const data = await fetchLeaderboard();
-      setLeaderboardData(data);
-
-      if (user) {
-        const userData = data.find(player => player.username === user.username);
-        setUserEntry(userData);
-      }
-    }
-
-    checkSession().then(getLeaderboard); // Ensure both functions run correctly
-  }, [router, user]); // Depend on `user` to refetch leaderboard when available
+    checkSession();
+  }, [router]);
 
   if (!user) {
-    return <div>Loading...</div>; // Show loading spinner or fallback UI
+    return <div>Loading...</div>; // Show loading state
   }
 
   // Get the top 20 players
@@ -97,7 +95,9 @@ export default function Leaderboard({ players }) {
               </thead>
               <tbody>
                 <tr style={styles.userRow}>
-                  <td style={styles.td}>{leaderboardData.findIndex(player => player.username === user.username) + 1}</td>
+                  <td style={styles.td}>
+                    {leaderboardData.findIndex(player => player.username === user.username) + 1}
+                  </td>
                   <td style={styles.td}>{userEntry.username}</td>
                   <td style={styles.td}>{userEntry.total_points}</td>
                 </tr>
