@@ -1,7 +1,26 @@
 import { fetchLeaderboard } from './api/auth/leaderboard';
 import Head from 'next/head';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 
 export default function Leaderboard({ players }) {
+    const router = useRouter();
+const [user, setUser] = useState(null);
+
+useEffect(() => {
+    async function checkSession() {
+      const res = await fetch('/api/auth/session');
+      const data = await res.json();
+
+      if (res.ok) {
+        setUser(data.user); // Set user data
+      } else {
+        router.push('/login'); // Redirect to login if not authenticated
+      }
+    }
+    checkSession();
+  }, [router]);
+    
     return (
   <div>
     <Head>
@@ -18,7 +37,7 @@ export default function Leaderboard({ players }) {
       <a href="/htmllessons/lessons.html">Lessons</a>
       <a href="/htmlquiz/quizzes.html">Quizzes</a>
       {/* Display the user's username on the "Profile" button */}
-      <a href="/profile">{players.length > 0 ? `Profile (${players[0].username || 'User'})` : 'Profile'}</a>
+      <a href="/profile">{user.username ? `Profile (${user.username})` : 'Profile'}</a>
     </div>
 
     <div style={{ fontFamily: 'Arial, sans-serif', textAlign: 'center', padding: '20px' }}>
