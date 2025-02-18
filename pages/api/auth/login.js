@@ -27,6 +27,47 @@ export default async function handler(req, res) {
       return res.status(401).json({ error: error.message });
     }
 
+    const userId = data.user.id;
+
+    // Fetch user's streak data
+    const { data: streakData, error: streakError } = await supabase
+      .from('streaktracker')
+      .select('streak, last_streak_update')
+      .eq('id', userId)
+      .single();
+
+    if (streakError && streakError.code !== 'PGRST116') { 
+      // PGRST116: No rows found (acceptable if it's a new user)
+      console.error('Streak Fetch Error:', streakError);
+      return res.status(500).json({ error: 'Error fetching streak data' });
+    }
+
+    let newStreak = 1;
+    let lastStreakUpdate = new Date().toISOString();
+
+    if (streakData) {
+      const lastUpdateTime = new Date(streakData.last_streak_update);
+      const timeDiff = (new Date() - lastUpdateTime) / (1000 * 60 * 60); // Convert ms to hours
+
+      if (timeDiff <= 24) {
+        newStreak = streakData.streak + 1;
+      }
+    }
+
+    // Update the streak in the database
+    const { error: updateError } = await supabase
+      .from('streaktracker')
+      .upsert({
+        id: userId,
+        streak: newStreak,
+        last_streak_update: lastStreakUpdate,
+      }, { onConflict: ['id'] });
+
+    if (updateError) {
+      console.error('Streak Update Error:', updateError);
+      return res.status(500).json({ error: 'Error updating streak data' });
+    }
+
     // Set an HTTP-only cookie with the session token
     res.setHeader(
       'Set-Cookie',
@@ -39,8 +80,12 @@ export default async function handler(req, res) {
       })
     );
 
-    // Respond with user data
-    return res.status(200).json({ user: data.user });
+    // Respond with user data and updated streak
+    return res.status(200).json({ 
+      user: data.user,
+      streak: newStreak
+    });
+
   } catch (err) {
     console.error('API Error:', err); // Log error to Vercel logs
     return res.status(500).json({ error: 'Internal Server Error' });
