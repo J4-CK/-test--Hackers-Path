@@ -10,33 +10,28 @@ export default function Leaderboard({ players }) {
   const [userEntry, setUserEntry] = useState(null);
 
   useEffect(() => {
-  async function checkSession() {
-    const res = await fetch('/api/auth/session');
-    const data = await res.json();
-    console.log("Session Data:", data); // Debugging user session
+    async function checkSession() {
+      const res = await fetch('/api/auth/session');
+      const data = await res.json();
+      console.log("Session Data:", data); // Debugging
 
-    if (res.ok && data.user) {
-      setUser(data.user);
+      if (res.ok && data.user) {
+        setUser(data.user);
 
-      const leaderboard = await fetchLeaderboard();
-      console.log("Fetched Leaderboard Data:", leaderboard); // Debugging leaderboard fetch
+        // Fetch leaderboard only after user session is set
+        const leaderboard = await fetchLeaderboard();
+        setLeaderboardData(leaderboard);
 
-      setLeaderboardData(leaderboard);
-
-      // Ensure we correctly match user entry
-      const userData = leaderboard.find(player => player.username === data.user.username);
-      console.log("User Entry Found:", userData); // Debugging user entry
-
-      setUserEntry(userData);
-    } else {
-      router.push('/login');
+        // Find the logged-in user's entry
+        const userData = leaderboard.find(player => player.username === data.user.username);
+        setUserEntry(userData);
+      } else {
+        router.push('/login');
+      }
     }
-  }
 
-  checkSession(); // This function call should be inside the useEffect block
-}, [router]); // <-- This is correctly placed
-
-
+    checkSession();
+  }, [router]);
 
   if (!user) {
     return <div>Loading...</div>; // Show loading state
@@ -75,42 +70,45 @@ export default function Leaderboard({ players }) {
               </tr>
             </thead>
             <tbody>
-            {topPlayers.map((player, index) => (
-              <tr key={player.user_id} style={index % 2 === 0 ? styles.evenRow : styles.oddRow}>
-                <td style={styles.td}>{index + 1}</td>
-                <td style={styles.td}>{player.username || player.name}</td> {/* Ensure field is correct */}
-                <td style={styles.td}>{player.total_points}</td>
-              </tr>
-            ))}
+              {topPlayers.map((player, index) => (
+                <tr key={player.user_id} style={index % 2 === 0 ? styles.evenRow : styles.oddRow}>
+                  <td style={styles.td}>{index + 1}</td>
+                  <td style={styles.td}>{player.username}</td>
+                  <td style={styles.td}>{player.total_points}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
-{userEntry ? (
-  <div className="user-rank" style={{ marginTop: "20px" }}>
-    <h2>Your Position</h2>
-    <table style={{ margin: '0 auto', borderCollapse: 'collapse', width: '50%' }}>
-      <thead>
-        <tr>
-          <th style={styles.th}>Rank</th>
-          <th style={styles.th}>Username</th>
-          <th style={styles.th}>Score</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr style={styles.userRow}>
-          <td style={styles.td}>
-            {leaderboardData.findIndex(player => player.username === user.username) + 1}
-          </td>
-          <td style={styles.td}>{userEntry.username}</td>
-          <td style={styles.td}>{userEntry.total_points}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-) : (
-  <p style={{ textAlign: 'center', marginTop: '20px' }}>Your ranking is not available.</p>
-)}
 
+        {/* Show User's Personal Ranking */}
+        {userEntry && (
+          <div className="user-rank" style={{ marginTop: "20px" }}>
+            <h2>Your Position</h2>
+            <table style={{ margin: '0 auto', borderCollapse: 'collapse', width: '50%' }}>
+              <thead>
+                <tr>
+                  <th style={styles.th}>Rank</th>
+                  <th style={styles.th}>Username</th>
+                  <th style={styles.th}>Score</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style={styles.userRow}>
+                  <td style={styles.td}>
+                    {leaderboardData.findIndex(player => player.username === user.username) + 1}
+                  </td>
+                  <td style={styles.td}>{userEntry.username}</td>
+                  <td style={styles.td}>{userEntry.total_points}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
 
 // Fetch data on the server
 export async function getServerSideProps() {
