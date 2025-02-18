@@ -9,17 +9,17 @@ const [user, setUser] = useState(null);
 
 useEffect(() => {
     async function checkSession() {
-      const res = await fetch('/api/auth/session');
-      const data = await res.json();
+  const res = await fetch('/api/auth/session');
+  const data = await res.json();
+  console.log("Session Data:", data); // Debugging
 
-      if (res.ok) {
-        setUser(data.user); // Set user data
-      } else {
-        router.push('/login'); // Redirect to login if not authenticated
-      }
-    }
-    checkSession();
-  }, [router]);
+  if (res.ok && data.user) {
+    setUser(data.user);
+  } else {
+    router.push('/login');
+  }
+}
+
 
     if (!user) {
         return <div>Loading...</div>; // Show loading spinner or fallback UI
