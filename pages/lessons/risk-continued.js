@@ -2,7 +2,7 @@ import { useState } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 
-export default function LessonTemplate() {
+export default function RiskContinued() {
   const [currentSection, setCurrentSection] = useState(0);
   const router = useRouter();
 
@@ -21,10 +21,32 @@ export default function LessonTemplate() {
       ),
     },
     {
-      title: "Lesson Title - Section 2",
+      title: "Risk Identification",
       content: (
         <>
-          <h2 className="lesson-text">Subtopic Title</h2>
+          <h2 className="lesson-text">We talked previously about assets, threats, and vulnerabilities. These are all aspects involved in Risk Identification./h2>
+          <div className="lesson-text">Risk Identification isn't just done one time. It's a continuous process of finding, understanding, and preparing for risk.</div>
+          <p className="lesson-text">Some important things to remember:</p>
+          <div className="lesson-text">Another example.</div>
+        </>
+      ),
+    },
+    {
+      title: "Risk Assessment",
+      content: (
+        <>
+          <h2 className="lesson-text">Risk Assessment</h2>
+          <p className="lesson-text">Details about this topic go here.</p>
+          <div className="lesson-text">Example bullet point.</div>
+          <div className="lesson-text">Another example.</div>
+        </>
+      ),
+    },
+    {
+      title: "Risk Treatment",
+      content: (
+        <>
+          <h2 className="lesson-text">Risk Treatment</h2>
           <p className="lesson-text">Details about this topic go here.</p>
           <div className="lesson-text">Example bullet point.</div>
           <div className="lesson-text">Another example.</div>
