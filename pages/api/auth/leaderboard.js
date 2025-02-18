@@ -10,7 +10,6 @@ export async function fetchLeaderboard() {
         .from('accounts')
         .select('*')
         .order('total_points', { ascending: false })
-        .limit(20);
 
     if (error) {
         console.error('Error fetching leaderboard:', error);
