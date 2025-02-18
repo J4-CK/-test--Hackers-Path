@@ -8,7 +8,7 @@ export const supabase = createClient(supabaseUrl, supabaseKey);
 export async function fetchLeaderboard() {
     const { data, error } = await supabase
         .from('accounts')
-        .select('user_id, username, total_points') // Ensure correct fields
+        .select('user_id, name, total_points') // Ensure correct fields
         .order('total_points', { ascending: false });
 
     if (error) {
