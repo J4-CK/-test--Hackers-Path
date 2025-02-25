@@ -8,16 +8,6 @@ export default function LessonTemplate() {
 
   // Define lesson sections here.
   // Duplicate and modify the objects inside the sections array to add more content.
-  import { useState } from "react";
-import Head from "next/head";
-import { useRouter } from "next/router";
-
-export default function LessonTemplate() {
-  const [currentSection, setCurrentSection] = useState(0);
-  const router = useRouter();
-
-  // Define lesson sections here.
-  // Duplicate and modify the objects inside the sections array to add more content.
   const sections = [
     {
       title: "Lesson Title - Section 1",
