@@ -20,3 +20,33 @@ export async function fetchLeaderboard() {
     return data;
 }
 
+export async function fetchLeaderboardstreak() {
+    const { data, error } = await supabase
+        .from('accounts')
+        .select('user_id, name, total_points') // Ensure correct fields
+        .order('streak', { ascending: false });
+
+    if (error) {
+        console.error('Error fetching leaderboard:', error);
+        return [];
+    }
+
+    console.log("Fetched Data from Supabase:", data); // Debugging
+    return data;
+}
+
+export async function fetchLeaderboardmonthly() {
+    const { data, error } = await supabase
+        .from('accounts')
+        .select('user_id, name, total_points') // Ensure correct fields
+        .order('streak', { ascending: false });
+
+    if (error) {
+        console.error('Error fetching leaderboard:', error);
+        return [];
+    }
+
+    console.log("Fetched Data from Supabase:", data); // Debugging
+    return data;
+}
+
