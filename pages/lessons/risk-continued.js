@@ -2,7 +2,7 @@ import { useState } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 
-export default function RiskContinued() {
+export default function LessonTemplate() {
   const [currentSection, setCurrentSection] = useState(0);
   const router = useRouter();
 
