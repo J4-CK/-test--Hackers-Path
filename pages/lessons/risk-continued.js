@@ -10,12 +10,13 @@ export default function LessonTemplate() {
   // Duplicate and modify the objects inside the sections array to add more content.
   const sections = [
     {
-      title: "Lesson Title - Section 1",
+      title: "Risk Continued",
       content: (
         <>
-          <p className="lesson-text">Lesson introduction or explanation goes here.</p>
-          <div className="lesson-text"><b>Key Concept 1:</b> Brief explanation.</div>
-          <div className="lesson-text"><b>Key Concept 2:</b> Another explanation.</div>
+          <p className="lesson-text">Now that we understand what risk consists of how do we address it?</p>
+          <div className="lesson-text"><b>Risk Identification:</b> How do we identify risk?</div>
+          <div className="lesson-text"><b>Risk Assessment:</b> How do we quantify risk?</div>
+          <div className="lesson-text"><b>Risk Treatment:</b> How do we treat risk?</div>
         </>
       ),
     },
