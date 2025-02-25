@@ -1,93 +1,97 @@
-import { createClient } from '@supabase/supabase-js';
-import cookie from 'cookie';
+import { createClient } from "@supabase/supabase-js";
+import cookie from "cookie";
 
-// Supabase client setup
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_ANON_KEY
 );
 
 export default async function handler(req, res) {
-  // Allow only POST requests
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
+  if (req.method !== "GET") {
+    return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { email, password } = req.body;
-
   try {
-    // Authenticate user with Supabase
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    const cookies = req.headers.cookie ? cookie.parse(req.headers.cookie) : {};
+    const token = cookies.token;
 
-    // Handle authentication errors
-    if (error) {
-      return res.status(401).json({ error: error.message });
+    if (!token) {
+      return res.status(401).json({ error: "Unauthorized: No token provided" });
     }
 
-    const userId = data.user.id;
+    // Validate token and get session user
+    const { data: sessionUser, error: sessionError } = await supabase.auth.getUser(token);
 
-    // Fetch user's streak data
-    const { data: streakData, error: streakError } = await supabase
-      .from('streaktracker')
-      .select('streak, last_streak_update')
-      .eq('id', userId)
+    if (sessionError || !sessionUser?.user?.id) {
+      return res.status(401).json({ error: "Unauthorized: Invalid token" });
+    }
+
+    const userId = sessionUser.user.id;
+
+    // Fetch profile data
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("username")
+      .eq("id", userId)
       .single();
 
-    if (streakError && streakError.code !== 'PGRST116') { 
-      // PGRST116: No rows found (acceptable if it's a new user)
-      console.error('Streak Fetch Error:', streakError);
-      return res.status(500).json({ error: 'Error fetching streak data' });
-    }
+    // Fetch streak data
+    const { data: streakData } = await supabase
+      .from("streak_tracking")
+      .select("streak, last_streak_update")
+      .eq("user_id", userId)
+      .single();
 
-    let newStreak = 1;
-    let lastStreakUpdate = new Date().toISOString();
+    let streak = streakData?.streak || 0;
+    let lastUpdate = streakData?.last_streak_update ? new Date(streakData.last_streak_update) : null;
+    const now = new Date();
 
-    if (streakData) {
-      const lastUpdateTime = new Date(streakData.last_streak_update);
-      const timeDiff = (new Date() - lastUpdateTime) / (1000 * 60 * 60); // Convert ms to hours
+    // Convert to CST
+    const cstNow = new Date(now.toLocaleString("en-US", { timeZone: "America/Chicago" }));
+    const lastCstUpdate = lastUpdate ? new Date(lastUpdate.toLocaleString("en-US", { timeZone: "America/Chicago" })) : null;
 
-      if (timeDiff <= 24) {
-        newStreak = streakData.streak + 1;
+    // Check if streak needs updating
+    if (lastCstUpdate) {
+      const lastMidnight = new Date(cstNow);
+      lastMidnight.setHours(0, 0, 0, 0);
+
+      if (lastCstUpdate < lastMidnight) {
+        const yesterdayMidnight = new Date(lastMidnight);
+        yesterdayMidnight.setDate(yesterdayMidnight.getDate() - 1);
+
+        if (lastCstUpdate >= yesterdayMidnight) {
+          streak += 1; // Continue streak
+        } else {
+          streak = 1; // Reset streak
+        }
+
+        await supabase
+          .from("streak_tracking")
+          .upsert({
+            user_id: userId,
+            last_streak_update: cstNow.toISOString(),
+            streak
+          });
       }
+    } else {
+      streak = 1;
+      await supabase
+        .from("streak_tracking")
+        .insert({
+          user_id: userId,
+          last_streak_update: cstNow.toISOString(),
+          streak
+        });
     }
 
-    // Update the streak in the database
-    const { error: updateError } = await supabase
-      .from('streaktracker')
-      .upsert({
-        id: userId,
-        streak: newStreak,
-        last_streak_update: lastStreakUpdate,
-      }, { onConflict: ['id'] });
-
-    if (updateError) {
-      console.error('Streak Update Error:', updateError);
-      return res.status(500).json({ error: 'Error updating streak data' });
-    }
-
-    // Set an HTTP-only cookie with the session token
-    res.setHeader(
-      'Set-Cookie',
-      cookie.serialize('token', data.session.access_token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production', // Secure in production
-        sameSite: 'Strict', // Protect against CSRF
-        path: '/',
-        maxAge: 60 * 60 * 24 * 7, // 7 days
-      })
-    );
-
-    // Respond with user data and updated streak
-    return res.status(200).json({ 
-      user: data.user,
-      streak: newStreak
+    return res.status(200).json({
+      user: {
+        email: sessionUser.user.email,
+        username: profile?.username || "N/A",
+        streak,
+      },
     });
-
   } catch (err) {
-    console.error('API Error:', err); // Log error to Vercel logs
-    return res.status(500).json({ error: 'Internal Server Error' });
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 }
