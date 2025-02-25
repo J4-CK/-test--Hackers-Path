@@ -31,28 +31,6 @@ export default function LessonTemplate() {
         </>
       ),
     },
-    {
-      title: "Risk Assessment",
-      content: (
-        <>
-          <h2 className="lesson-text">Risk Assessment</h2>
-          <p className="lesson-text">Details about this topic go here.</p>
-          <div className="lesson-text">Example bullet point.</div>
-          <div className="lesson-text">Another example.</div>
-        </>
-      ),
-    },
-    {
-      title: "Risk Treatment",
-      content: (
-        <>
-          <h2 className="lesson-text">Risk Treatment</h2>
-          <p className="lesson-text">Details about this topic go here.</p>
-          <div className="lesson-text">Example bullet point.</div>
-          <div className="lesson-text">Another example.</div>
-        </>
-      ),
-    },
   ];
 
   const nextSection = () => setCurrentSection((currentSection + 1) % sections.length);
