@@ -8,25 +8,34 @@ export default function LessonTemplate() {
 
   // Define lesson sections here.
   // Duplicate and modify the objects inside the sections array to add more content.
+  import { useState } from "react";
+import Head from "next/head";
+import { useRouter } from "next/router";
+
+export default function LessonTemplate() {
+  const [currentSection, setCurrentSection] = useState(0);
+  const router = useRouter();
+
+  // Define lesson sections here.
+  // Duplicate and modify the objects inside the sections array to add more content.
   const sections = [
     {
-      title: "Risk Continued",
+      title: "Lesson Title - Section 1",
       content: (
         <>
-          <p className="lesson-text">Now that we understand what risk consists of how do we address it?</p>
-          <div className="lesson-text"><b>Risk Identification:</b> How do we identify risk?</div>
-          <div className="lesson-text"><b>Risk Assessment:</b> How do we quantify risk?</div>
-          <div className="lesson-text"><b>Risk Treatment:</b> How do we treat risk?</div>
+          <p className="lesson-text">Lesson introduction or explanation goes here.</p>
+          <div className="lesson-text"><b>Key Concept 1:</b> Brief explanation.</div>
+          <div className="lesson-text"><b>Key Concept 2:</b> Another explanation.</div>
         </>
       ),
     },
     {
-      title: "Risk Identification",
+      title: "Lesson Title - Section 2",
       content: (
         <>
-          <h2 className="lesson-text">We talked previously about assets, threats, and vulnerabilities. These are all aspects involved in Risk Identification./h2>
-          <div className="lesson-text">Risk Identification isn't just done one time. It's a continuous process of finding, understanding, and preparing for risk.</div>
-          <p className="lesson-text">Some important things to remember:</p>
+          <h2 className="lesson-text">Subtopic Title</h2>
+          <p className="lesson-text">Details about this topic go here.</p>
+          <div className="lesson-text">Example bullet point.</div>
           <div className="lesson-text">Another example.</div>
         </>
       ),
