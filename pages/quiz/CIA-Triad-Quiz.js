@@ -11,12 +11,8 @@ export default function CIATriadQuiz() {
   const [correctAnswers, setCorrectAnswers] = useState(null);
   const [score, setScore] = useState(null);
   const [progress, setProgress] = useState(0);
-
-  const answerOptions = {
-    q3_1: ["Protecting Sensitive Data", "Ensuring Data is Unchanged", "Allowing Access When Needed"],
-    q3_2: ["Data remains Accurate", "Preventing Unauthorized Access", "Ensuring Availability"],
-    q3_3: ["System and Data Accessibility", "Data Encryption", "Integrity Maintenance"]
-  };
+  const [answerOptions, setAnswerOptions] = useState({ q3_1: [], q3_2: [], q3_3: [] });
+  const shuffleArray = (array) => [...array].sort(() => Math.random() - 0.5);
 
   useEffect(() => {
     async function fetchCorrectAnswers() {
@@ -40,6 +36,12 @@ export default function CIATriadQuiz() {
     }
 
     fetchCorrectAnswers();
+
+    setAnswerOptions = ({
+      q3_1: shuffleArray(["Protecting Sensitive Data from Unauthorized Access", "Hiding Data from Everybody", "Making and Keeping Agreements"]),
+      q3_2: shuffleArray(["Keeping People Honest", "Data Remains Accurate and the Same", "Keeping Data Whole and Undivided"]),
+      q3_3: shuffleArray(["Systems and Data are Accessible to Everybody at All Times", "The Freedom to Do Any Action", "Systems and Data are Accessible When Needed By Authorized People"])
+    });
   }, []);
 
   const handleChange = (event) => {
