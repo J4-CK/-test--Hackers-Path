@@ -36,8 +36,7 @@ export default function CIATriadQuiz() {
     }
 
     fetchCorrectAnswers();
-
-    setAnswerOptions = ({
+    setAnswerOptions({
       q3_1: shuffleArray(["Protecting Sensitive Data from Unauthorized Access", "Hiding Data from Everybody", "Making and Keeping Agreements"]),
       q3_2: shuffleArray(["Keeping People Honest", "Data Remains Accurate and the Same", "Keeping Data Whole and Undivided"]),
       q3_3: shuffleArray(["Systems and Data are Accessible to Everybody at All Times", "The Freedom to Do Any Action", "Systems and Data are Accessible When Needed By Authorized People"])
@@ -76,13 +75,6 @@ export default function CIATriadQuiz() {
       <header>
         <h1>CIA Triad Quiz</h1>
       </header>
-
-      <div className="roadmap">
-        <a href="/leaderboard">Leaderboard</a>
-        <a href="/lessons">Lessons</a>
-        <a href="/quizzes">Quizzes</a>
-        <a href="/profile">Profile</a>
-      </div>
 
       <div className="quiz-container">
         <h2>Test your knowledge of the CIA Triad</h2>
