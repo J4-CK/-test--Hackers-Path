@@ -39,7 +39,7 @@ export default function CIATriadQuiz() {
     setAnswerOptions({
       q3_1: shuffleArray(["Protecting Sensitive Data from Unauthorized Access", "Hiding Data from Everybody", "Making and Keeping Agreements"]),
       q3_2: shuffleArray(["Keeping People Honest", "Data Remains Accurate and the Same", "Keeping Data Whole and Undivided"]),
-      q3_3: shuffleArray(["Systems and Data are Accessible to Everybody at All Times", "The Freedom to Do Any Action", "Systems and Data are Accessible When Needed By Authorized People"])
+      q3_3: shuffleArray(["Systems and Data are Accessible to Everybody at All Times", "The Freedom to Do Any Action", "System and Data are Accessible When Needed by Authorized People"])
     });
   }, []);
 
