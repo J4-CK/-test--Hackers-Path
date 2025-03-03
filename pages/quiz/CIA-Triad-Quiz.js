@@ -11,6 +11,7 @@ export default function CIATriadQuiz() {
   const [correctAnswers, setCorrectAnswers] = useState(null);
   const [score, setScore] = useState(null);
   const [progress, setProgress] = useState(0);
+  const [options, setOptions] = useState([]);
   
   useEffect(() => {
     async function fetchAnswers() {
@@ -33,7 +34,22 @@ export default function CIATriadQuiz() {
       }
     }
 
+    async function fetchOptions() {
+      const { data, error } = await supabase
+        .from("answers")
+        .select("options")
+        .eq("lesson_name", "CIA Triad")
+        .single();
+
+      if (error) {
+        console.error("Error fetching options:", error);
+      } else {
+        setOptions(data.options);
+      }
+    }
+
     fetchAnswers();
+    fetchOptions();
   }, []);
 
   const handleChange = (event) => {
@@ -81,15 +97,11 @@ export default function CIATriadQuiz() {
         <form onSubmit={handleSubmit} className="quiz-form">
           <div className="question">
             <p><b>1. What are the three components of the CIA Triad?</b></p>
-            <label className="radio-option">
-              <input type="radio" name="q1" value="Confidentiality, Integrity, Availability" onChange={handleChange} /> Confidentiality, Integrity, Availability
-            </label>
-            <label className="radio-option">
-              <input type="radio" name="q1" value="Confidentiality, Integrity, Accuracy" onChange={handleChange} /> Confidentiality, Integrity, Accuracy
-            </label>
-            <label className="radio-option">
-              <input type="radio" name="q1" value="Comfortability, Integrity, Availability" onChange={handleChange} /> Comfortability, Integrity, Availability
-            </label>
+            {options.length > 0 && options.q1?.map((option, index) => (
+              <label key={index} className="radio-option">
+                <input type="radio" name="q1" value={option} onChange={handleChange} /> {option}
+              </label>
+            ))}
           </div>
 
           <div className="question">
@@ -100,9 +112,16 @@ export default function CIATriadQuiz() {
           <div className="question">
             <p><b>3. Match each aspect of the CIA triad to its definition:</b></p>
             <ul className="match-list">
-              <li>1. Confidentiality <select name="q3_1" onChange={handleChange} className="dropdown"><option value="">Select</option><option value="correct">Correct</option></select></li>
-              <li>2. Integrity <select name="q3_2" onChange={handleChange} className="dropdown"><option value="">Select</option><option value="correct">Correct</option></select></li>
-              <li>3. Availability <select name="q3_3" onChange={handleChange} className="dropdown"><option value="">Select</option><option value="correct">Correct</option></select></li>
+              {["q3_1", "q3_2", "q3_3"].map((key, index) => (
+                <li key={index}>
+                  {key.replace("q3_", "")} <select name={key} onChange={handleChange} className="dropdown">
+                    <option value="">Select</option>
+                    {options[key]?.map((option, i) => (
+                      <option key={i} value={option}>{option}</option>
+                    ))}
+                  </select>
+                </li>
+              ))}
             </ul>
           </div>
 
