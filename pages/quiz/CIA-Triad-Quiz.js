@@ -11,9 +11,15 @@ export default function CIATriadQuiz() {
   const [correctAnswers, setCorrectAnswers] = useState(null);
   const [score, setScore] = useState(null);
   const [progress, setProgress] = useState(0);
-  
+
+  const answerOptions = {
+    q3_1: ["Protecting Sensitive Data", "Ensuring Data is Unchanged", "Allowing Access When Needed"],
+    q3_2: ["Data remains Accurate", "Preventing Unauthorized Access", "Ensuring Availability"],
+    q3_3: ["System and Data Accessibility", "Data Encryption", "Integrity Maintenance"]
+  };
+
   useEffect(() => {
-    async function fetchAnswers() {
+    async function fetchCorrectAnswers() {
       const { data, error } = await supabase
         .from("answers")
         .select("answers")
@@ -33,7 +39,7 @@ export default function CIATriadQuiz() {
       }
     }
 
-    fetchAnswers();
+    fetchCorrectAnswers();
   }, []);
 
   const handleChange = (event) => {
@@ -100,9 +106,33 @@ export default function CIATriadQuiz() {
           <div className="question">
             <p><b>3. Match each aspect of the CIA triad to its definition:</b></p>
             <ul className="match-list">
-              <li>1. Confidentiality <select name="q3_1" onChange={handleChange} className="dropdown"><option value="">Select</option><option value="correct">Correct</option></select></li>
-              <li>2. Integrity <select name="q3_2" onChange={handleChange} className="dropdown"><option value="">Select</option><option value="correct">Correct</option></select></li>
-              <li>3. Availability <select name="q3_3" onChange={handleChange} className="dropdown"><option value="">Select</option><option value="correct">Correct</option></select></li>
+              <li>
+                1. Confidentiality
+                <select name="q3_1" onChange={handleChange} className="dropdown">
+                  <option value="">Select</option>
+                  {answerOptions.q3_1.map((option, i) => (
+                    <option key={i} value={option}>{option}</option>
+                  ))}
+                </select>
+              </li>
+              <li>
+                2. Integrity
+                <select name="q3_2" onChange={handleChange} className="dropdown">
+                  <option value="">Select</option>
+                  {answerOptions.q3_2.map((option, i) => (
+                    <option key={i} value={option}>{option}</option>
+                  ))}
+                </select>
+              </li>
+              <li>
+                3. Availability
+                <select name="q3_3" onChange={handleChange} className="dropdown">
+                  <option value="">Select</option>
+                  {answerOptions.q3_3.map((option, i) => (
+                    <option key={i} value={option}>{option}</option>
+                  ))}
+                </select>
+              </li>
             </ul>
           </div>
 
