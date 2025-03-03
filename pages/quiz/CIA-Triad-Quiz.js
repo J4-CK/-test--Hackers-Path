@@ -1,18 +1,40 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Head from "next/head";
+import { createClient } from "@supabase/supabase-js";
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 export default function CIATriadQuiz() {
   const [answers, setAnswers] = useState({ q1: "", q2: "", q3_1: "", q3_2: "", q3_3: "" });
+  const [correctAnswers, setCorrectAnswers] = useState(null);
   const [score, setScore] = useState(null);
   const [progress, setProgress] = useState(0);
+  
+  useEffect(() => {
+    async function fetchAnswers() {
+      const { data, error } = await supabase
+        .from("answers")
+        .select("answers")
+        .eq("lesson_name", "CIA Triad")
+        .single();
 
-  const correctAnswers = {
-    q1: "correct",
-    q2: "denial of service",
-    q3_1: "correct",
-    q3_2: "correct",
-    q3_3: "correct",
-  };
+      if (error) {
+        console.error("Error fetching answers:", error);
+      } else {
+        setCorrectAnswers({
+          q1: data.answers[0],
+          q2: data.answers[1],
+          q3_1: data.answers[2],
+          q3_2: data.answers[3],
+          q3_3: data.answers[4],
+        });
+      }
+    }
+
+    fetchAnswers();
+  }, []);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -21,6 +43,8 @@ export default function CIATriadQuiz() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    if (!correctAnswers) return;
+
     let newScore = 0;
     const totalQuestions = Object.keys(correctAnswers).length;
 
@@ -57,9 +81,15 @@ export default function CIATriadQuiz() {
         <form onSubmit={handleSubmit} className="quiz-form">
           <div className="question">
             <p><b>1. What are the three components of the CIA Triad?</b></p>
-            <label className="radio-option"><input type="radio" name="q1" value="Confidentiality, Integrity, Availability" onChange={handleChange} /> Confidentiality, Integrity, Availability</label>
-            <label className="radio-option"><input type="radio" name="q1" value="Confidentiality, Integrity, Accuracy" onChange={handleChange} /> Confidentiality, Integrity, Accuracy</label>
-            <label className="radio-option"><input type="radio" name="q1" value="Comfortability, Integrity, Availability" onChange={handleChange} /> Comfortability, Integrity, Availability</label>
+            <label className="radio-option">
+              <input type="radio" name="q1" value="Confidentiality, Integrity, Availability" onChange={handleChange} /> Confidentiality, Integrity, Availability
+            </label>
+            <label className="radio-option">
+              <input type="radio" name="q1" value="Confidentiality, Integrity, Accuracy" onChange={handleChange} /> Confidentiality, Integrity, Accuracy
+            </label>
+            <label className="radio-option">
+              <input type="radio" name="q1" value="Comfortability, Integrity, Availability" onChange={handleChange} /> Comfortability, Integrity, Availability
+            </label>
           </div>
 
           <div className="question">
