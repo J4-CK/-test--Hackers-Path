@@ -12,10 +12,14 @@ export default function CIATriadQuiz() {
   const [score, setScore] = useState(null);
   const [progress, setProgress] = useState(0);
   const [answerOptions, setAnswerOptions] = useState({ q3_1: [], q3_2: [], q3_3: [] });
+  const [correctCount, setCorrectCount] = useState(0);
   const shuffleArray = (array) => [...array].sort(() => Math.random() - 0.5);
 
   useEffect(() => {
-    async function fetchCorrectAnswers() {
+    async function fetchCorrectAnswersandUser() {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUserId(user?.id || "anonymous");
+      
       const { data, error } = await supabase
         .from("answers")
         .select("answers")
@@ -63,6 +67,23 @@ export default function CIATriadQuiz() {
 
     setScore(newScore);
     setProgress((newScore / totalQuestions) * 100);
+
+    const { data, error } = await supabase.from("quiz_results").insert([
+      {
+        user_id: userId,
+        lesson_name: "CIA Triad",
+        correct_answers: newScore,
+        total_questions: totalQuestions,
+        score_percentage: (newScore / totalQuestions) * 100,
+      },
+    ]);
+
+    if (error) {
+      console.error("Error saving results:", error);
+    } else {
+      console.log("Quiz results saved successfully:", data);
+    }
+  };
   };
 
   return (
