@@ -64,22 +64,6 @@ export default function CIATriadQuiz() {
 
     setScore(newScore);
     setProgress((newScore / totalQuestions) * 100);
-
-    const { data, error } = await supabase.from("quiz_results").insert([
-      {
-        lesson_name: "CIA Triad",
-        correct_answers: newScore,
-        total_questions: totalQuestions,
-        score_percentage: (newScore / totalQuestions) * 100,
-      },
-    ]);
-
-    if (error) {
-      console.error("Error saving results:", error);
-    } else {
-      console.log("Quiz results saved successfully:", data);
-    }
-  };
   };
 
   return (
