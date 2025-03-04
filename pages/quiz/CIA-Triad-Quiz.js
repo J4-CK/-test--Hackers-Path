@@ -77,6 +77,14 @@ export default function CIATriadQuiz() {
         <h1>CIA Triad Quiz</h1>
       </header>
 
+      {/* Roadmap Navigation */}
+      <div className="roadmap">
+        <a href="/leaderboard">Leaderboard</a>
+        <a href="/htmllessons/lessons.html">Lessons</a>
+        <a href="/htmlquiz/quizzes.html">Quizzes</a>
+        <a href="/profile">Profile</a>
+      </div>
+    
       <div className="quiz-container">
         <h2>Test your knowledge of the CIA Triad</h2>
         <form onSubmit={handleSubmit} className="quiz-form">
