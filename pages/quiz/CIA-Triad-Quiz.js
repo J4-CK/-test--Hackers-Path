@@ -16,10 +16,7 @@ export default function CIATriadQuiz() {
   const shuffleArray = (array) => [...array].sort(() => Math.random() - 0.5);
 
   useEffect(() => {
-    async function fetchCorrectAnswersandUser() {
-      const { data: { user } } = await supabase.auth.getUser();
-      setUserId(user?.id || "anonymous");
-      
+    async function fetchCorrectAnswers() {      
       const { data, error } = await supabase
         .from("answers")
         .select("answers")
@@ -70,7 +67,6 @@ export default function CIATriadQuiz() {
 
     const { data, error } = await supabase.from("quiz_results").insert([
       {
-        user_id: userId,
         lesson_name: "CIA Triad",
         correct_answers: newScore,
         total_questions: totalQuestions,
