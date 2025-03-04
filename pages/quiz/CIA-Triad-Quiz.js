@@ -74,7 +74,7 @@ export default function CIATriadQuiz() {
       </Head>
 
       <header>
-        <h1>CIA Triad Quiz</h1>
+        <h1><a href="/">Hacker's Path</a></h1>
       </header>
 
       {/* Roadmap Navigation */}
