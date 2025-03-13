@@ -134,4 +134,14 @@ const styles = {
   td: { padding: '10px', borderBottom: '1px solid #ddd', color: '#000' },
   evenRow: { backgroundColor: '#f9f9f9' },
   oddRow: { backgroundColor: '#fff' },
+  button: {
+    backgroundColor: '#6a1b9a',
+    color: '#6a1b9a',
+    border: 'none',
+    padding: '10px 20px',
+    margin: '5px',
+    cursor: 'pointer',
+    borderRadius: '5px',
+    fontSize: '16px',
+  }
 };
