@@ -136,7 +136,7 @@ const styles = {
   oddRow: { backgroundColor: '#fff' },
   button: {
     backgroundColor: '#6a1b9a',
-    color: '#6a1b9a',
+    color: 'white',
     border: 'none',
     padding: '10px 20px',
     margin: '5px',
