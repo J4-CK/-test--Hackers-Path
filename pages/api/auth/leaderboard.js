@@ -19,3 +19,33 @@ export async function fetchLeaderboard() {
     console.log("Fetched Data from Supabase:", data); // Debugging
     return data;
 }
+
+export async function fetchLeaderboardstreak() {
+    const { data, error } = await supabase
+        .from('accounts')
+        .select('user_id, name, streak') // Ensure correct fields
+        .order('streak', { ascending: false });
+
+    if (error) {
+        console.error('Error fetching leaderboard:', error);
+        return [];
+    }
+
+    console.log("Fetched Data from Supabase:", data); // Debugging
+    return data;
+}
+
+export async function fetchLeaderboardmonthly() {
+    const { data, error } = await supabase
+        .from('accounts')
+        .select('user_id, name, monthly_points') // Ensure correct fields
+        .order('monthly_points', { ascending: false });
+
+    if (error) {
+        console.error('Error fetching leaderboard:', error);
+        return [];
+    }
+
+    console.log("Fetched Data from Supabase:", data); // Debugging
+    return data;
+}
