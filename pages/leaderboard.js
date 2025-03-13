@@ -130,7 +130,7 @@ export async function getServerSideProps() {
 }
 
 const styles = {
-  th: { backgroundColor: '#6a1b9a', color: 'white', padding: '10px', textAlign: 'center' },
+  th: { backgroundColor: '#6a1b9a', color: 'white', padding: '10px', textAlign: 'center', white-space: 'nowrap' },
   td: { padding: '10px', borderBottom: '1px solid #ddd', color: '#000' },
   evenRow: { backgroundColor: '#f9f9f9' },
   oddRow: { backgroundColor: '#fff' },
