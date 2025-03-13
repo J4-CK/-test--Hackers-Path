@@ -82,7 +82,7 @@ export default function Leaderboard({ initialPlayers }) {
                 <tr key={player.user_id} style={index % 2 === 0 ? styles.evenRow : styles.oddRow}>
                   <td style={styles.td}>{index + 1}</td>
                   <td style={styles.td}>{player.name}</td>
-                  <td style={styles.td}>{leaderboardType === 'default' ? loggedInUser.total_points : leaderboardType === 'streak' ? loggedInUser.streak : loggedInUser.monthly_points}</td>
+                  <td style={styles.td}>{leaderboardType === 'default' ? player.total_points : leaderboardType === 'streak' ? player.streak : player.monthly_points}</td>
                 </tr>
               ))}
             </tbody>
