@@ -68,13 +68,13 @@ export default function Leaderboard({ initialPlayers }) {
         <button onClick={() => fetchData('monthly')}>Monthly</button>
 
         <div className="leaderboard">
-          <h1>{leaderboardType === 'default' ? 'Top 20 Leaderboard' : leaderboardType === 'streak' ? 'Top Streak Leaderboard' : 'Top Monthly Leaderboard'}</h1>
+          <h1>{leaderboardType === 'default' ? 'Top 20 Leaderboard' : leaderboardType === 'streak' ? 'Top Streak Leaderboard' : 'Top Monthly Points Leaderboard'}</h1>
           <table style={{ margin: '0 auto', borderCollapse: 'collapse', width: '80%' }}>
             <thead>
               <tr>
                 <th style={styles.th}>Rank</th>
                 <th style={styles.th}>Username</th>
-                <th style={styles.th}>Score</th>
+                <th style={styles.th}>{leaderboardType === 'default' ? 'Points' : leaderboardType === 'streak' ? 'Streak' : 'Monthly Points'}</th>
               </tr>
             </thead>
             <tbody>
@@ -82,7 +82,7 @@ export default function Leaderboard({ initialPlayers }) {
                 <tr key={player.user_id} style={index % 2 === 0 ? styles.evenRow : styles.oddRow}>
                   <td style={styles.td}>{index + 1}</td>
                   <td style={styles.td}>{player.name}</td>
-                  <td style={styles.td}>{player.total_points}</td>
+                  <td style={styles.td}>{leaderboardType === 'default' ? loggedInUser.total_points : leaderboardType === 'streak' ? loggedInUser.streak : loggedInUser.monthly_points}</td>
                 </tr>
               ))}
             </tbody>
@@ -97,14 +97,14 @@ export default function Leaderboard({ initialPlayers }) {
                 <tr>
                   <th style={styles.th}>Rank</th>
                   <th style={styles.th}>Username</th>
-                  <th style={styles.th}>Score</th>
+                  <th style={styles.th}>{leaderboardType === 'default' ? 'Points' : leaderboardType === 'streak' ? 'Streak' : 'Monthly Points'}</th>
                 </tr>
               </thead>
               <tbody>
                 <tr style={styles.evenRow}>
                   <td style={styles.td}>{players.findIndex(player => player.name === user.username) + 1}</td>
                   <td style={styles.td}>{loggedInUser.name}</td>
-                  <td style={styles.td}>{loggedInUser.total_points}</td>
+                  <td style={styles.td}>{leaderboardType === 'default' ? loggedInUser.total_points : leaderboardType === 'streak' ? loggedInUser.streak : loggedInUser.monthly_points}</td>
                 </tr>
               </tbody>
             </table>
