@@ -62,10 +62,10 @@ export default function Leaderboard({ initialPlayers }) {
         <a href="/profile">{user?.username ? `Profile (${user.username})` : 'Profile'}</a>
       </div>
 
-      <div style={{ textAlign: 'center', padding: '20px'}}>
-        <button onClick={() => fetchData('default')}>Overall</button>
-        <button onClick={() => fetchData('streak')}>Streak</button>
-        <button onClick={() => fetchData('monthly')}>Monthly</button>
+        <div style={{ textAlign: 'center', padding: '20px' }}>
+          <button style={styles.button} onClick={() => fetchData('default')}>Overall</button>
+          <button style={styles.button} onClick={() => fetchData('streak')}>Streak</button>
+          <button style={styles.button} onClick={() => fetchData('monthly')}>Monthly</button>
 
         <div className="leaderboard">
           <h1>{leaderboardType === 'default' ? 'Top 20 Leaderboard' : leaderboardType === 'streak' ? 'Top 20 Streak Leaderboard' : 'Top 20 Monthly Points Leaderboard'}</h1>
