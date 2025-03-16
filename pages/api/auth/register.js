@@ -65,6 +65,15 @@ export default async function handler(req, res) {
       }
     );
 
+    // === DEBUGGING: Check what auth.uid() resolves to ===
+    const { data: debugData, error: debugError } = await userClient.rpc("debug_uid");
+    if (debugError) {
+      console.error("❌ debug_uid RPC error:", debugError);
+    } else {
+      console.log("🔍 debug_uid result:", debugData?.[0]);
+    }
+    // === END DEBUG ===
+
     // Step 4: Insert into profiles
     const { error: profileError } = await userClient.from('profiles').insert([
       { id: userId, username }
