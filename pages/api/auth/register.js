@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 
-// Public Supabase client
+// Supabase public client
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_ANON_KEY
@@ -39,20 +39,29 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'User registration failed. No user ID returned.' });
     }
 
-    // Step 2: Immediately sign in to get a valid session/token
+    // Step 2: Sign in to get access token
     const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
       email,
       password
     });
 
-    if (signInError || !signInData?.session?.access_token) {
+    // === DEBUG: Log sign-in response ===
+    console.log("📦 signInData:", JSON.stringify(signInData, null, 2));
+    console.log("❌ signInError:", signInError);
+    // === END DEBUG ===
+
+    const token = signInData?.session?.access_token;
+
+    // === DEBUG: Log access token ===
+    console.log("🔑 Access token used:", token);
+    // === END DEBUG ===
+
+    if (signInError || !token) {
       await adminSupabase.auth.admin.deleteUser(userId);
-      return res.status(401).json({ error: 'Sign-in after signup failed: ' + signInError?.message });
+      return res.status(401).json({ error: 'Sign-in after signup failed.' });
     }
 
-    const token = signInData.session.access_token;
-
-    // Step 3: Create an authenticated client with the token
+    // Step 3: Create token-based client
     const userClient = createClient(
       process.env.SUPABASE_URL,
       process.env.SUPABASE_ANON_KEY,
@@ -65,7 +74,7 @@ export default async function handler(req, res) {
       }
     );
 
-    // === DEBUGGING: Check what auth.uid() resolves to ===
+    // === DEBUG: Check what auth.uid() resolves to ===
     const { data: debugData, error: debugError } = await userClient.rpc("debug_uid");
     if (debugError) {
       console.error("❌ debug_uid RPC error:", debugError);
@@ -132,7 +141,7 @@ export default async function handler(req, res) {
 
     return res.status(200).json({ message: 'Registration successful!', user: signUpData.user });
   } catch (err) {
-    console.error('Unexpected API error:', err);
+    console.error('🔥 Unexpected API error:', err);
     return res.status(500).json({ error: 'Internal server error.' });
   }
 }
