@@ -1,12 +1,12 @@
 import { createClient } from '@supabase/supabase-js';
-import { createBrowserClient } from '@supabase/ssr';
 
-// Base anon and admin clients
+// Public Supabase client
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_ANON_KEY
 );
 
+// Admin client (for rollback if needed)
 const adminSupabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -27,7 +27,7 @@ export default async function handler(req, res) {
     // Step 1: Sign up the user
     const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
       email,
-      password,
+      password
     });
 
     if (signUpError) {
@@ -39,25 +39,21 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'User registration failed. No user ID returned.' });
     }
 
-    // Step 2: Sign in to get a valid session/access_token
+    // Step 2: Immediately sign in to get a valid session/token
     const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
       email,
-      password,
+      password
     });
 
-    if (signInError) {
+    if (signInError || !signInData?.session?.access_token) {
       await adminSupabase.auth.admin.deleteUser(userId);
-      return res.status(401).json({ error: 'Sign-in after signup failed: ' + signInError.message });
+      return res.status(401).json({ error: 'Sign-in after signup failed: ' + signInError?.message });
     }
 
-    const token = signInData?.session?.access_token;
-    if (!token) {
-      await adminSupabase.auth.admin.deleteUser(userId);
-      return res.status(400).json({ error: 'Failed to obtain session token after sign-in.' });
-    }
+    const token = signInData.session.access_token;
 
-    // Step 3: Create Supabase client using the token (so auth.uid() works)
-    const userClient = createBrowserClient(
+    // Step 3: Create an authenticated client with the token
+    const userClient = createClient(
       process.env.SUPABASE_URL,
       process.env.SUPABASE_ANON_KEY,
       {
@@ -73,6 +69,7 @@ export default async function handler(req, res) {
     const { error: profileError } = await userClient.from('profiles').insert([
       { id: userId, username }
     ]);
+
     if (profileError) {
       await adminSupabase.auth.admin.deleteUser(userId);
       return res.status(400).json({ error: profileError.message });
@@ -84,7 +81,7 @@ export default async function handler(req, res) {
         user_id: userId,
         name: username,
         region: 'default',
-        completion: [0],
+        completion: [0]
       }
     ];
     const { error: accountsError } = await userClient.from('accounts').insert(accountData);
