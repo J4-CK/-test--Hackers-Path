@@ -22,23 +22,39 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { data: authData, error: authError } = await supabase.auth.signUp({
+    // Step 1: Sign up the user
+    const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
       email,
       password,
     });
 
-    if (authError) {
-      return res.status(400).json({ error: authError.message });
+    if (signUpError) {
+      return res.status(400).json({ error: signUpError.message });
     }
 
-    const userId = authData?.user?.id;
-    const token = authData?.session?.access_token;
-
-    if (!userId || !token) {
-      return res.status(400).json({ error: 'Registration failed: missing user ID or token.' });
+    const userId = signUpData?.user?.id;
+    if (!userId) {
+      return res.status(400).json({ error: 'User registration failed. No user ID returned.' });
     }
 
-    // Create a Supabase client authenticated as the user
+    // Step 2: Immediately sign in to get a valid session/token
+    const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (signInError) {
+      await adminSupabase.auth.admin.deleteUser(userId); // rollback
+      return res.status(401).json({ error: 'Sign-in after signup failed: ' + signInError.message });
+    }
+
+    const token = signInData?.session?.access_token;
+    if (!token) {
+      await adminSupabase.auth.admin.deleteUser(userId);
+      return res.status(400).json({ error: 'Failed to obtain session token after sign-in.' });
+    }
+
+    // Step 3: Create authenticated client using access token
     const userClient = createClient(
       process.env.SUPABASE_URL,
       process.env.SUPABASE_ANON_KEY,
@@ -51,7 +67,7 @@ export default async function handler(req, res) {
       }
     );
 
-    // ➕ Insert into profiles
+    // Step 4: Insert into profiles
     const { error: profileError } = await userClient.from('profiles').insert([
       { id: userId, username }
     ]);
@@ -60,13 +76,13 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: profileError.message });
     }
 
-    // ➕ Insert into accounts
+    // Step 5: Insert into accounts
     const accountData = [
       {
         user_id: userId,
         name: username,
         region: 'default',
-        completion: [0], // int[]
+        completion: [0],
       }
     ];
     const { error: accountsError } = await userClient.from('accounts').insert(accountData);
@@ -75,7 +91,7 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: accountsError.message });
     }
 
-    // ➕ Insert into leaderboard
+    // Step 6: Insert into leaderboard
     const leaderboardData = [
       {
         user_id: userId,
@@ -91,7 +107,7 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: leaderboardError.message });
     }
 
-    // ➕ Insert into completion
+    // Step 7: Insert into completion
     const completionData = [
       {
         user_id: userId,
@@ -106,7 +122,7 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: completionError.message });
     }
 
-    return res.status(200).json({ message: 'Registration successful!', user: authData.user });
+    return res.status(200).json({ message: 'Registration successful!', user: signUpData.user });
   } catch (err) {
     console.error('Unexpected API error:', err);
     return res.status(500).json({ error: 'Internal server error.' });
