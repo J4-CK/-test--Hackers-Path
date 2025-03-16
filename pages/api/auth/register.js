@@ -1,12 +1,11 @@
 import { createClient } from '@supabase/supabase-js';
+import { serialize } from 'cookie';
 
-// Supabase public client
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_ANON_KEY
 );
 
-// Admin client (for rollback if needed)
 const adminSupabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -24,7 +23,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Step 1: Sign up the user
+    // Step 1: Register the user
     const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
       email,
       password
@@ -45,55 +44,46 @@ export default async function handler(req, res) {
       password
     });
 
-    // === DEBUG: Log sign-in response ===
-    console.log("📦 signInData:", JSON.stringify(signInData, null, 2));
-    console.log("❌ signInError:", signInError);
-    // === END DEBUG ===
-
     const token = signInData?.session?.access_token;
-
-    // === DEBUG: Log access token ===
-    console.log("🔑 Access token used:", token);
-    // === END DEBUG ===
 
     if (signInError || !token) {
       await adminSupabase.auth.admin.deleteUser(userId);
       return res.status(401).json({ error: 'Sign-in after signup failed.' });
     }
 
-    // Step 3: Create token-based client
+    // Step 3: Set access token as cookie
+    res.setHeader('Set-Cookie', serialize('sb-access-token', token, {
+      path: '/',
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'Lax',
+      maxAge: 60 * 60 * 24 * 7 // 7 days
+    }));
+
+    // Step 4: Use anon client (Supabase will read cookie automatically)
     const userClient = createClient(
       process.env.SUPABASE_URL,
-      process.env.SUPABASE_ANON_KEY,
-      {
-        global: {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        }
-      }
+      process.env.SUPABASE_ANON_KEY
     );
 
-    // === DEBUG: Check what auth.uid() resolves to ===
-    const { data: debugData, error: debugError } = await userClient.rpc("debug_uid");
+    // Step 5: Debug - Check auth.uid() via RPC
+    const { data: debugData, error: debugError } = await userClient.rpc('debug_uid');
     if (debugError) {
-      console.error("❌ debug_uid RPC error:", debugError);
+      console.error('❌ debug_uid RPC error:', debugError);
     } else {
-      console.log("🔍 debug_uid result:", debugData?.[0]);
+      console.log('🔍 debug_uid result:', debugData?.[0]);
     }
-    // === END DEBUG ===
 
-    // Step 4: Insert into profiles
+    // Step 6: Insert into profiles
     const { error: profileError } = await userClient.from('profiles').insert([
       { id: userId, username }
     ]);
-
     if (profileError) {
       await adminSupabase.auth.admin.deleteUser(userId);
       return res.status(400).json({ error: profileError.message });
     }
 
-    // Step 5: Insert into accounts
+    // Step 7: Insert into accounts
     const accountData = [
       {
         user_id: userId,
@@ -108,7 +98,7 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: accountsError.message });
     }
 
-    // Step 6: Insert into leaderboard
+    // Step 8: Insert into leaderboard
     const leaderboardData = [
       {
         user_id: userId,
@@ -124,7 +114,7 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: leaderboardError.message });
     }
 
-    // Step 7: Insert into completion
+    // Step 9: Insert into completion
     const completionData = [
       {
         user_id: userId,
