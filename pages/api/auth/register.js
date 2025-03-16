@@ -1,15 +1,5 @@
-import { createClient } from '@supabase/supabase-js';
-import { serialize } from 'cookie';
-
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_ANON_KEY
-);
-
-const adminSupabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+import { createServerClient } from '@supabase/auth-helpers-nextjs';
+import { NextResponse } from 'next/server';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -22,8 +12,10 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Email, username, and password are required.' });
   }
 
+  const supabase = createServerClient({ req, res });
+
   try {
-    // Step 1: Register the user
+    // Step 1: Sign up user
     const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
       email,
       password
@@ -35,55 +27,30 @@ export default async function handler(req, res) {
 
     const userId = signUpData?.user?.id;
     if (!userId) {
-      return res.status(400).json({ error: 'User registration failed. No user ID returned.' });
+      return res.status(400).json({ error: 'No user ID returned after signup.' });
     }
 
-    // Step 2: Sign in to get access token
+    // Step 2: Sign in to get session
     const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
       email,
       password
     });
 
-    const token = signInData?.session?.access_token;
-
-    if (signInError || !token) {
-      await adminSupabase.auth.admin.deleteUser(userId);
+    if (signInError || !signInData?.session?.access_token) {
       return res.status(401).json({ error: 'Sign-in after signup failed.' });
     }
 
-    // Step 3: Set access token as cookie
-    res.setHeader('Set-Cookie', serialize('sb-access-token', token, {
-      path: '/',
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'Lax',
-      maxAge: 60 * 60 * 24 * 7 // 7 days
-    }));
+    // Step 3: Supabase will now have cookie session set — all future calls are authenticated
 
-    // Step 4: Use anon client (Supabase will read cookie automatically)
-    const userClient = createClient(
-      process.env.SUPABASE_URL,
-      process.env.SUPABASE_ANON_KEY
-    );
-
-    // Step 5: Debug - Check auth.uid() via RPC
-    const { data: debugData, error: debugError } = await userClient.rpc('debug_uid');
-    if (debugError) {
-      console.error('❌ debug_uid RPC error:', debugError);
-    } else {
-      console.log('🔍 debug_uid result:', debugData?.[0]);
-    }
-
-    // Step 6: Insert into profiles
-    const { error: profileError } = await userClient.from('profiles').insert([
+    // Step 4: Insert into profiles
+    const { error: profileError } = await supabase.from('profiles').insert([
       { id: userId, username }
     ]);
     if (profileError) {
-      await adminSupabase.auth.admin.deleteUser(userId);
       return res.status(400).json({ error: profileError.message });
     }
 
-    // Step 7: Insert into accounts
+    // Step 5: Insert into accounts
     const accountData = [
       {
         user_id: userId,
@@ -92,13 +59,12 @@ export default async function handler(req, res) {
         completion: [0]
       }
     ];
-    const { error: accountsError } = await userClient.from('accounts').insert(accountData);
+    const { error: accountsError } = await supabase.from('accounts').insert(accountData);
     if (accountsError) {
-      await adminSupabase.auth.admin.deleteUser(userId);
       return res.status(400).json({ error: accountsError.message });
     }
 
-    // Step 8: Insert into leaderboard
+    // Step 6: Insert into leaderboard
     const leaderboardData = [
       {
         user_id: userId,
@@ -108,13 +74,12 @@ export default async function handler(req, res) {
         total_points: 0
       }
     ];
-    const { error: leaderboardError } = await userClient.from('leaderboard').insert(leaderboardData);
+    const { error: leaderboardError } = await supabase.from('leaderboard').insert(leaderboardData);
     if (leaderboardError) {
-      await adminSupabase.auth.admin.deleteUser(userId);
       return res.status(400).json({ error: leaderboardError.message });
     }
 
-    // Step 9: Insert into completion
+    // Step 7: Insert into completion
     const completionData = [
       {
         user_id: userId,
@@ -123,9 +88,8 @@ export default async function handler(req, res) {
         total_score: 0
       }
     ];
-    const { error: completionError } = await userClient.from('completion').insert(completionData);
+    const { error: completionError } = await supabase.from('completion').insert(completionData);
     if (completionError) {
-      await adminSupabase.auth.admin.deleteUser(userId);
       return res.status(400).json({ error: completionError.message });
     }
 
