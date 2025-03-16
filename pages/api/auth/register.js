@@ -41,20 +41,9 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'User registration failed. No user ID returned.' });
     }
 
-    // Step 2: Retrieve the authenticated user
-    const { data: userData, error: userError } = await supabase.auth.getUser();
-
-    if (userError || !userData?.user?.id) {
-      console.error("User retrieval error:", userError);
-      await adminSupabase.auth.admin.deleteUser(userId);
-      return res.status(401).json({ error: 'User authentication failed. Please try again.' });
-    }
-
-    console.log("Authenticated User ID:", userData.user.id);
-
-    // Step 3: Insert into profiles
+    // Step 2: Insert into profiles
     const { error: profileError } = await supabase.from('profiles').insert([
-      { id: `${userId}`, username: `${username}` }
+      { id: userId, username }
     ]);
 
     if (profileError) {
@@ -63,16 +52,16 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: profileError.message });
     }
 
-    // Step 4: Insert into accounts (Fix JSON array error)
+    // Step 3: Insert into accounts
     const accountData = [
       {
-        user_id: `${userId}`,
-        name: `${username}`,
+        user_id: userId,
+        name: username,
         region: "default",
         completion: 0
       }
     ];
-    
+
     console.log("Debug Insert Data for Accounts:", JSON.stringify(accountData));
 
     const { error: accountsError } = await supabase.from("accounts").insert(accountData);
@@ -83,10 +72,10 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: accountsError.message });
     }
 
-    // Step 5: Insert into leaderboard
+    // Step 4: Insert into leaderboard
     const leaderboardData = [
       {
-        user_id: `${userId}`,
+        user_id: userId,
         region: "default",
         monthly_points: 0,
         streak: 0,
@@ -104,10 +93,10 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: leaderboardError.message });
     }
 
-    // Step 6: Insert into completion
+    // Step 5: Insert into completion
     const completionData = [
       {
-        user_id: `${userId}`,
+        user_id: userId,
         lesson_id: 0,
         complete: 0,
         total_score: 0
@@ -124,7 +113,7 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: completionError.message });
     }
 
-    return res.status(200).json({ message: 'Registration successful!', user: userData.user });
+    return res.status(200).json({ message: 'Registration successful!', user: authData.user });
   } catch (err) {
     console.error('API Error:', err);
     return res.status(500).json({ error: 'Internal Server Error' });
