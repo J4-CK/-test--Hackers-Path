@@ -1,5 +1,4 @@
-//  REGISTER API (with correct helper for @supabase/auth-helpers-nextjs@0.8.1)
-import { createServerSupabaseClient } from '@supabase/auth-helpers-nextjs';
+import { createPagesServerClient } from '@supabase/auth-helpers-nextjs';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function handler(req = NextApiRequest, res = NextApiResponse) {
@@ -7,11 +6,12 @@ export default async function handler(req = NextApiRequest, res = NextApiRespons
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const supabase = createServerSupabaseClient({ req, res });
+  // Use createPagesServerClient instead of createServerSupabaseClient
+  const supabase = createPagesServerClient({ req, res });
 
   const { email, password, username } = req.body;
 
-  //  Sign the user up
+  // Sign the user up
   const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
     email,
     password,
@@ -23,7 +23,7 @@ export default async function handler(req = NextApiRequest, res = NextApiRespons
 
   const userId = signUpData.user.id;
 
-  //  Insert the user into the `accounts` table
+  // Insert the user into the `accounts` table
   const { error: insertError } = await supabase
     .from('accounts')
     .insert([
