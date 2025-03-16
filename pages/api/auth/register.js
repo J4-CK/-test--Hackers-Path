@@ -1,5 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
+import { createBrowserClient } from '@supabase/ssr';
 
+// Base anon and admin clients
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_ANON_KEY
@@ -37,14 +39,14 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'User registration failed. No user ID returned.' });
     }
 
-    // Step 2: Immediately sign in to get a valid session/token
+    // Step 2: Sign in to get a valid session/access_token
     const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
     if (signInError) {
-      await adminSupabase.auth.admin.deleteUser(userId); // rollback
+      await adminSupabase.auth.admin.deleteUser(userId);
       return res.status(401).json({ error: 'Sign-in after signup failed: ' + signInError.message });
     }
 
@@ -54,16 +56,16 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Failed to obtain session token after sign-in.' });
     }
 
-    // Step 3: Create authenticated client using access token
-    const userClient = createClient(
+    // Step 3: Create Supabase client using the token (so auth.uid() works)
+    const userClient = createBrowserClient(
       process.env.SUPABASE_URL,
       process.env.SUPABASE_ANON_KEY,
       {
         global: {
           headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
+            Authorization: `Bearer ${token}`
+          }
+        }
       }
     );
 
