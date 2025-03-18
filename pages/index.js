@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 export default function HomePage() {
   const router = useRouter();
   const [user, setUser] = useState(null);
-  const [menuOpen, setMenuOpen] = useState(false); // For hamburger toggle
+  const [menuOpen, setMenuOpen] = useState(false);
 
   // Fetch session on load
   useEffect(() => {
@@ -13,49 +13,65 @@ export default function HomePage() {
       const data = await res.json();
 
       if (res.ok) {
-        setUser(data.user); // Set user data
+        setUser(data.user);
       } else {
-        router.push('/login'); // Redirect to login if not authenticated
+        router.push('/login');
       }
     }
     checkSession();
   }, [router]);
 
+  // Close menu on scroll
+  useEffect(() => {
+    const handleScroll = () => setMenuOpen(false);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Close menu on link click
+  const handleNavLinkClick = () => {
+    setMenuOpen(false);
+  };
+
   // Handle logout
   async function handleLogout() {
     await fetch('/api/auth/logout', { method: 'POST' });
-    router.push('/login'); // Redirect to login after logout
+    router.push('/login');
   }
 
   if (!user) {
-    return <div>Loading...</div>; // Show loading spinner or fallback UI
+    return <div>Loading...</div>;
   }
 
   return (
     <div>
-      {/* Link to external CSS */}
       <link rel="stylesheet" href="/styles/homepagestyle.css" />
-      
+
       <header>
         <h1><a href="/">Hacker's Path</a></h1>
       </header>
 
-      {/* Roadmap Section with Hamburger */}
       <div className="roadmap-wrapper">
-        <button className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>
-          ☰
-        </button>
+        {!menuOpen ? (
+          <button className="hamburger" onClick={() => setMenuOpen(true)}>
+            ☰
+          </button>
+        ) : (
+          <button className="hamburger close-btn" onClick={() => setMenuOpen(false)}>
+            ×
+          </button>
+        )}
         <nav className={`roadmap ${menuOpen ? 'open' : ''}`}>
-          <a href="/leaderboard">Leaderboard</a>
-          <a href="/htmllessons/lessons.html">Lessons</a>
-          <a href="/htmlquiz/quizzes.html">Quizzes</a>
-          <a href="/profile">{user.username ? `Profile (${user.username})` : 'Profile'}</a>
+          <a href="/leaderboard" onClick={handleNavLinkClick}>Leaderboard</a>
+          <a href="/htmllessons/lessons.html" onClick={handleNavLinkClick}>Lessons</a>
+          <a href="/htmlquiz/quizzes.html" onClick={handleNavLinkClick}>Quizzes</a>
+          <a href="/profile" onClick={handleNavLinkClick}>
+            {user.username ? `Profile (${user.username})` : 'Profile'}
+          </a>
         </nav>
       </div>
 
-      {/* Main Content Container */}
       <div className="container">
-        {/* Player Stats Section */}
         <div className="stats">
           <div className="box">
             <h3>Daily Points</h3>
@@ -67,7 +83,6 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Lessons Section */}
         <div className="section">
           <h2>Lessons</h2>
           <div className="buttons">
@@ -77,7 +92,6 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Quizzes Section */}
         <div className="section">
           <h2>Quizzes</h2>
           <div className="buttons">
@@ -88,7 +102,6 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Logout Button */}
         <button onClick={handleLogout} className="logout-btn">
           Logout
         </button>
