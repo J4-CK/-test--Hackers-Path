@@ -451,13 +451,22 @@ body {
 /* Responsive Design for Small Screens */
 @media (max-width: 600px) {
   .roadmap {
-    flex-direction: column; /* Stack vertically on small screens */
-    align-items: stretch; /* Stretch full width */
+    flex-direction: column;
+    align-items: stretch;
+    padding: 10px;
   }
 
   .roadmap a {
-    width: 100%; /* Full-width buttons */
-    margin: 5px 0; /* Vertical spacing */
+    width: 100%;
+    margin: 5px 0;
+    padding: 8px 12px; /* reduce button height */
+    font-size: 1rem;   /* smaller text for compact look */
   }
+
+  header h1 a {
+    font-size: 1.5em; /* slightly reduce title on small screens */
+  }
+}
+
    
   
