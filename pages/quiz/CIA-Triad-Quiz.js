@@ -16,15 +16,26 @@ export default function CIATriadQuiz() {
   const [user, setUser] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [updateMessage, setUpdateMessage] = useState("");
+  const [pointsAdded, setPointsAdded] = useState(false);
   const router = useRouter();
   
   const shuffleArray = (array) => [...array].sort(() => Math.random() - 0.5);
 
   useEffect(() => {
-    // Get the current user
+    // Get the current user as soon as the component mounts
     const getCurrentUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      setUser(user);
+      const { data, error } = await supabase.auth.getUser();
+      if (error) {
+        console.error("Error getting user:", error);
+        return;
+      }
+      
+      if (data && data.user) {
+        setUser(data.user);
+        console.log("User authenticated:", data.user.id);
+      } else {
+        console.log("No authenticated user found");
+      }
     };
 
     // Fetch correct answers
@@ -48,13 +59,32 @@ export default function CIATriadQuiz() {
       }
     }
 
+    // Execute both functions
     getCurrentUser();
     fetchCorrectAnswers();
+    
+    // Set up answer options
     setAnswerOptions({
       q3_1: shuffleArray(["Protecting Sensitive Data from Unauthorized Access", "Hiding Data from Everybody", "Making and Keeping Agreements"]),
       q3_2: shuffleArray(["Keeping People Honest", "Data Remains Accurate and the Same", "Keeping Data Whole and Undivided"]),
       q3_3: shuffleArray(["Systems and Data are Accessible to Everybody at All Times", "The Freedom to Do Any Action", "System and Data are Accessible When Needed by Authorized People"])
     });
+    
+    // Set up auth state listener
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' && session) {
+        setUser(session.user);
+        console.log("User signed in:", session.user.id);
+      } else if (event === 'SIGNED_OUT') {
+        setUser(null);
+        console.log("User signed out");
+      }
+    });
+    
+    // Clean up the auth listener when the component unmounts
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
   }, []);
 
   const handleChange = (event) => {
@@ -64,6 +94,10 @@ export default function CIATriadQuiz() {
 
   // Function to update leaderboard points
   const updateLeaderboardPoints = async (pointsToAdd) => {
+    // Reset message and points added flag
+    setUpdateMessage("");
+    setPointsAdded(false);
+    
     if (!user) {
       setUpdateMessage("You need to be logged in to update your points.");
       return false;
@@ -72,12 +106,16 @@ export default function CIATriadQuiz() {
     setIsSubmitting(true);
     
     try {
+      console.log("Updating points for user:", user.id);
+      
       // First, get the current leaderboard entry for the user
       const { data: existingEntry, error: fetchError } = await supabase
         .from("leaderboard")
-        .select("total_points")
+        .select("total_points, monthly_points, streak")
         .eq("user_id", user.id)
         .single();
+
+      console.log("Fetch result:", existingEntry, fetchError);
 
       if (fetchError && fetchError.code !== "PGRST116") { // PGRST116 is "no rows returned"
         console.error("Error fetching leaderboard entry:", fetchError);
@@ -88,10 +126,22 @@ export default function CIATriadQuiz() {
 
       // If user exists, update their points, otherwise create a new entry
       if (existingEntry) {
-        const newPoints = existingEntry.total_points + pointsToAdd;
+        // Update points
+        const newTotalPoints = existingEntry.total_points + pointsToAdd;
+        const newMonthlyPoints = existingEntry.monthly_points + pointsToAdd;
+        
+        // Update streak (increment by 1 if they completed the quiz successfully)
+        const newStreak = pointsToAdd > 0 ? existingEntry.streak + 1 : existingEntry.streak;
+        
+        console.log("Updating existing entry with new points:", newTotalPoints);
+        
         const { error: updateError } = await supabase
           .from("leaderboard")
-          .update({ total_points: newPoints })
+          .update({ 
+            total_points: newTotalPoints,
+            monthly_points: newMonthlyPoints,
+            streak: newStreak
+          })
           .eq("user_id", user.id);
 
         if (updateError) {
@@ -100,10 +150,21 @@ export default function CIATriadQuiz() {
           setIsSubmitting(false);
           return false;
         }
+        
+        console.log("Points updated successfully");
       } else {
+        // For new users, create an entry with initial values
+        console.log("Creating new leaderboard entry");
+        
         const { error: insertError } = await supabase
           .from("leaderboard")
-          .insert([{ user_id: user.id, total_points: pointsToAdd }]);
+          .insert([{ 
+            user_id: user.id, 
+            total_points: pointsToAdd,
+            monthly_points: pointsToAdd,
+            streak: pointsToAdd > 0 ? 1 : 0,
+            region: "Unknown" // Default value
+          }]);
 
         if (insertError) {
           console.error("Error creating leaderboard entry:", insertError);
@@ -111,9 +172,12 @@ export default function CIATriadQuiz() {
           setIsSubmitting(false);
           return false;
         }
+        
+        console.log("New leaderboard entry created successfully");
       }
 
       setUpdateMessage(`Successfully added ${pointsToAdd} points to your leaderboard!`);
+      setPointsAdded(true);
       setIsSubmitting(false);
       return true;
     } catch (error) {
@@ -143,14 +207,19 @@ export default function CIATriadQuiz() {
     // Calculate points to add (score * 10)
     const pointsToAdd = newScore * 10;
     
-    // Only update leaderboard if there are points to add
-    if (pointsToAdd > 0) {
-      await updateLeaderboardPoints(pointsToAdd);
+    // Only show "Added points" message if update was successful
+    const success = await updateLeaderboardPoints(pointsToAdd);
+    if (!success) {
+      setPointsAdded(false);
     }
   };
 
   const handleViewLeaderboard = () => {
     router.push("/leaderboard");
+  };
+
+  const handleLogin = () => {
+    router.push("/login"); // Adjust this path based on your login page URL
   };
 
   return (
@@ -174,6 +243,14 @@ export default function CIATriadQuiz() {
     
       <div className="quiz-container">
         <h2>Test your knowledge of the CIA Triad</h2>
+        
+        {!user && (
+          <div className="login-prompt">
+            <p>Please log in to save your quiz results to the leaderboard.</p>
+            <button onClick={handleLogin} className="login-btn">Log In</button>
+          </div>
+        )}
+        
         <form onSubmit={handleSubmit} className="quiz-form">
           <div className="question">
             <p><b>1. What are the three components of the CIA Triad?</b></p>
@@ -237,10 +314,20 @@ export default function CIATriadQuiz() {
             <div className="progress-bar-container">
               <div className="progress-bar" style={{ width: `${progress}%` }}></div>
             </div>
+            
             {updateMessage && <p className="update-message">{updateMessage}</p>}
-            {score > 0 && (
+            
+            {pointsAdded && score > 0 && (
               <p>Added {score * 10} points to your leaderboard total!</p>
             )}
+            
+            {!user && score > 0 && (
+              <div className="login-prompt">
+                <p>Log in to save these points to your leaderboard!</p>
+                <button onClick={handleLogin} className="login-btn">Log In</button>
+              </div>
+            )}
+            
             <button onClick={handleViewLeaderboard} className="view-leaderboard-btn">
               View Leaderboard
             </button>
