@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { supabase, SUPABASE_URL } from "../../config/supabaseClient";
-import { useRouter } from "next/navigation";
+import { supabase } from "../../config/supabaseClient";
+import { useRouter } from "next/router";
 
 export default function Quiz() {
   const [questionIndex, setQuestionIndex] = useState(0);
@@ -9,7 +9,6 @@ export default function Quiz() {
   const [score, setScore] = useState(0);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [apiToken, setApiToken] = useState(null);
   const router = useRouter();
 
   const questions = [
@@ -25,76 +24,39 @@ export default function Quiz() {
     },
   ];
 
-  // Authentication and API token setup
+  // Authentication setup
   useEffect(() => {
-    const setupAuthentication = async () => {
-      try {
-        setLoading(true);
-        
-        // Get current session
-        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-        
-        if (sessionError) {
-          console.error("Session error:", sessionError);
-          setLoading(false);
-          return;
-        }
-        
-        if (!session) {
-          console.log("No session found");
-          setLoading(false);
-          return;
-        }
-        
-        // Session exists, set user
-        console.log("Session found, user ID:", session.user.id);
-        setUser(session.user);
-        
-        // Get and store API token
-        const token = session.access_token;
-        setApiToken(token);
-        
-        // Set auth headers for future API requests
-        supabase.supabaseUrl = SUPABASE_URL;
-        supabase.supabaseKey = token;
-        
-        console.log("API authentication setup complete");
-      } catch (err) {
-        console.error("Authentication setup error:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    setupAuthentication();
-
+    checkUser();
+    
     // Set up auth listener
-    const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log("Auth state changed:", event);
-      
-      if (session) {
-        console.log("New session established");
-        setUser(session.user);
-        
-        // Update API token when auth state changes
-        setApiToken(session.access_token);
-        
-        // Update auth headers
-        supabase.supabaseUrl = SUPABASE_URL;
-        supabase.supabaseKey = session.access_token;
-      } else {
-        console.log("Session ended");
-        setUser(null);
-        setApiToken(null);
-      }
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+      setLoading(false);
     });
 
     return () => {
-      if (authListener && authListener.subscription) {
-        authListener.subscription.unsubscribe();
+      if (subscription) {
+        subscription.unsubscribe();
       }
     };
   }, []);
+
+  const checkUser = async () => {
+    try {
+      const { data: { session }, error } = await supabase.auth.getSession();
+      
+      if (error) {
+        console.error("Error checking auth status:", error.message);
+        return;
+      }
+
+      setUser(session?.user ?? null);
+    } catch (error) {
+      console.error("Error:", error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleAnswer = (option) => {
     setSelectedOption(option);
@@ -111,18 +73,12 @@ export default function Quiz() {
   };
 
   const handleSubmitQuiz = async () => {
-    if (!user || !apiToken) {
-      alert("Please log in to submit your score.");
-      router.push("/login");
+    if (!user) {
+      handleLoginRedirect();
       return;
     }
 
     try {
-      // Create a new client with the current token to ensure fresh authentication
-      const authClient = supabase.auth.setSession(apiToken);
-      
-      console.log("Submitting quiz with authenticated client");
-      
       const { error } = await supabase
         .from("quiz_results")
         .insert([{ 
@@ -133,17 +89,13 @@ export default function Quiz() {
       
       if (error) {
         console.error("Database error:", error);
-        
-        // Check if it's an authentication error
-        if (error.code === 'PGRST301' || error.message.includes('JWT')) {
-          alert("Your session has expired. Please log in again.");
-          router.push("/login");
+        if (error.message.includes('JWT')) {
+          handleLoginRedirect();
         } else {
           alert("Error submitting quiz. Please try again.");
         }
       } else {
-        console.log("Quiz submitted successfully");
-        alert("Quiz submitted!");
+        alert("Quiz submitted successfully!");
         router.push("/dashboard");
       }
     } catch (err) {
