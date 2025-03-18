@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 export default function HomePage() {
   const router = useRouter();
   const [user, setUser] = useState(null);
+  const [menuOpen, setMenuOpen] = useState(false); // For hamburger toggle
 
   // Fetch session on load
   useEffect(() => {
@@ -34,17 +35,22 @@ export default function HomePage() {
     <div>
       {/* Link to external CSS */}
       <link rel="stylesheet" href="/styles/homepagestyle.css" />
+      
       <header>
         <h1><a href="/">Hacker's Path</a></h1>
       </header>
 
-      {/* Roadmap Section */}
-      <div className="roadmap">
-        <a href="/leaderboard">Leaderboard</a>
-        <a href="/htmllessons/lessons.html">Lessons</a>
-        <a href="/htmlquiz/quizzes.html">Quizzes</a>
-        {/* Display the user's username on the "Profile" button */}
-        <a href="/profile">{user.username ? `Profile (${user.username})` : 'Profile'}</a>
+      {/* Roadmap Section with Hamburger */}
+      <div className="roadmap-wrapper">
+        <button className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>
+          ☰
+        </button>
+        <nav className={`roadmap ${menuOpen ? 'open' : ''}`}>
+          <a href="/leaderboard">Leaderboard</a>
+          <a href="/htmllessons/lessons.html">Lessons</a>
+          <a href="/htmlquiz/quizzes.html">Quizzes</a>
+          <a href="/profile">{user.username ? `Profile (${user.username})` : 'Profile'}</a>
+        </nav>
       </div>
 
       {/* Main Content Container */}
