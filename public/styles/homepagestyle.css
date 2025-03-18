@@ -69,10 +69,13 @@ body {
           
   
   /* Container Styles */
-  .container {
-    position: relative;
-    padding: 20px;
-  }
+.container {
+  width: 100%;
+  max-width: 100%; /* Remove constraints on mobile */
+  padding: 20px;
+  box-sizing: border-box; /* Ensures padding doesn't overflow */
+}
+
   
   /* Player Stats Section */
   .stats {
