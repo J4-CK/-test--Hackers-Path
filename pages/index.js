@@ -75,7 +75,7 @@ export default function HomePage() {
         <div className="section">
           <h2>Quizzes</h2>
           <div className="buttons">
-            <a href="/htmlquiz/xss-quiz.html">XSS Quiz</a>
+            <a href="/quiz/CIA-Triad-Quiz">CIA Triad Quiz</a>
             <a href="/htmlquiz/cybersecurity-quiz.html">What is Cybersecurity? Quiz</a>
             <a href="/htmlquiz/strong-passwords-quiz.html">Strong Passwords Quiz</a>
           </div>
