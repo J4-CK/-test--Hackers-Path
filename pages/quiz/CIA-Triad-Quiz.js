@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Head from "next/head";
 import { createClient } from "@supabase/supabase-js";
+import { useRouter } from "next/router";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -12,10 +13,21 @@ export default function CIATriadQuiz() {
   const [score, setScore] = useState(null);
   const [progress, setProgress] = useState(0);
   const [answerOptions, setAnswerOptions] = useState({ q3_1: [], q3_2: [], q3_3: [] });
-  const [correctCount, setCorrectCount] = useState(0);
+  const [user, setUser] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [updateMessage, setUpdateMessage] = useState("");
+  const router = useRouter();
+  
   const shuffleArray = (array) => [...array].sort(() => Math.random() - 0.5);
 
   useEffect(() => {
+    // Get the current user
+    const getCurrentUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+    };
+
+    // Fetch correct answers
     async function fetchCorrectAnswers() {      
       const { data, error } = await supabase
         .from("answers")
@@ -36,6 +48,7 @@ export default function CIATriadQuiz() {
       }
     }
 
+    getCurrentUser();
     fetchCorrectAnswers();
     setAnswerOptions({
       q3_1: shuffleArray(["Protecting Sensitive Data from Unauthorized Access", "Hiding Data from Everybody", "Making and Keeping Agreements"]),
@@ -49,7 +62,69 @@ export default function CIATriadQuiz() {
     setAnswers((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (event) => {
+  // Function to update leaderboard points
+  const updateLeaderboardPoints = async (pointsToAdd) => {
+    if (!user) {
+      setUpdateMessage("You need to be logged in to update your points.");
+      return false;
+    }
+
+    setIsSubmitting(true);
+    
+    try {
+      // First, get the current leaderboard entry for the user
+      const { data: existingEntry, error: fetchError } = await supabase
+        .from("leaderboard")
+        .select("total_points")
+        .eq("user_id", user.id)
+        .single();
+
+      if (fetchError && fetchError.code !== "PGRST116") { // PGRST116 is "no rows returned"
+        console.error("Error fetching leaderboard entry:", fetchError);
+        setUpdateMessage("Error updating points. Please try again.");
+        setIsSubmitting(false);
+        return false;
+      }
+
+      // If user exists, update their points, otherwise create a new entry
+      if (existingEntry) {
+        const newPoints = existingEntry.total_points + pointsToAdd;
+        const { error: updateError } = await supabase
+          .from("leaderboard")
+          .update({ total_points: newPoints })
+          .eq("user_id", user.id);
+
+        if (updateError) {
+          console.error("Error updating points:", updateError);
+          setUpdateMessage("Error updating points. Please try again.");
+          setIsSubmitting(false);
+          return false;
+        }
+      } else {
+        const { error: insertError } = await supabase
+          .from("leaderboard")
+          .insert([{ user_id: user.id, total_points: pointsToAdd }]);
+
+        if (insertError) {
+          console.error("Error creating leaderboard entry:", insertError);
+          setUpdateMessage("Error updating points. Please try again.");
+          setIsSubmitting(false);
+          return false;
+        }
+      }
+
+      setUpdateMessage(`Successfully added ${pointsToAdd} points to your leaderboard!`);
+      setIsSubmitting(false);
+      return true;
+    } catch (error) {
+      console.error("Unexpected error:", error);
+      setUpdateMessage("An unexpected error occurred. Please try again.");
+      setIsSubmitting(false);
+      return false;
+    }
+  };
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
     if (!correctAnswers) return;
 
@@ -64,6 +139,18 @@ export default function CIATriadQuiz() {
 
     setScore(newScore);
     setProgress((newScore / totalQuestions) * 100);
+
+    // Calculate points to add (score * 10)
+    const pointsToAdd = newScore * 10;
+    
+    // Only update leaderboard if there are points to add
+    if (pointsToAdd > 0) {
+      await updateLeaderboardPoints(pointsToAdd);
+    }
+  };
+
+  const handleViewLeaderboard = () => {
+    router.push("/leaderboard");
   };
 
   return (
@@ -139,7 +226,9 @@ export default function CIATriadQuiz() {
             </ul>
           </div>
 
-          <button type="submit" className="submit-btn">Submit</button>
+          <button type="submit" className="submit-btn" disabled={isSubmitting}>
+            {isSubmitting ? "Submitting..." : "Submit"}
+          </button>
         </form>
 
         {score !== null && (
@@ -148,6 +237,13 @@ export default function CIATriadQuiz() {
             <div className="progress-bar-container">
               <div className="progress-bar" style={{ width: `${progress}%` }}></div>
             </div>
+            {updateMessage && <p className="update-message">{updateMessage}</p>}
+            {score > 0 && (
+              <p>Added {score * 10} points to your leaderboard total!</p>
+            )}
+            <button onClick={handleViewLeaderboard} className="view-leaderboard-btn">
+              View Leaderboard
+            </button>
           </div>
         )}
       </div>
