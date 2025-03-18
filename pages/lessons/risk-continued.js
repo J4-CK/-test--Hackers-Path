@@ -21,13 +21,26 @@ export default function LessonTemplate() {
       ),
     },
     {
-      title: "Risk Continued - Part 2",
+      title: "Risk Identification",
       content: (
         <>
-          <h2 className="lesson-text">Risk Identification</h2>
-          <p className="lesson-text">We talked previously about assets, threats, and vulnerabilities. These are all aspects involved in Risk Identification</p>
-          <p className="lesson-text">Risk Identification isn't just done one time. It's a continuous process of finding, understanding, and preparing for risk.</p>
-          <div className="lesson-text">Another example.</div>
+          <p className="lesson-text">We talked previously about assets, threats, and vulnerabilities. These are all aspects involved in Risk Identification.</p>
+          <p className="lesson-text">Risk Identification is important because we can't protect against what we can't see.</p>
+          <p className="lesson-text">Risk Identification also isn't just done once. It's a continuous process of finding, understanding, and preparing for risk.</p>
+          <p className="lesson-text">Everyone within an organization should be identifying risk and communicate clearly when they find it.</p>
+        </>
+      ),
+    },
+    {
+      title: "Risk Treatment",
+      content: (
+        <>
+          <p className="lesson-text">After identifying and assessing risk, we have to address how to treat it. There are four options to do this.</p>
+          <p className="lesson-text">Option 1: Avoid the Risk. This usually involves stopping an activity because the impact and/or likelihood of the risk is too high.</p>
+          <p className="lesson-text">Option 2: Accept the Risk. This involves continuing the activity after calculating that the impact and/or likelihood of the risk is low, or the benefits heavily outweigh the costs of the risk.</p>
+          <p className="lesson-text">Option 3: Mitigate the Risk. This involves taking steps to reduce or prevent a risk's impact or likelihood. They can involve controls or plans on how to address the risk if it happens.</p>
+          <p className="lesson-text">Option 4: Transfer the Risk. This usually involves passing on the cost of the risk to someone else willing to accept it for a price. An example of this would be insurance.</p>
+          <p className="lesson-text"><b>Note: There is no such thing as ignoring risk!</b></p>
         </>
       ),
     },
