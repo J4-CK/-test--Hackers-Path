@@ -22,7 +22,6 @@ export default function LessonTemplate() {
       title: "Confidentiality",
       content: (
         <>
-          <h2 className="lesson-text">Confidentiality</h2>
           <p className="lesson-text">Confidentiality focuses on protecting sensitive data from unauthorized access. Key practices include:</p>
           <div className="lesson-text">- Using strong encryption to secure data.</div>
           <div className="lesson-text">- Implementing access controls and authentication.</div>
@@ -34,7 +33,6 @@ export default function LessonTemplate() {
       title: "Integrity",
       content: (
         <>
-          <h2 className="lesson-text">Integrity</h2>
           <p className="lesson-text">Integrity ensures that data remains accurate and unaltered. This is achieved by:</p>
           <div className="lesson-text">- Implementing checksums and hash functions to detect data tampering.</div>
           <div className="lesson-text">- Using version control to track changes.</div>
@@ -46,7 +44,6 @@ export default function LessonTemplate() {
       title: "Availability",
       content: (
         <>
-          <h2 className="lesson-text">Availability</h2>
           <p className="lesson-text">Availability ensures that systems and data are accessible when needed. Techniques to ensure availability include:</p>
           <div className="lesson-text">- Using backups and disaster recovery plans.</div>
           <div className="lesson-text">- Implementing redundancy in critical systems.</div>
