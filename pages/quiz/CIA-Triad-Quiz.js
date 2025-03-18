@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import supabase from "../../config/supabaseClient";
+import { supabase, SUPABASE_URL } from "../../config/supabaseClient";
 import { useRouter } from "next/navigation";
 
 export default function Quiz() {
@@ -55,7 +55,7 @@ export default function Quiz() {
         setApiToken(token);
         
         // Set auth headers for future API requests
-        supabase.supabaseUrl = supabase.supabaseUrl || process.env.NEXT_PUBLIC_SUPABASE_URL;
+        supabase.supabaseUrl = SUPABASE_URL;
         supabase.supabaseKey = token;
         
         console.log("API authentication setup complete");
@@ -80,7 +80,7 @@ export default function Quiz() {
         setApiToken(session.access_token);
         
         // Update auth headers
-        supabase.supabaseUrl = supabase.supabaseUrl || process.env.NEXT_PUBLIC_SUPABASE_URL;
+        supabase.supabaseUrl = SUPABASE_URL;
         supabase.supabaseKey = session.access_token;
       } else {
         console.log("Session ended");
