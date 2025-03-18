@@ -152,6 +152,11 @@ export default function Quiz() {
     }
   };
 
+  const handleLoginRedirect = () => {
+    const currentPath = "/quiz/CIA-Triad-Quiz";
+    router.push(`/login?returnUrl=${encodeURIComponent(currentPath)}`);
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -166,7 +171,7 @@ export default function Quiz() {
         <div className="text-center">
           <p className="mb-4">Please log in to take the quiz.</p>
           <button 
-            onClick={() => router.push("/login")}
+            onClick={handleLoginRedirect}
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           >
             Log In

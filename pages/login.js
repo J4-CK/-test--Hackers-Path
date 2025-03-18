@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 
 export default function LoginPage() {
@@ -6,6 +6,15 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [returnUrl, setReturnUrl] = useState('');
+
+  useEffect(() => {
+    // Get the return URL from the query parameters if it exists
+    const { returnUrl: queryReturnUrl } = router.query;
+    if (queryReturnUrl) {
+      setReturnUrl(queryReturnUrl);
+    }
+  }, [router.query]);
 
   async function handleLogin(e) {
     e.preventDefault();
@@ -20,7 +29,8 @@ export default function LoginPage() {
       const result = await res.json();
 
       if (res.ok) {
-        router.push('/');
+        // If we have a return URL, go there, otherwise go home
+        router.push(returnUrl || '/');
       } else {
         setError(result.error || 'Login failed.');
       }
@@ -34,7 +44,7 @@ export default function LoginPage() {
       {/* Include External CSS */}
       <link rel="stylesheet" href="/styles/login.css" />
       <header>
-        <h1><a href="#">Hacker's Path</a></h1>
+        <h1><a href="/">Hacker's Path</a></h1>
       </header>
       <div className="section">
         <h2>Login</h2>
@@ -55,7 +65,9 @@ export default function LoginPage() {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-          <button type="submit" className="logout-btn">Login</button>
+          <button type="submit" className="logout-btn">
+            {returnUrl ? 'Login & Return' : 'Login'}
+          </button>
           {error && <p id="error">{error}</p>}
         </form>
         <div className="register-link">
