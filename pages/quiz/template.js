@@ -1,35 +1,139 @@
-import { useState } from "react";
-import Head from "next/head";
+"use client";
+import React, { useEffect, useState } from "react";
+import { supabase } from "../../config/supabaseClient";
 import { useRouter } from "next/router";
+import Head from "next/head";
 
 export default function QuizTemplate() {
-  const [answers, setAnswers] = useState({});
-  const [score, setScore] = useState(null);
-  const [progress, setProgress] = useState(0);
+  // Basic quiz state
+  const [questionIndex, setQuestionIndex] = useState(0);
+  const [selectedOption, setSelectedOption] = useState("");
+  const [score, setScore] = useState(0);
+  
+  // Authentication state
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  const correctAnswers = {};
+  // TEMPLATE: Replace this with your actual quiz questions
+  const questions = [
+    {
+      question: "Template Question 1?",
+      options: ["Option 1", "Option 2", "Option 3", "Option 4"],
+      correctAnswer: "Option 1",
+    },
+    {
+      question: "Template Question 2?",
+      options: ["Option A", "Option B", "Option C", "Option D"],
+      correctAnswer: "Option B",
+    },
+  ];
 
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setAnswers((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    let newScore = 0;
-    const totalQuestions = Object.keys(correctAnswers).length;
-
-    Object.entries(answers).forEach(([key, value]) => {
-      if (correctAnswers[key]?.toLowerCase() === value.trim().toLowerCase()) {
-        newScore++;
-      }
+  // Authentication setup
+  useEffect(() => {
+    checkUser();
+    
+    // Set up auth listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+      setLoading(false);
     });
 
-    setScore(newScore);
-    setProgress((newScore / totalQuestions) * 100);
+    // Cleanup subscription on unmount
+    return () => {
+      if (subscription) {
+        subscription.unsubscribe();
+      }
+    };
+  }, []);
+
+  // Check user session
+  const checkUser = async () => {
+    try {
+      const { data: { session }, error } = await supabase.auth.getSession();
+      
+      if (error) {
+        console.error("Error checking auth status:", error.message);
+        return;
+      }
+
+      setUser(session?.user ?? null);
+    } catch (error) {
+      console.error("Error:", error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
+  // Handle answer selection
+  const handleAnswer = (option) => {
+    setSelectedOption(option);
+    if (option === questions[questionIndex].correctAnswer) {
+      setScore((prev) => prev + 1);
+    }
+  };
+
+  // Handle moving to next question
+  const handleNextQuestion = () => {
+    setSelectedOption("");
+    if (questionIndex < questions.length - 1) {
+      setQuestionIndex((prev) => prev + 1);
+    }
+  };
+
+  // Handle quiz submission
+  const handleSubmitQuiz = async () => {
+    if (!user) {
+      handleLoginRedirect();
+      return;
+    }
+
+    try {
+      // TEMPLATE: Replace 'quiz_results' with your specific quiz table name if different
+      const { error } = await supabase
+        .from("quiz_results")
+        .insert([{ 
+          user_id: user.id, 
+          score,
+          // TEMPLATE: Add any additional fields you need to store
+          quiz_type: "template", // Replace with your quiz type
+          completed_at: new Date().toISOString()
+        }]);
+      
+      if (error) {
+        console.error("Database error:", error);
+        if (error.message.includes('JWT')) {
+          handleLoginRedirect();
+        } else {
+          alert("Error submitting quiz. Please try again.");
+        }
+      } else {
+        alert("Quiz submitted successfully!");
+        router.push("/dashboard"); // TEMPLATE: Replace with your desired redirect path
+      }
+    } catch (err) {
+      console.error("Submission error:", err);
+      alert("An error occurred while submitting your quiz.");
+    }
+  };
+
+  // Handle login redirect
+  const handleLoginRedirect = () => {
+    // TEMPLATE: Replace with your actual quiz path
+    const currentPath = "/quiz/template";
+    router.push(`/login?returnUrl=${encodeURIComponent(currentPath)}`);
+  };
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <p>Loading your quiz...</p>
+      </div>
+    );
+  }
+
+  // Main render
   return (
     <div>
       <Head>
@@ -50,54 +154,69 @@ export default function QuizTemplate() {
       </div>
 
       <div className="quiz-container">
-        <h2>Quiz Title</h2>
-        <form onSubmit={handleSubmit} className="quiz-form">
-          <div className="question">
-            <p><b>1. Multiple Choice Question?</b></p>
-            <label className="radio-option"><input type="radio" name="q1" value="Option 1" onChange={handleChange} /> Option 1</label>
-            <label className="radio-option"><input type="radio" name="q1" value="Option 2" onChange={handleChange} /> Option 2</label>
-            <label className="radio-option"><input type="radio" name="q1" value="Option 3" onChange={handleChange} /> Option 3</label>
+        {!user ? (
+          // Not logged in state
+          <div className="text-center">
+            <p className="mb-4">Please log in to take the quiz.</p>
+            <button 
+              onClick={handleLoginRedirect}
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            >
+              Log In
+            </button>
           </div>
-
-          <div className="question">
-            <p><b>2. Short Answer Question?</b></p>
-            <input type="text" name="q2" onChange={handleChange} className="text-input" placeholder="Type your answer" />
-          </div>
-
-          <div className="question">
-            <p><b>3. Match the following:</b></p>
-            <ul className="match-list">
-              <li>1. Term 1 <select name="q3_1" onChange={handleChange} className="dropdown">
-                <option value="">Select</option>
-                <option value="Definition 1">Definition 1</option>
-                <option value="Definition 2">Definition 2</option>
-                <option value="Definition 3">Definition 3</option>
-              </select></li>
-              <li>2. Term 2 <select name="q3_2" onChange={handleChange} className="dropdown">
-                <option value="">Select</option>
-                <option value="Definition 1">Definition 1</option>
-                <option value="Definition 2">Definition 2</option>
-                <option value="Definition 3">Definition 3</option>
-              </select></li>
+        ) : (
+          // Quiz content
+          <div>
+            {/* TEMPLATE: Add your quiz title/description here */}
+            <h1 className="text-2xl font-bold mb-6">Quiz Template</h1>
+            
+            {/* Question */}
+            <h2 className="text-xl font-bold mb-4">{questions[questionIndex].question}</h2>
+            
+            {/* Options */}
+            <ul className="space-y-2 mb-4">
+              {questions[questionIndex].options.map((option) => (
+                <li
+                  key={option}
+                  onClick={() => handleAnswer(option)}
+                  className={`p-3 border rounded cursor-pointer ${
+                    selectedOption === option
+                      ? option === questions[questionIndex].correctAnswer
+                        ? "bg-green-500 text-white"
+                        : "bg-red-500 text-white"
+                      : "hover:bg-gray-100"
+                  }`}
+                >
+                  {option}
+                </li>
+              ))}
             </ul>
-          </div>
 
-          <button type="submit" className="submit-btn">Submit</button>
-        </form>
+            {/* Navigation/Submit Buttons */}
+            {selectedOption && questionIndex < questions.length - 1 && (
+              <button 
+                onClick={handleNextQuestion}
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2"
+              >
+                Next Question
+              </button>
+            )}
+            {selectedOption && questionIndex === questions.length - 1 && (
+              <button 
+                onClick={handleSubmitQuiz}
+                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+              >
+                Submit Quiz
+              </button>
+            )}
 
-        {score !== null && (
-          <div className="feedback">
-            <p><b>You scored {score} out of {Object.keys(correctAnswers).length}.</b></p>
-            <div className="progress-bar-container">
-              <div className="progress-bar" style={{ width: `${progress}%` }}></div>
-            </div>
+            {/* Score Display */}
+            <p className="mt-4">Current Score: {score}</p>
+            
+            {/* TEMPLATE: Add any additional UI elements you need */}
           </div>
         )}
-
-        {/* Return to Lesson Button */}
-        <div className="final-navigation">
-          <a href="/lessons/example-lesson">Return to Lesson</a>
-        </div>
       </div>
     </div>
   );
