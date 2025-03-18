@@ -58,7 +58,7 @@ export default function Quiz() {
     };
   }, []);
 
-  const handleAnswer = (option: string) => {
+  const handleAnswer = (option) => {
     setSelectedOption(option);
     if (option === questions[questionIndex].correctAnswer) {
       setScore((prev) => prev + 1);
