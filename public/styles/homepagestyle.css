@@ -445,21 +445,61 @@ body {
     background: #666; /* Slightly lighter grey on hover */
 }
 
-/* Responsive Design for Small Screens */
+
+/* Hamburger button */
+.hamburger {
+  display: none;
+  background: #6a1b9a;
+  color: white;
+  border: none;
+  font-size: 1.8em;
+  padding: 10px 15px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin: 10px;
+  z-index: 10;
+}
+
+/* Navigation links - desktop */
+.roadmap {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  background: #531d73;
+  padding: 15px;
+  gap: 10px;
+}
+
+/* Hide nav on small screens */
 @media (max-width: 600px) {
+  .hamburger {
+    display: block;
+  }
+
   .roadmap {
+    display: none;
     flex-direction: column;
-    align-items: stretch;
+    background: #531d73;
     padding: 10px;
+    position: absolute;
+    top: 50px;
+    left: 0;
+    right: 0;
+    z-index: 5;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+  }
+
+  .roadmap.open {
+    display: flex;
   }
 
   .roadmap a {
     width: 100%;
     margin: 5px 0;
-    font-size: 1rem;
-    padding: 10px 14px;
   }
 }
+
+
 
 
    
