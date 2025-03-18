@@ -42,33 +42,30 @@ body {
   
   /* Roadmap Navigation Styles */
         .roadmap {
-          display: flex; /* Establishes flex container */
-          flex-wrap: wrap; /* Allow items to wrap on small screens */
-          justify-content: center; /* Center items when they wrap */
-          align-items: stretch; /* Ensures buttons fill the container's height */
-          margin: -1px 1px; /* Adjusted margin for spacing */
-          background: #531d73; /* Background color */
-          padding: 15px; /* Padding inside the container */
-          gap: 10px; /* Adds spacing between buttons on wrap */
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: space-between;
+          gap: 10px;
+          background: #531d73;
+          padding: 15px;
+          max-width: 800px; /* Add max-width to prevent over-expansion on large screens */
+          margin: 0 auto;    /* Center horizontally */
+          box-sizing: border-box;
         }
         
         .roadmap a {
-          flex: 1 1 100px; /* Flexible: grow/shrink with a min width */
-          margin: 0 5px; /* Smaller margin for tighter spacing on small screens */
-          padding: 10px 12px; /* Balanced padding */
-          text-decoration: none; /* Removes underline from links */
-          color: #e0e0e0; /* Text color */
-          background-color: #6a1b9a; /* Button background color */
-          border-radius: 5px; /* Rounded corners */
-          text-align: center; /* Centers text within buttons */
-          transition: all 0.3s ease; /* Smooth transition for hover effects */
-          box-sizing: border-box; /* Ensures consistent sizing */
+          flex: 1;
+          padding: 10px 20px;
+          text-decoration: none;
+          color: #e0e0e0;
+          background-color: #6a1b9a;
+          border-radius: 5px;
+          text-align: center;
+          transition: all 0.3s ease;
+          box-sizing: border-box;
+          min-width: 120px; /* Helps prevent tiny buttons on small widths */
         }
-        
-        .roadmap a:hover {
-          background-color: #42155c; /* Background color on hover */
-          color: #ffffff; /* Text color on hover */
-        }
+
           
   
   /* Container Styles */
@@ -459,14 +456,11 @@ body {
   .roadmap a {
     width: 100%;
     margin: 5px 0;
-    padding: 8px 12px; /* reduce button height */
-    font-size: 1rem;   /* smaller text for compact look */
-  }
-
-  header h1 a {
-    font-size: 1.5em; /* slightly reduce title on small screens */
+    font-size: 1rem;
+    padding: 10px 14px;
   }
 }
+
 
    
   
