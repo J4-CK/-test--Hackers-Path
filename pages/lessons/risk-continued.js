@@ -21,12 +21,12 @@ export default function LessonTemplate() {
       ),
     },
     {
-      title: "Lesson Title - Section 2",
+      title: "Risk Continued - Part 2",
       content: (
         <>
-          <h2 className="lesson-text">Subtopic Title</h2>
-          <p className="lesson-text">Details about this topic go here.</p>
-          <div className="lesson-text">Example bullet point.</div>
+          <h2 className="lesson-text">Risk Identification</h2>
+          <p className="lesson-text">We talked previously about assets, threats, and vulnerabilities. These are all aspects involved in Risk Identification</p>
+          <p className="lesson-text">Risk Identification isn't just done one time. It's a continuous process of finding, understanding, and preparing for risk.</p>
           <div className="lesson-text">Another example.</div>
         </>
       ),
