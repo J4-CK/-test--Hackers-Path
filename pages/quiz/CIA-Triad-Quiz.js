@@ -8,6 +8,7 @@ export default function Quiz() {
   const [selectedOption, setSelectedOption] = useState("");
   const [score, setScore] = useState(0);
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   const questions = [
@@ -23,44 +24,60 @@ export default function Quiz() {
     },
   ];
 
-  // Fixed: Properly handling the async function in useEffect
+  // Robust authentication check
   useEffect(() => {
-    // Create an async function inside useEffect
-    const setupAuth = async () => {
+    // Immediately check for an existing session when component mounts
+    const checkInitialSession = async () => {
       try {
-        const { data: sessionData, error } = await supabase.auth.getSession();
-        if (error) {
-          console.error("Error getting session:", error);
-          return;
-        }
+        setLoading(true);
         
-        if (sessionData.session && sessionData.session.user) {
-          setUser(sessionData.session.user);
-          console.log("User authenticated:", sessionData.session.user.id);
+        // Get current session and user in one go
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        if (session) {
+          console.log("Initial session found:", session.user.id);
+          setUser(session.user);
         } else {
-          console.log("No authenticated user found");
+          console.log("No initial session found");
+          setUser(null);
         }
       } catch (err) {
-        console.error("Error in auth setup:", err);
+        console.error("Error checking initial session:", err);
+        setUser(null);
+      } finally {
+        setLoading(false);
       }
     };
 
-    // Call the async function
-    setupAuth();
+    // Run the initial check
+    checkInitialSession();
 
-    // Set up auth state change listener
-    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session && session.user) {
+    // Set up listener for auth changes
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log("Auth state changed:", event);
+      
+      if (event === 'SIGNED_IN' && session) {
+        console.log("User signed in:", session.user.id);
         setUser(session.user);
-        console.log("User signed in via listener:", session.user.id);
-      } else {
+        setLoading(false);
+      } 
+      else if (event === 'SIGNED_OUT') {
+        console.log("User signed out");
         setUser(null);
-        console.log("User signed out via listener");
+        setLoading(false);
+      }
+      else if (session) {
+        console.log("Session exists:", session.user.id);
+        setUser(session.user);
+        setLoading(false);
       }
     });
 
+    // Cleanup
     return () => {
-      authListener.subscription.unsubscribe();
+      if (authListener && authListener.subscription) {
+        authListener.subscription.unsubscribe();
+      }
     };
   }, []);
 
@@ -79,62 +96,101 @@ export default function Quiz() {
   };
 
   const handleSubmitQuiz = async () => {
-    if (!user) {
-      alert("Please log in to submit your score.");
-      return;
-    }
-
     try {
+      // Fresh auth check before submission
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        console.error("No active session for submission");
+        alert("Your session has expired. Please log in again.");
+        router.push("/login");
+        return;
+      }
+
+      const userId = session.user.id;
+      console.log("Submitting quiz for user:", userId);
+      
       const { error } = await supabase
         .from("quiz_results")
-        .insert([{ user_id: user.id, score }]);
+        .insert([{ user_id: userId, score }]);
       
       if (error) {
-        console.error("Error inserting data:", error);
+        console.error("Database error on submission:", error);
+        alert("Error submitting quiz. Please try again.");
       } else {
+        console.log("Quiz submitted successfully");
         alert("Quiz submitted!");
         router.push("/dashboard");
       }
     } catch (err) {
-      console.error("Error submitting quiz:", err);
+      console.error("Exception during quiz submission:", err);
+      alert("An error occurred. Please try again.");
     }
   };
 
+  // Handle navigation to login page
+  const goToLogin = () => {
+    router.push("/login");
+  };
+
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <p>Loading your quiz...</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="quiz-container">
+    <div className="quiz-container p-4">
       {!user ? (
-        <div>
-          <p>Please log in to take the quiz.</p>
+        <div className="text-center">
+          <p className="mb-4">Please log in to take the quiz.</p>
+          <button 
+            onClick={goToLogin}
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Log In
+          </button>
         </div>
       ) : (
         <div>
-          <h2>{questions[questionIndex].question}</h2>
-          <ul>
+          <h2 className="text-xl font-bold mb-4">{questions[questionIndex].question}</h2>
+          <ul className="space-y-2 mb-4">
             {questions[questionIndex].options.map((option) => (
               <li
                 key={option}
                 onClick={() => handleAnswer(option)}
-                style={{
-                  backgroundColor:
-                    selectedOption === option
-                      ? option === questions[questionIndex].correctAnswer
-                        ? "green"
-                        : "red"
-                      : "",
-                  cursor: "pointer",
-                }}
+                className={`p-3 border rounded cursor-pointer ${
+                  selectedOption === option
+                    ? option === questions[questionIndex].correctAnswer
+                      ? "bg-green-500 text-white"
+                      : "bg-red-500 text-white"
+                    : "hover:bg-gray-100"
+                }`}
               >
                 {option}
               </li>
             ))}
           </ul>
           {selectedOption && questionIndex < questions.length - 1 && (
-            <button onClick={handleNextQuestion}>Next</button>
+            <button 
+              onClick={handleNextQuestion}
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2"
+            >
+              Next Question
+            </button>
           )}
           {selectedOption && questionIndex === questions.length - 1 && (
-            <button onClick={handleSubmitQuiz}>Submit Quiz</button>
+            <button 
+              onClick={handleSubmitQuiz}
+              className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+            >
+              Submit Quiz
+            </button>
           )}
-          <p>Current Score: {score}</p>
+          <p className="mt-4">Current Score: {score}</p>
         </div>
       )}
     </div>
