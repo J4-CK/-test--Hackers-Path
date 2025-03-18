@@ -9,6 +9,7 @@ export default function Quiz() {
   const [score, setScore] = useState(0);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [apiToken, setApiToken] = useState(null);
   const router = useRouter();
 
   const questions = [
@@ -24,56 +25,70 @@ export default function Quiz() {
     },
   ];
 
-  // Robust authentication check
+  // Authentication and API token setup
   useEffect(() => {
-    // Immediately check for an existing session when component mounts
-    const checkInitialSession = async () => {
+    const setupAuthentication = async () => {
       try {
         setLoading(true);
         
-        // Get current session and user in one go
-        const { data: { session } } = await supabase.auth.getSession();
+        // Get current session
+        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
         
-        if (session) {
-          console.log("Initial session found:", session.user.id);
-          setUser(session.user);
-        } else {
-          console.log("No initial session found");
-          setUser(null);
+        if (sessionError) {
+          console.error("Session error:", sessionError);
+          setLoading(false);
+          return;
         }
+        
+        if (!session) {
+          console.log("No session found");
+          setLoading(false);
+          return;
+        }
+        
+        // Session exists, set user
+        console.log("Session found, user ID:", session.user.id);
+        setUser(session.user);
+        
+        // Get and store API token
+        const token = session.access_token;
+        setApiToken(token);
+        
+        // Set auth headers for future API requests
+        supabase.supabaseUrl = supabase.supabaseUrl || process.env.NEXT_PUBLIC_SUPABASE_URL;
+        supabase.supabaseKey = token;
+        
+        console.log("API authentication setup complete");
       } catch (err) {
-        console.error("Error checking initial session:", err);
-        setUser(null);
+        console.error("Authentication setup error:", err);
       } finally {
         setLoading(false);
       }
     };
 
-    // Run the initial check
-    checkInitialSession();
+    setupAuthentication();
 
-    // Set up listener for auth changes
-    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+    // Set up auth listener
+    const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log("Auth state changed:", event);
       
-      if (event === 'SIGNED_IN' && session) {
-        console.log("User signed in:", session.user.id);
+      if (session) {
+        console.log("New session established");
         setUser(session.user);
-        setLoading(false);
-      } 
-      else if (event === 'SIGNED_OUT') {
-        console.log("User signed out");
+        
+        // Update API token when auth state changes
+        setApiToken(session.access_token);
+        
+        // Update auth headers
+        supabase.supabaseUrl = supabase.supabaseUrl || process.env.NEXT_PUBLIC_SUPABASE_URL;
+        supabase.supabaseKey = session.access_token;
+      } else {
+        console.log("Session ended");
         setUser(null);
-        setLoading(false);
-      }
-      else if (session) {
-        console.log("Session exists:", session.user.id);
-        setUser(session.user);
-        setLoading(false);
+        setApiToken(null);
       }
     });
 
-    // Cleanup
     return () => {
       if (authListener && authListener.subscription) {
         authListener.subscription.unsubscribe();
@@ -96,44 +111,47 @@ export default function Quiz() {
   };
 
   const handleSubmitQuiz = async () => {
-    try {
-      // Fresh auth check before submission
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (!session) {
-        console.error("No active session for submission");
-        alert("Your session has expired. Please log in again.");
-        router.push("/login");
-        return;
-      }
+    if (!user || !apiToken) {
+      alert("Please log in to submit your score.");
+      router.push("/login");
+      return;
+    }
 
-      const userId = session.user.id;
-      console.log("Submitting quiz for user:", userId);
+    try {
+      // Create a new client with the current token to ensure fresh authentication
+      const authClient = supabase.auth.setSession(apiToken);
+      
+      console.log("Submitting quiz with authenticated client");
       
       const { error } = await supabase
         .from("quiz_results")
-        .insert([{ user_id: userId, score }]);
+        .insert([{ 
+          user_id: user.id, 
+          score,
+          completed_at: new Date().toISOString()
+        }]);
       
       if (error) {
-        console.error("Database error on submission:", error);
-        alert("Error submitting quiz. Please try again.");
+        console.error("Database error:", error);
+        
+        // Check if it's an authentication error
+        if (error.code === 'PGRST301' || error.message.includes('JWT')) {
+          alert("Your session has expired. Please log in again.");
+          router.push("/login");
+        } else {
+          alert("Error submitting quiz. Please try again.");
+        }
       } else {
         console.log("Quiz submitted successfully");
         alert("Quiz submitted!");
         router.push("/dashboard");
       }
     } catch (err) {
-      console.error("Exception during quiz submission:", err);
-      alert("An error occurred. Please try again.");
+      console.error("Submission error:", err);
+      alert("An error occurred while submitting your quiz.");
     }
   };
 
-  // Handle navigation to login page
-  const goToLogin = () => {
-    router.push("/login");
-  };
-
-  // Show loading state
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -148,7 +166,7 @@ export default function Quiz() {
         <div className="text-center">
           <p className="mb-4">Please log in to take the quiz.</p>
           <button 
-            onClick={goToLogin}
+            onClick={() => router.push("/login")}
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
           >
             Log In
