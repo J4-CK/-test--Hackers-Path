@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useEffect, useState } from "react";
 import supabase from "../../config/supabaseClient";
 import { useRouter } from "next/navigation";
@@ -24,25 +23,32 @@ export default function Quiz() {
     },
   ];
 
-  // Updated: Get session + setup listener
+  // Fixed: Properly handling the async function in useEffect
   useEffect(() => {
-    const getCurrentUser = async () => {
-      const { data: sessionData, error } = await supabase.auth.getSession();
-      if (error) {
-        console.error("Error getting session:", error);
-        return;
-      }
-
-      if (sessionData.session && sessionData.session.user) {
-        setUser(sessionData.session.user);
-        console.log("User authenticated:", sessionData.session.user.id);
-      } else {
-        console.log("No authenticated user found");
+    // Create an async function inside useEffect
+    const setupAuth = async () => {
+      try {
+        const { data: sessionData, error } = await supabase.auth.getSession();
+        if (error) {
+          console.error("Error getting session:", error);
+          return;
+        }
+        
+        if (sessionData.session && sessionData.session.user) {
+          setUser(sessionData.session.user);
+          console.log("User authenticated:", sessionData.session.user.id);
+        } else {
+          console.log("No authenticated user found");
+        }
+      } catch (err) {
+        console.error("Error in auth setup:", err);
       }
     };
 
-    getCurrentUser();
+    // Call the async function
+    setupAuth();
 
+    // Set up auth state change listener
     const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session && session.user) {
         setUser(session.user);
@@ -77,11 +83,12 @@ export default function Quiz() {
       alert("Please log in to submit your score.");
       return;
     }
+
     try {
       const { error } = await supabase
         .from("quiz_results")
         .insert([{ user_id: user.id, score }]);
-
+      
       if (error) {
         console.error("Error inserting data:", error);
       } else {
