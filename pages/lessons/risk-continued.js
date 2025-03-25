@@ -32,6 +32,16 @@ export default function LessonTemplate() {
       ),
     },
     {
+      title: "Risk Assessment",
+      content: (
+        <>
+          <p className="lesson-text">We've mentioned in the previous lesson that risk assessment involves finding risks based on likelihood and impact, but there is more to it than that.</p>
+          <p className="lesson-text">Risk assessment also includes prioritizing risk based on what your organization needs. This could also include evaluating which mitigations to use.</p>
+          <p className="lesson-text">The end result of conducting risk assessment is usually a report or presentation on the risk to management.</p>
+        </>
+      ),
+    },
+    {
       title: "Risk Treatment",
       content: (
         <>
