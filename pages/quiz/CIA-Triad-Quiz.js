@@ -1,12 +1,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { createClient } from "@supabase/supabase-js";
-
-// Initialize Supabase client
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-);
+import { supabase } from "../../config/supabaseClient";
 
 export default function QuizPage() {
   const [user, setUser] = useState(null);
@@ -15,32 +9,55 @@ export default function QuizPage() {
 
   useEffect(() => {
     const checkUser = async () => {
-      setLoading(true);
-      const { data: { session }, error } = await supabase.auth.getSession();
+      try {
+        setLoading(true);
+        const { data: { session }, error } = await supabase.auth.getSession();
 
-      if (error) {
-        console.error("Error fetching session:", error.message);
+        if (error) {
+          console.error("Error fetching session:", error.message);
+          router.push('/login');
+          return;
+        }
+
+        if (!session) {
+          router.push('/login');
+          return;
+        }
+
+        setUser(session.user);
+      } catch (error) {
+        console.error("Error:", error.message);
+        router.push('/login');
+      } finally {
+        setLoading(false);
       }
-
-      setUser(session?.user ?? null);
-      setLoading(false);
     };
 
     checkUser();
 
     // Listen for authentication changes
-    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) {
+        setUser(session.user);
+      } else {
+        setUser(null);
+        router.push('/login');
+      }
       setLoading(false);
     });
 
     return () => {
-      authListener.subscription?.unsubscribe();
+      subscription?.unsubscribe();
     };
-  }, []);
+  }, [router]);
 
   const handleLogin = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({ provider: "google" });
+    const { error } = await supabase.auth.signInWithOAuth({ 
+      provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/quiz/CIA-Triad-Quiz`
+      }
+    });
     if (error) {
       console.error("Login Error:", error.message);
     }
@@ -49,6 +66,7 @@ export default function QuizPage() {
   const handleLogout = async () => {
     await supabase.auth.signOut();
     setUser(null);
+    router.push('/login');
   };
 
   if (loading) return <p>Loading...</p>;
@@ -70,4 +88,6 @@ export default function QuizPage() {
     </div>
   );
 }
+
+
 
