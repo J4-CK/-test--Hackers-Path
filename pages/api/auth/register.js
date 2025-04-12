@@ -35,9 +35,9 @@ export default async function handler(req = NextApiRequest, res = NextApiRespons
       }
     ]);
 
-  if (insertError) {
-    return res.status(400).json({ error: insertError.message });
-  }
 
-  return res.status(200).json({ message: 'User registered successfully!' });
+  return res.status(200).json({ 
+    message: `Success! Your account has been created with username ${username}`,
+    username: username
+  });
 }

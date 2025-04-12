@@ -37,7 +37,7 @@ export default function RegisterPage() {
       const result = await res.json();
 
       if (res.ok) {
-        setSuccess('Registration successful! Redirecting to login...');
+        setSuccess(result.message);
         setTimeout(() => router.push('/login'), 2000);
       } else {
         setError(result.error || 'Registration failed.');
