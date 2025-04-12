@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
+import Navigation from '../components/Navigation';
 
 export default function HomePage() {
   const router = useRouter();
@@ -51,25 +52,7 @@ export default function HomePage() {
         <h1><a href="/">Hacker's Path</a></h1>
       </header>
 
-      <div className="roadmap-wrapper">
-        {!menuOpen ? (
-          <button className="hamburger" onClick={() => setMenuOpen(true)}>
-            ☰
-          </button>
-        ) : (
-          <button className="hamburger close-btn" onClick={() => setMenuOpen(false)}>
-            ×
-          </button>
-        )}
-        <nav className={`roadmap ${menuOpen ? 'open' : ''}`}>
-          <a href="/leaderboard" onClick={handleNavLinkClick}>Leaderboard</a>
-          <a href="/htmllessons/lessons.html" onClick={handleNavLinkClick}>Lessons</a>
-          <a href="/htmlquiz/quizzes.html" onClick={handleNavLinkClick}>Quizzes</a>
-          <a href="/profile" onClick={handleNavLinkClick}>
-            {user.username ? `Profile (${user.username})` : 'Profile'}
-          </a>
-        </nav>
-      </div>
+      <Navigation user={user} />
 
       <div className="container">
         <div className="stats">

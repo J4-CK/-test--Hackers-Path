@@ -1,8 +1,21 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Head from 'next/head';
+import Navigation from '../../components/Navigation';
 
 export default function StrongPasswordsPresentation() {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    async function checkSession() {
+      const res = await fetch('/api/auth/session');
+      const data = await res.json();
+      if (res.ok) {
+        setUser(data.user);
+      }
+    }
+    checkSession();
+  }, []);
 
   const slides = [
     {
@@ -76,19 +89,14 @@ export default function StrongPasswordsPresentation() {
       <Head>
         <title>Strong Passwords - Presentation</title>
         <link rel="stylesheet" href="/styles/lessonstyle.css" />
+        <link rel="stylesheet" href="/styles/homepagestyle.css" />
       </Head>
 
       <header>
-        <h1>Strong Passwords Presentation</h1>
+        <h1><a href="/">Hacker's Path</a></h1>
       </header>
-      
-            {/* Roadmap Section */}
-            <div className="roadmap">
-        <a href="/leaderboard">Leaderboard</a>
-        <a href="/lessons">Lessons</a>
-        <a href="/quizzes">Quizzes</a>
-        <a href="/profile">Profile</a>
-      </div>
+
+      <Navigation user={user} />
 
       {/* Slide Display */}
       <div className="slide active">
@@ -107,7 +115,7 @@ export default function StrongPasswordsPresentation() {
 
       {/* Final Navigation */}
       <div className="final-navigation">
-        <a href="/lessons/strong-passwords-quiz">Take the Quiz</a>
+        <a href="/quiz/strong-passwords-quiz">Take the Quiz</a>
         <a href="/">Return to Homepage</a>
       </div>
     </div>
