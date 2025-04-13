@@ -14,31 +14,40 @@ export default function Leaderboard({ initialPlayers }) {
 
   useEffect(() => {
     async function checkSession() {
-      const res = await fetch('/api/auth/session');
-      const data = await res.json();
-      if (res.ok && data.user) {
-        setUser(data.user);
-      } else {
-        router.push('/login');
+      try {
+        const res = await fetch('/api/auth/session');
+        const data = await res.json();
+        if (res.ok && data.user) {
+          setUser(data.user);
+        } else {
+          router.push('/login');
+        }
+      } finally {
+        setLoading(false);
       }
     }
     checkSession();
   }, [router]);
 
   const fetchData = async (type) => {
+    setLoading(true);
     let newPlayers;
-    switch (type) {
-      case 'streak':
-        newPlayers = await fetchLeaderboardstreak();
-        break;
-      case 'monthly':
-        newPlayers = await fetchLeaderboardmonthly();
-        break;
-      default:
-        newPlayers = await fetchLeaderboard();
+    try {
+      switch (type) {
+        case 'streak':
+          newPlayers = await fetchLeaderboardstreak();
+          break;
+        case 'monthly':
+          newPlayers = await fetchLeaderboardmonthly();
+          break;
+        default:
+          newPlayers = await fetchLeaderboard();
+      }
+      setPlayers(newPlayers.slice(0, 20));
+      setLeaderboardType(type);
+    } finally {
+      setLoading(false);
     }
-    setPlayers(newPlayers.slice(0, 20));
-    setLeaderboardType(type);
   };
 
   if (loading || !user) {
