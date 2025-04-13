@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
+import Loading from "../components/Loading";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -55,7 +56,15 @@ export default function ProfilePage() {
   }
 
   if (!user) {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        <Head>
+          <title>Loading... - Hacker's Path</title>
+          <link rel="stylesheet" href="/styles/homepagestyle.css" />
+        </Head>
+        <Loading />
+      </div>
+    );
   }
 
   return (
