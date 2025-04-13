@@ -6,6 +6,22 @@ const supabase = createClient(
   process.env.SUPABASE_ANON_KEY
 );
 
+function timeSince(date) {
+  const seconds = Math.floor((new Date() - new Date(date)) / 1000);
+  let interval = seconds / 31536000; // years
+
+  if (interval > 1) return Math.floor(interval) + " years ago";
+  interval = seconds / 2592000; // months
+  if (interval > 1) return Math.floor(interval) + " months ago";
+  interval = seconds / 86400; // days
+  if (interval > 1) return Math.floor(interval) + " days ago";
+  interval = seconds / 3600; // hours
+  if (interval > 1) return Math.floor(interval) + " hours ago";
+  interval = seconds / 60; // minutes
+  if (interval > 1) return Math.floor(interval) + " minutes ago";
+  return Math.floor(seconds) + " seconds ago";
+}
+
 export default async function handler(req, res) {
   if (req.method !== "GET") {
     return res.status(405).json({ error: "Method not allowed" });
@@ -31,7 +47,7 @@ export default async function handler(req, res) {
     // Fetch profile data
     const { data: profile } = await supabase
       .from("profiles")
-      .select("username")
+      .select("username, region")
       .eq("id", userId)
       .single();
 
@@ -41,6 +57,14 @@ export default async function handler(req, res) {
       .select("streak, last_streak_update")
       .eq("user_id", userId)
       .single();
+
+    // Fetch recent activity
+    const { data: recentActivity } = await supabase
+      .from("user_activity")
+      .select("*")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false })
+      .limit(10);
 
     let streak = streakData?.streak || 0;
     let lastUpdate = streakData?.last_streak_update ? new Date(streakData.last_streak_update) : null;
@@ -84,14 +108,23 @@ export default async function handler(req, res) {
         });
     }
 
+    // Format recent activity with time since
+    const formattedActivity = recentActivity?.map(activity => ({
+      ...activity,
+      timeSince: timeSince(activity.created_at)
+    })) || [];
+
     return res.status(200).json({
       user: {
         email: sessionUser.user.email,
         username: profile?.username || "N/A",
+        region: profile?.region || "N/A",
         streak,
+        recentActivity: formattedActivity
       },
     });
   } catch (err) {
+    console.error('Session error:', err);
     return res.status(500).json({ error: "Internal Server Error" });
   }
 }

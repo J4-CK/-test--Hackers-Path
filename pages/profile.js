@@ -139,9 +139,15 @@ export default function ProfilePage() {
           <div style={{ background: '#1a1a1a', padding: '20px', borderRadius: '8px', marginTop: '1rem' }}>
             {user.recentActivity && user.recentActivity.length > 0 ? (
               user.recentActivity.map((activity, index) => (
-                <div key={index} className="activity-item">
-                  <p>{activity.description}</p>
-                  <p>{activity.date}</p>
+                <div key={index} className="activity-item" style={{
+                  padding: '10px',
+                  borderBottom: index < user.recentActivity.length - 1 ? '1px solid #333' : 'none',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center'
+                }}>
+                  <p style={{ margin: 0 }}>{activity.description}</p>
+                  <p style={{ margin: 0, color: '#8c30c2', fontSize: '0.9em' }}>{activity.timeSince}</p>
                 </div>
               ))
             ) : (

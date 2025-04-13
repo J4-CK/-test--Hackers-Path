@@ -7,6 +7,8 @@ export default function CIATriadPresentation() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
   const [user, setUser] = useState(null);
+  const [lessonStarted, setLessonStarted] = useState(false);
+  const [lessonCompleted, setLessonCompleted] = useState(false);
 
   // Fetch session on load
   useEffect(() => {
@@ -22,6 +24,54 @@ export default function CIATriadPresentation() {
     }
     checkSession();
   }, [router]);
+
+  // Track lesson start
+  useEffect(() => {
+    if (user && !lessonStarted) {
+      const trackStart = async () => {
+        try {
+          await fetch('/api/activity/track', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              activity: 'Started CIA Triad lesson',
+              userId: user.id
+            }),
+          });
+          setLessonStarted(true);
+        } catch (error) {
+          console.error('Failed to track lesson start:', error);
+        }
+      };
+      trackStart();
+    }
+  }, [user, lessonStarted]);
+
+  // Track lesson completion
+  useEffect(() => {
+    if (user && currentSlide === slides.length - 1 && !lessonCompleted) {
+      const trackCompletion = async () => {
+        try {
+          await fetch('/api/activity/track', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              activity: 'Completed CIA Triad lesson',
+              userId: user.id
+            }),
+          });
+          setLessonCompleted(true);
+        } catch (error) {
+          console.error('Failed to track lesson completion:', error);
+        }
+      };
+      trackCompletion();
+    }
+  }, [user, currentSlide, lessonCompleted]);
 
   // Close menu on scroll
   useEffect(() => {
@@ -112,6 +162,26 @@ export default function CIATriadPresentation() {
         <a href="/lessons">Lessons</a>
         <a href="/quiz">Quizzes</a>
         <a href="/profile">Profile</a>
+      </div>
+
+      {/* Progress Indicator */}
+      <div className="progress-bar" style={{
+        width: '80%',
+        margin: '20px auto',
+        backgroundColor: '#f0f0f0',
+        borderRadius: '10px',
+        padding: '3px'
+      }}>
+        <div style={{
+          width: `${((currentSlide + 1) / slides.length) * 100}%`,
+          height: '20px',
+          backgroundColor: '#4CAF50',
+          borderRadius: '8px',
+          transition: 'width 0.3s ease-in-out'
+        }}></div>
+        <div style={{ textAlign: 'center', marginTop: '5px' }}>
+          Slide {currentSlide + 1} of {slides.length}
+        </div>
       </div>
 
       {/* Slide Display */}

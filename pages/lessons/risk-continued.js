@@ -1,10 +1,56 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
+import { useUser, useSupabaseClient } from '@supabase/auth-helpers-react';
 
 export default function LessonTemplate() {
   const [currentSection, setCurrentSection] = useState(0);
+  const [hasStarted, setHasStarted] = useState(false);
   const router = useRouter();
+  const user = useUser();
+  const supabase = useSupabaseClient();
+
+  useEffect(() => {
+    if (!user) {
+      router.push('/login');
+      return;
+    }
+
+    if (!hasStarted) {
+      // Track lesson start
+      fetch('/api/activity/track', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: user.id,
+          activityType: 'lesson_start',
+          description: 'Started Risk Continued lesson',
+          lessonId: 'risk-continued'
+        }),
+      });
+      setHasStarted(true);
+    }
+  }, [user, hasStarted]);
+
+  useEffect(() => {
+    // Track lesson completion when reaching the last section
+    if (currentSection === sections.length - 1 && user) {
+      fetch('/api/activity/track', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: user.id,
+          activityType: 'lesson_complete',
+          description: 'Completed Risk Continued lesson',
+          lessonId: 'risk-continued'
+        }),
+      });
+    }
+  }, [currentSection, user]);
 
   // Define lesson sections here.
   // Duplicate and modify the objects inside the sections array to add more content.

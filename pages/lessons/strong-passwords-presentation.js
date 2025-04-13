@@ -7,6 +7,8 @@ export default function StrongPasswordsPresentation() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
   const [user, setUser] = useState(null);
+  const [lessonStarted, setLessonStarted] = useState(false);
+  const [lessonCompleted, setLessonCompleted] = useState(false);
 
   // Fetch session on load
   useEffect(() => {
@@ -22,6 +24,54 @@ export default function StrongPasswordsPresentation() {
     }
     checkSession();
   }, [router]);
+
+  // Track lesson start
+  useEffect(() => {
+    if (user && !lessonStarted) {
+      const trackStart = async () => {
+        try {
+          await fetch('/api/activity/track', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              activity: 'Started Strong Passwords lesson',
+              userId: user.id
+            }),
+          });
+          setLessonStarted(true);
+        } catch (error) {
+          console.error('Failed to track lesson start:', error);
+        }
+      };
+      trackStart();
+    }
+  }, [user, lessonStarted]);
+
+  // Track lesson completion
+  useEffect(() => {
+    if (user && currentSlide === slides.length - 1 && !lessonCompleted) {
+      const trackCompletion = async () => {
+        try {
+          await fetch('/api/activity/track', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              activity: 'Completed Strong Passwords lesson',
+              userId: user.id
+            }),
+          });
+          setLessonCompleted(true);
+        } catch (error) {
+          console.error('Failed to track lesson completion:', error);
+        }
+      };
+      trackCompletion();
+    }
+  }, [user, currentSlide, lessonCompleted]);
 
   // Close menu on scroll
   useEffect(() => {
