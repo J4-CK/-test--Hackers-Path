@@ -1,13 +1,16 @@
 import { useEffect, useState } from 'react';
-import { supabase } from '../../utils/supabaseClient';
+import { supabase } from '../../config/supabaseClient';
 import styles from '../../styles/Lessons.module.css';
 
 export default function Lessons() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const { data: { user } } = supabase.auth.getUser();
-    setUser(user);
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+    };
+    getUser();
   }, []);
 
   const lessons = [
