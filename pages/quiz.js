@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../config/supabaseClient';
 import { useRouter } from 'next/router';
+import Loading from '../components/Loading';
 
 export default function Quizzes() {
   const router = useRouter();
@@ -28,7 +29,12 @@ export default function Quizzes() {
   };
 
   if (!user) {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        <link rel="stylesheet" href="/styles/homepagestyle.css" />
+        <Loading />
+      </div>
+    );
   }
 
   return (

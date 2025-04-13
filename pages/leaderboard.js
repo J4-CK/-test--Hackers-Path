@@ -2,12 +2,15 @@ import { fetchLeaderboard, fetchLeaderboardstreak, fetchLeaderboardmonthly } fro
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
+import Loading from '../components/Loading';
 
 export default function Leaderboard({ initialPlayers }) {
   const router = useRouter();
   const [user, setUser] = useState(null);
   const [players, setPlayers] = useState(initialPlayers);
   const [leaderboardType, setLeaderboardType] = useState('default');
+  const [loading, setLoading] = useState(true);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     async function checkSession() {
@@ -38,8 +41,16 @@ export default function Leaderboard({ initialPlayers }) {
     setLeaderboardType(type);
   };
 
-  if (!user) {
-    return <div>Loading...</div>;
+  if (loading || !user) {
+    return (
+      <div>
+        <Head>
+          <title>Hacker's Path</title>
+          <link rel="stylesheet" href="/styles/homepagestyle.css" />
+        </Head>
+        <Loading />
+      </div>
+    );
   }
 
   const loggedInUser = players.find(player => player.name === user.username);

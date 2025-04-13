@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
+import Loading from '../components/Loading';
 
 export default function HomePage() {
   const router = useRouter();
@@ -40,7 +41,12 @@ export default function HomePage() {
   }
 
   if (!user) {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        <link rel="stylesheet" href="/styles/homepagestyle.css" />
+        <Loading />
+      </div>
+    );
   }
 
   return (

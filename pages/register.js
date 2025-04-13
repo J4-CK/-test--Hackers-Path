@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
+import Loading from '../components/Loading';
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -9,21 +10,24 @@ export default function RegisterPage() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [loading, setLoading] = useState(false);
 
   async function handleRegister(e) {
     e.preventDefault();
-
+    setLoading(true);
     setError('');
     setSuccess('');
 
     // Validate inputs
     if (!username || !email || !password || !confirmPassword) {
       setError('All fields are required.');
+      setLoading(false);
       return;
     }
 
     if (password !== confirmPassword) {
       setError('Passwords do not match.');
+      setLoading(false);
       return;
     }
 
@@ -44,7 +48,18 @@ export default function RegisterPage() {
       }
     } catch (err) {
       setError('An error occurred. Please try again.');
+    } finally {
+      setLoading(false);
     }
+  }
+
+  if (loading) {
+    return (
+      <div>
+        <link rel="stylesheet" href="/styles/homepagestyle.css" />
+        <Loading />
+      </div>
+    );
   }
 
   return (

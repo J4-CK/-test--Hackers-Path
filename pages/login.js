@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import Loading from '../components/Loading';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -7,6 +8,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [returnUrl, setReturnUrl] = useState('');
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     // Get the return URL from the query parameters if it exists
@@ -16,8 +18,14 @@ export default function LoginPage() {
     }
   }, [router.query]);
 
-  async function handleLogin(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
+    setLoading(true);
+    setError('');
+
+    const formData = new FormData(e.target);
+    const email = formData.get('email');
+    const password = formData.get('password');
 
     try {
       const res = await fetch('/api/auth/login', {
@@ -26,17 +34,26 @@ export default function LoginPage() {
         body: JSON.stringify({ email, password }),
       });
 
-      const result = await res.json();
-
       if (res.ok) {
-        // If we have a return URL, go there, otherwise go home
-        router.push(returnUrl || '/');
+        router.push('/');
       } else {
-        setError(result.error || 'Login failed.');
+        const data = await res.json();
+        setError(data.error || 'Login failed');
+        setLoading(false);
       }
     } catch (err) {
-      setError('An error occurred. Please try again.');
+      setError('An error occurred');
+      setLoading(false);
     }
+  }
+
+  if (loading) {
+    return (
+      <div>
+        <link rel="stylesheet" href="/styles/homepagestyle.css" />
+        <Loading />
+      </div>
+    );
   }
 
   return (
@@ -48,7 +65,7 @@ export default function LoginPage() {
       </header>
       <div className="section">
         <h2>Login</h2>
-        <form onSubmit={handleLogin}>
+        <form onSubmit={handleSubmit}>
           <input
             type="email"
             id="email"
