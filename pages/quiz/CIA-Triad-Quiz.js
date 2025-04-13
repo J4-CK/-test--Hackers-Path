@@ -80,6 +80,12 @@ export default function QuizPage() {
         </>
       ) : (
         <>
+          <div className="roadmap">
+            <a href="/leaderboard">Leaderboard</a>
+            <a href="/lessons">Lessons</a>
+            <a href="/quiz">Quizzes</a>
+            <a href="/profile">Profile</a>
+          </div>
           <p>Welcome, {user.email}! You can now take the quiz.</p>
           <button onClick={handleLogout}>Log Out</button>
           {/* Your quiz component can be placed here */}

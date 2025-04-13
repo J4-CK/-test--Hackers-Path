@@ -52,7 +52,7 @@ export default function RegisterPage() {
       {/* Include External CSS */}
       <link rel="stylesheet" href="/styles/login.css" />
       <header>
-        <h1><a href="#">Hacker's Path</a></h1>
+        <h1><a href="/">Hacker's Path</a></h1>
       </header>
       <div className="section">
         <h2>Register</h2>

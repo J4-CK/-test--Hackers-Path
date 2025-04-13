@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import Navigation from '../components/Navigation';
 
 export default function HomePage() {
   const router = useRouter();
@@ -52,7 +51,25 @@ export default function HomePage() {
         <h1><a href="/">Hacker's Path</a></h1>
       </header>
 
-      <Navigation user={user} />
+      <div className="roadmap-wrapper">
+        {!menuOpen ? (
+          <button className="hamburger" onClick={() => setMenuOpen(true)}>
+            ☰
+          </button>
+        ) : (
+          <button className="hamburger close-btn" onClick={() => setMenuOpen(false)}>
+            ×
+          </button>
+        )}
+        <nav className={`roadmap ${menuOpen ? 'open' : ''}`}>
+          <a href="/leaderboard" onClick={handleNavLinkClick}>Leaderboard</a>
+          <a href="/lessons" onClick={handleNavLinkClick}>Lessons</a>
+          <a href="/quiz" onClick={handleNavLinkClick}>Quizzes</a>
+          <a href="/profile" onClick={handleNavLinkClick}>
+            {user.username ? `Profile (${user.username})` : 'Profile'}
+          </a>
+        </nav>
+      </div>
 
       <div className="container">
         <div className="stats">
@@ -81,7 +98,7 @@ export default function HomePage() {
           <h2>Quizzes</h2>
           <div className="buttons">
             <a href="/quiz/CIA-Triad-Quiz">CIA Triad Quiz</a>
-            <a href="/htmlquiz/strong-passwords-quiz.html">Strong Passwords Quiz</a>
+            <a href="/quiz/strong-passwords-quiz">Strong Passwords Quiz</a>
           </div>
         </div>
 

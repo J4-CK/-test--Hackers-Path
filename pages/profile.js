@@ -86,7 +86,7 @@ export default function ProfilePage() {
       <div className="roadmap">
         <a href="/leaderboard">Leaderboard</a>
         <a href="/lessons">Lessons</a>
-        <a href="/quizzes">Quizzes</a>
+        <a href="/quiz">Quizzes</a>
         <a href="/profile">Profile</a>
       </div>
 

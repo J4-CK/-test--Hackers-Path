@@ -43,7 +43,7 @@ export default function LessonTemplate() {
       content: (
         <>
           <p className="lesson-text">Imagine you are not doing well in a class and are considering cheating on a test. This could help you get a high score to boost your grade. However, the severity of the risk is that if you are caught, your test score becomes a zero and you might face punishment from the school. The likelihood of the risk can change, but let's assume your teacher is known for catching cheaters.</p>
-          <p className="lesson-text">Let’s assess this risk:</p>
+          <p className="lesson-text">Let's assess this risk:</p>
           <div className="lesson-text"><b>Severity:</b> A zero on the test and potential punishment from the school.</div>
           <div className="lesson-text"><b>Likelihood:</b> High, especially because your teacher is known for catching cheaters.</div>
           <p className="lesson-text">Given the high likelihood and severe consequences, this risk would likely not be worth taking.</p>
@@ -69,8 +69,8 @@ export default function LessonTemplate() {
 
       <div className="roadmap">
         <a href="/leaderboard">Leaderboard</a>
-        <a href="/htmllessons/lessons.html">Lessons</a>
-        <a href="/htmlquiz/quizzes.html">Quizzes</a>
+        <a href="/lessons">Lessons</a>
+        <a href="/quiz">Quizzes</a>
         <a href="/profile">Profile</a>
       </div>
 

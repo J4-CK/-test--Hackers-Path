@@ -52,13 +52,13 @@ export default function Leaderboard({ initialPlayers }) {
       </Head>
       <div>
         <header>
-          <h1><a href="/index">Hacker's Path</a></h1>
+          <h1><a href="/">Hacker's Path</a></h1>
         </header>
       </div>
       <div className="roadmap">
         <a href="/leaderboard">Leaderboard</a>
-        <a href="/htmllessons/lessons.html">Lessons</a>
-        <a href="/htmlquiz/quizzes.html">Quizzes</a>
+        <a href="/lessons">Lessons</a>
+        <a href="/quiz">Quizzes</a>
         <a href="/profile">{user?.username ? `Profile (${user.username})` : 'Profile'}</a>
       </div>
 

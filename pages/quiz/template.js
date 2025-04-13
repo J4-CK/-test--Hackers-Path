@@ -148,8 +148,8 @@ export default function QuizTemplate() {
       {/* Roadmap Navigation */}
       <div className="roadmap">
         <a href="/leaderboard">Leaderboard</a>
-        <a href="/htmllessons/lessons.html">Lessons</a>
-        <a href="/htmlquiz/quizzes.html">Quizzes</a>
+        <a href="/lessons">Lessons</a>
+        <a href="/quiz">Quizzes</a>
         <a href="/profile">Profile</a>
       </div>
 

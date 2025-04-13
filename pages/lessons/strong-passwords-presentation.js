@@ -1,21 +1,45 @@
 import { useState, useEffect } from 'react';
 import Head from 'next/head';
-import Navigation from '../../components/Navigation';
+import { useRouter } from 'next/router';
 
 export default function StrongPasswordsPresentation() {
+  const router = useRouter();
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [user, setUser] = useState(null);
 
+  // Fetch session on load
   useEffect(() => {
     async function checkSession() {
       const res = await fetch('/api/auth/session');
       const data = await res.json();
+
       if (res.ok) {
         setUser(data.user);
+      } else {
+        router.push('/login');
       }
     }
     checkSession();
+  }, [router]);
+
+  // Close menu on scroll
+  useEffect(() => {
+    const handleScroll = () => setMenuOpen(false);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Close menu on link click
+  const handleNavLinkClick = () => {
+    setMenuOpen(false);
+  };
+
+  // Handle logout
+  async function handleLogout() {
+    await fetch('/api/auth/logout', { method: 'POST' });
+    router.push('/login');
+  }
 
   const slides = [
     {
@@ -84,6 +108,10 @@ export default function StrongPasswordsPresentation() {
   const nextSlide = () => setCurrentSlide((currentSlide + 1) % slides.length);
   const prevSlide = () => setCurrentSlide((currentSlide - 1 + slides.length) % slides.length);
 
+  if (!user) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div>
       <Head>
@@ -96,7 +124,12 @@ export default function StrongPasswordsPresentation() {
         <h1><a href="/">Hacker's Path</a></h1>
       </header>
 
-      <Navigation user={user} />
+      <div className="roadmap">
+        <a href="/leaderboard">Leaderboard</a>
+        <a href="/lessons">Lessons</a>
+        <a href="/quiz">Quizzes</a>
+        <a href="/profile">Profile</a>
+      </div>
 
       {/* Slide Display */}
       <div className="slide active">
@@ -115,9 +148,13 @@ export default function StrongPasswordsPresentation() {
 
       {/* Final Navigation */}
       <div className="final-navigation">
-        <a href="/quiz/strong-passwords-quiz">Take the Quiz</a>
+        <a href="/quiz/CIA-Triad-Quiz">Take the Quiz</a>
         <a href="/">Return to Homepage</a>
       </div>
+
+      <button onClick={handleLogout} className="logout-btn">
+        Logout
+      </button>
     </div>
   );
 }
