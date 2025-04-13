@@ -1,0 +1,44 @@
+.container {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.quizGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.quizCard {
+  background: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.quizCard h2 {
+  margin: 0 0 1rem 0;
+  color: #333;
+}
+
+.quizCard p {
+  margin: 0 0 1.5rem 0;
+  color: #666;
+}
+
+.startButton {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background: #007bff;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  margin-top: 1rem;
+  transition: background-color 0.2s;
+}
+
+.startButton:hover {
+  background: #0056b3;
+} 
