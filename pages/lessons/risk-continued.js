@@ -3,8 +3,8 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useUser, useSupabaseClient } from '@supabase/auth-helpers-react';
 
-export default function LessonTemplate() {
-  const [currentSection, setCurrentSection] = useState(0);
+export default function RiskContinuedLesson() {
+  const [currentSlide, setCurrentSlide] = useState(0);
   const [hasStarted, setHasStarted] = useState(false);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
@@ -43,7 +43,7 @@ export default function LessonTemplate() {
 
   useEffect(() => {
     // Track lesson completion when reaching the last section
-    if (currentSection === sections.length - 1 && user) {
+    if (currentSlide === sections.length - 1 && user) {
       fetch('/api/activity/track', {
         method: 'POST',
         headers: {
@@ -57,10 +57,9 @@ export default function LessonTemplate() {
         }),
       });
     }
-  }, [currentSection, user]);
+  }, [currentSlide, user]);
 
   // Define lesson sections here.
-  // Duplicate and modify the objects inside the sections array to add more content.
   const sections = [
     {
       title: "Risk Continued",
@@ -109,14 +108,14 @@ export default function LessonTemplate() {
     },
   ];
 
-  const nextSection = () => setCurrentSection((currentSection + 1) % sections.length);
-  const prevSection = () => setCurrentSection((currentSection - 1 + sections.length) % sections.length);
-  const goToSection = (index) => setCurrentSection(index);
+  const nextSection = () => setCurrentSlide((currentSlide + 1) % sections.length);
+  const prevSection = () => setCurrentSlide((currentSlide - 1 + sections.length) % sections.length);
+  const goToSection = (index) => setCurrentSlide(index);
 
   return (
     <div className="lesson-wrapper">
       <Head>
-        <title>Lesson Template</title>
+        <title>Risk Continued Lesson</title>
         <link rel="stylesheet" href="/styles/homepagestyle.css" />
       </Head>
 
@@ -124,7 +123,6 @@ export default function LessonTemplate() {
         <h1><a href="/">Hacker's Path</a></h1>
       </header>
 
-      {/* Roadmap Navigation */}
       <div className="roadmap">
         <a href="/leaderboard">Leaderboard</a>
         <a href="/lessons">Lessons</a>
@@ -132,46 +130,36 @@ export default function LessonTemplate() {
         <a href="/profile">Profile</a>
       </div>
 
-      {/* Main Lesson Content in a Larger Box */}
       <div className="lesson-container">
-        {/* Sidebar for Lesson Progress */}
         <div className="lesson-sidebar">
           <h3>Lesson Progress</h3>
           <ul>
             {sections.map((section, index) => (
-              <li key={index} className={index === currentSection ? "active" : ""} onClick={() => goToSection(index)}>
+              <li key={index} className={index === currentSlide ? "active" : ""} onClick={() => goToSection(index)}>
                 {section.title}
               </li>
             ))}
           </ul>
         </div>
 
-        {/* Lesson Content */}
         <div className="lesson-content">
-          <h2 className="lesson-text">{sections[currentSection].title}</h2>
-          {sections[currentSection].content}
+          <h2 className="lesson-text">{sections[currentSlide].title}</h2>
+          {sections[currentSlide].content}
         </div>
       </div>
 
-      {/* Centered Navigation Buttons */}
-      <div className="center-nav">
-        {currentSection > 0 && (
-          <button onClick={() => setCurrentSection(currentSection - 1)} className="nav-button">
-            Previous
-          </button>
-        )}
-        {currentSection < sections.length - 1 && (
-          <button onClick={() => setCurrentSection(currentSection + 1)} className="nav-button">
-            Next
-          </button>
-        )}
+      <div className="lesson-navigation centered-navigation">
+        <button onClick={prevSection} disabled={currentSlide === 0}>Previous</button>
+        <button onClick={nextSection} disabled={currentSlide === sections.length - 1}>Next</button>
       </div>
-      {currentSection === sections.length - 1 && (
-        <div className="final-nav">
+
+      {currentSlide === sections.length - 1 && (
+        <div className="final-navigation centered-navigation">
           <a href="/quiz/risk-continued-quiz" className="quiz-link">Take the Quiz</a>
-          <a href="/" className="home-link">Return to Home</a>
+          <a href="/" className="home-link">Return to Homepage</a>
         </div>
       )}
     </div>
   );
 }
+

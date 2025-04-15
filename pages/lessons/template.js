@@ -1,40 +1,106 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 
 export default function LessonTemplate() {
-  const [currentSection, setCurrentSection] = useState(0);
   const router = useRouter();
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [user, setUser] = useState(null);
+  const [lessonStarted, setLessonStarted] = useState(false);
+  const [lessonCompleted, setLessonCompleted] = useState(false);
 
-  // Define lesson sections here.
-  // Duplicate and modify the objects inside the sections array to add more content.
+  // Fetch session on load
+  useEffect(() => {
+    async function checkSession() {
+      const res = await fetch('/api/auth/session');
+      const data = await res.json();
+
+      if (res.ok) {
+        setUser(data.user);
+      } else {
+        router.push('/login');
+      }
+    }
+    checkSession();
+  }, [router]);
+
+  // Track lesson start
+  useEffect(() => {
+    if (user && !lessonStarted) {
+      const trackStart = async () => {
+        try {
+          await fetch('/api/activity/track', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              activity: 'Started Template lesson',
+              userId: user.id
+            }),
+          });
+          setLessonStarted(true);
+        } catch (error) {
+          console.error('Failed to track lesson start:', error);
+        }
+      };
+      trackStart();
+    }
+  }, [user, lessonStarted]);
+
+  // Track lesson completion
+  useEffect(() => {
+    if (user && currentSlide === sections.length - 1 && !lessonCompleted) {
+      const trackCompletion = async () => {
+        try {
+          await fetch('/api/activity/track', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              activity: 'Completed Template lesson',
+              userId: user.id
+            }),
+          });
+          setLessonCompleted(true);
+        } catch (error) {
+          console.error('Failed to track lesson completion:', error);
+        }
+      };
+      trackCompletion();
+    }
+  }, [user, currentSlide, lessonCompleted]);
+
+  // Define your lesson sections here. Add more as needed.
   const sections = [
     {
-      title: "Lesson Title - Section 1",
+      title: "First Section Title",
       content: (
         <>
-          <p className="lesson-text">Lesson introduction or explanation goes here.</p>
-          <div className="lesson-text"><b>Key Concept 1:</b> Brief explanation.</div>
-          <div className="lesson-text"><b>Key Concept 2:</b> Another explanation.</div>
+          <p className="lesson-text">Section 1 content goes here.</p>
+          <div className="lesson-text">Add more content as needed.</div>
         </>
       ),
     },
     {
-      title: "Lesson Title - Section 2",
+      title: "Second Section Title",
       content: (
         <>
-          <h2 className="lesson-text">Subtopic Title</h2>
-          <p className="lesson-text">Details about this topic go here.</p>
-          <div className="lesson-text">Example bullet point.</div>
-          <div className="lesson-text">Another example.</div>
+          <p className="lesson-text">Section 2 content goes here.</p>
+          <p className="lesson-text">You can add multiple paragraphs.</p>
         </>
       ),
     },
   ];
 
-  const nextSection = () => setCurrentSection((currentSection + 1) % sections.length);
-  const prevSection = () => setCurrentSection((currentSection - 1 + sections.length) % sections.length);
-  const goToSection = (index) => setCurrentSection(index);
+  const nextSection = () => setCurrentSlide((currentSlide + 1) % sections.length);
+  const prevSection = () => setCurrentSlide((currentSlide - 1 + sections.length) % sections.length);
+  const goToSection = (index) => setCurrentSlide(index);
+
+  if (!user) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="lesson-wrapper">
@@ -47,44 +113,38 @@ export default function LessonTemplate() {
         <h1><a href="/">Hacker's Path</a></h1>
       </header>
 
-      {/* Roadmap Navigation */}
       <div className="roadmap">
         <a href="/leaderboard">Leaderboard</a>
-        <a href="/htmllessons/lessons.html">Lessons</a>
-        <a href="/htmlquiz/quizzes.html">Quizzes</a>
+        <a href="/lessons">Lessons</a>
+        <a href="/quiz">Quizzes</a>
         <a href="/profile">Profile</a>
       </div>
 
-      {/* Main Lesson Content in a Larger Box */}
       <div className="lesson-container">
-        {/* Sidebar for Lesson Progress */}
         <div className="lesson-sidebar">
           <h3>Lesson Progress</h3>
           <ul>
             {sections.map((section, index) => (
-              <li key={index} className={index === currentSection ? "active" : ""} onClick={() => goToSection(index)}>
+              <li key={index} className={index === currentSlide ? "active" : ""} onClick={() => goToSection(index)}>
                 {section.title}
               </li>
             ))}
           </ul>
         </div>
 
-        {/* Lesson Content */}
         <div className="lesson-content">
-          <h2 className="lesson-text">{sections[currentSection].title}</h2>
-          {sections[currentSection].content}
+          <h2 className="lesson-text">{sections[currentSlide].title}</h2>
+          {sections[currentSlide].content}
         </div>
       </div>
 
-      {/* Centered Navigation Buttons */}
       <div className="lesson-navigation centered-navigation">
-        <button onClick={prevSection} disabled={currentSection === 0}>Previous</button>
-        <button onClick={nextSection} disabled={currentSection === sections.length - 1}>Next</button>
+        <button onClick={prevSection} disabled={currentSlide === 0}>Previous</button>
+        <button onClick={nextSection} disabled={currentSlide === sections.length - 1}>Next</button>
       </div>
 
-      {/* Centered Final Navigation */}
       <div className="final-navigation centered-navigation">
-        <a href="/quizzes/example-quiz" className="quiz-link">Take the Quiz</a>
+        <a href="/quiz/template-quiz" className="quiz-link">Take the Quiz</a>
         <a href="/" className="home-link">Return to Homepage</a>
       </div>
     </div>

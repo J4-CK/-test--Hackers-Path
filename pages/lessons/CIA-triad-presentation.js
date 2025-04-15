@@ -5,7 +5,6 @@ import { useRouter } from 'next/router';
 export default function CIATriadPresentation() {
   const router = useRouter();
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [menuOpen, setMenuOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [lessonStarted, setLessonStarted] = useState(false);
   const [lessonCompleted, setLessonCompleted] = useState(false);
@@ -51,7 +50,7 @@ export default function CIATriadPresentation() {
 
   // Track lesson completion
   useEffect(() => {
-    if (user && currentSlide === slides.length - 1 && !lessonCompleted) {
+    if (user && currentSlide === sections.length - 1 && !lessonCompleted) {
       const trackCompletion = async () => {
         try {
           await fetch('/api/activity/track', {
@@ -73,25 +72,7 @@ export default function CIATriadPresentation() {
     }
   }, [user, currentSlide, lessonCompleted]);
 
-  // Close menu on scroll
-  useEffect(() => {
-    const handleScroll = () => setMenuOpen(false);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  // Close menu on link click
-  const handleNavLinkClick = () => {
-    setMenuOpen(false);
-  };
-
-  // Handle logout
-  async function handleLogout() {
-    await fetch('/api/auth/logout', { method: 'POST' });
-    router.push('/login');
-  }
-
-  const slides = [
+  const sections = [
     {
       title: "Introduction to the CIA Triad",
       content: (
@@ -138,18 +119,18 @@ export default function CIATriadPresentation() {
     },
   ];
 
-  const nextSlide = () => setCurrentSlide((currentSlide + 1) % slides.length);
-  const prevSlide = () => setCurrentSlide((currentSlide - 1 + slides.length) % slides.length);
+  const nextSection = () => setCurrentSlide((currentSlide + 1) % sections.length);
+  const prevSection = () => setCurrentSlide((currentSlide - 1 + sections.length) % sections.length);
+  const goToSection = (index) => setCurrentSlide(index);
 
   if (!user) {
     return <div>Loading...</div>;
   }
 
   return (
-    <div>
+    <div className="lesson-wrapper">
       <Head>
-        <title>CIA Triad - Presentation</title>
-        <link rel="stylesheet" href="/styles/lessonstyle.css" />
+        <title>CIA Triad Lesson</title>
         <link rel="stylesheet" href="/styles/homepagestyle.css" />
       </Head>
 
@@ -164,50 +145,33 @@ export default function CIATriadPresentation() {
         <a href="/profile">Profile</a>
       </div>
 
-      {/* Progress Indicator */}
-      <div className="progress-bar" style={{
-        width: '80%',
-        margin: '20px auto',
-        backgroundColor: '#f0f0f0',
-        borderRadius: '10px',
-        padding: '3px'
-      }}>
-        <div style={{
-          width: `${((currentSlide + 1) / slides.length) * 100}%`,
-          height: '20px',
-          backgroundColor: '#4CAF50',
-          borderRadius: '8px',
-          transition: 'width 0.3s ease-in-out'
-        }}></div>
-        <div style={{ textAlign: 'center', marginTop: '5px' }}>
-          Slide {currentSlide + 1} of {slides.length}
+      <div className="lesson-container">
+        <div className="lesson-sidebar">
+          <h3>Lesson Progress</h3>
+          <ul>
+            {sections.map((section, index) => (
+              <li key={index} className={index === currentSlide ? "active" : ""} onClick={() => goToSection(index)}>
+                {section.title}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="lesson-content">
+          <h2 className="lesson-text">{sections[currentSlide].title}</h2>
+          {sections[currentSlide].content}
         </div>
       </div>
 
-      {/* Slide Display */}
-      <div className="slide active">
-        <h2>{slides[currentSlide].title}</h2>
-        {slides[currentSlide].img && (
-          <img src={slides[currentSlide].img} alt={slides[currentSlide].title} />
-        )}
-        <div>{slides[currentSlide].content}</div>
+      <div className="lesson-navigation centered-navigation">
+        <button onClick={prevSection} disabled={currentSlide === 0}>Previous</button>
+        <button onClick={nextSection} disabled={currentSlide === sections.length - 1}>Next</button>
       </div>
 
-      {/* Navigation Buttons */}
-      <div className="navigation">
-        <button onClick={prevSlide}>Previous</button>
-        <button onClick={nextSlide}>Next</button>
+      <div className="final-navigation centered-navigation">
+        <a href="/quiz/CIA-Triad-Quiz" className="quiz-link">Take the Quiz</a>
+        <a href="/" className="home-link">Return to Homepage</a>
       </div>
-
-      {/* Final Navigation */}
-      <div className="final-navigation">
-        <a href="/quiz/CIA-Triad-Quiz">Take the Quiz</a>
-        <a href="/">Return to Homepage</a>
-      </div>
-
-      <button onClick={handleLogout} className="logout-btn">
-        Logout
-      </button>
     </div>
   );
 }

@@ -1,10 +1,76 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 
-export default function LessonTemplate() {
-  const [currentSection, setCurrentSection] = useState(0);
+export default function SecurityControlsPresentation() {
   const router = useRouter();
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [user, setUser] = useState(null);
+  const [lessonStarted, setLessonStarted] = useState(false);
+  const [lessonCompleted, setLessonCompleted] = useState(false);
+
+  // Fetch session on load
+  useEffect(() => {
+    async function checkSession() {
+      const res = await fetch('/api/auth/session');
+      const data = await res.json();
+
+      if (res.ok) {
+        setUser(data.user);
+      } else {
+        router.push('/login');
+      }
+    }
+    checkSession();
+  }, [router]);
+
+  // Track lesson start
+  useEffect(() => {
+    if (user && !lessonStarted) {
+      const trackStart = async () => {
+        try {
+          await fetch('/api/activity/track', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              activity: 'Started Security Controls lesson',
+              userId: user.id
+            }),
+          });
+          setLessonStarted(true);
+        } catch (error) {
+          console.error('Failed to track lesson start:', error);
+        }
+      };
+      trackStart();
+    }
+  }, [user, lessonStarted]);
+
+  // Track lesson completion
+  useEffect(() => {
+    if (user && currentSlide === sections.length - 1 && !lessonCompleted) {
+      const trackCompletion = async () => {
+        try {
+          await fetch('/api/activity/track', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              activity: 'Completed Security Controls lesson',
+              userId: user.id
+            }),
+          });
+          setLessonCompleted(true);
+        } catch (error) {
+          console.error('Failed to track lesson completion:', error);
+        }
+      };
+      trackCompletion();
+    }
+  }, [user, currentSlide, lessonCompleted]);
 
   const sections = [
     {
@@ -50,14 +116,18 @@ export default function LessonTemplate() {
     },
   ];
 
-  const nextSection = () => setCurrentSection((currentSection + 1) % sections.length);
-  const prevSection = () => setCurrentSection((currentSection - 1 + sections.length) % sections.length);
-  const goToSection = (index) => setCurrentSection(index);
+  const nextSection = () => setCurrentSlide((currentSlide + 1) % sections.length);
+  const prevSection = () => setCurrentSlide((currentSlide - 1 + sections.length) % sections.length);
+  const goToSection = (index) => setCurrentSlide(index);
+
+  if (!user) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="lesson-wrapper">
       <Head>
-        <title>Risk Basics Lesson</title>
+        <title>Security Controls Lesson</title>
         <link rel="stylesheet" href="/styles/homepagestyle.css" />
       </Head>
 
@@ -77,7 +147,7 @@ export default function LessonTemplate() {
           <h3>Lesson Progress</h3>
           <ul>
             {sections.map((section, index) => (
-              <li key={index} className={index === currentSection ? "active" : ""} onClick={() => goToSection(index)}>
+              <li key={index} className={index === currentSlide ? "active" : ""} onClick={() => goToSection(index)}>
                 {section.title}
               </li>
             ))}
@@ -85,18 +155,18 @@ export default function LessonTemplate() {
         </div>
 
         <div className="lesson-content">
-          <h2 className="lesson-text">{sections[currentSection].title}</h2>
-          {sections[currentSection].content}
+          <h2 className="lesson-text">{sections[currentSlide].title}</h2>
+          {sections[currentSlide].content}
         </div>
       </div>
 
       <div className="lesson-navigation centered-navigation">
-        <button onClick={prevSection} disabled={currentSection === 0}>Previous</button>
-        <button onClick={nextSection} disabled={currentSection === sections.length - 1}>Next</button>
+        <button onClick={prevSection} disabled={currentSlide === 0}>Previous</button>
+        <button onClick={nextSection} disabled={currentSlide === sections.length - 1}>Next</button>
       </div>
 
       <div className="final-navigation centered-navigation">
-        <a href="/quizzes/risk-basics-quiz" className="quiz-link">Take the Quiz</a>
+        <a href="/quiz/security-controls-quiz" className="quiz-link">Take the Quiz</a>
         <a href="/" className="home-link">Return to Homepage</a>
       </div>
     </div>
