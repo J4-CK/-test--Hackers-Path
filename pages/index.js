@@ -65,7 +65,10 @@ export default function HomePage() {
       <link rel="stylesheet" href="/styles/homepagestyle.css" />
 
       <header>
-        <h1><a href="/">Hacker's Path</a></h1>
+        <div className="header-content">
+          <img src="/images/favicon.png" alt="Hacker's Path Logo" className="header-logo" />
+          <h1><a href="/">Hacker's Path</a></h1>
+        </div>
       </header>
 
       <div className="roadmap-wrapper">
