@@ -16,3 +16,6 @@ npm-debug.log*
 # Build files
 dist/
 out/
+
+# Test coverage
+coverage/
