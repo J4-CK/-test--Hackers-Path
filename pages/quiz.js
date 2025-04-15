@@ -71,7 +71,7 @@ export default function Quizzes() {
           <div className="buttons">
             <a href="/quiz/CIA-Triad-Quiz">
               CIA Triad Quiz
-              <p>Test your knowledge of the CIA Triad</p>
+              <p>test your knowledge of the CIA Triad</p>
             </a>
             {/* Add more quizzes here as they become available */}
           </div>
@@ -79,4 +79,4 @@ export default function Quizzes() {
       </div>
     </div>
   );
-} test
+} 
