@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Loading from '../components/Loading';
+import Head from 'next/head';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -57,40 +58,56 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="section">
-      {/* Include External CSS */}
-      <link rel="stylesheet" href="/styles/login.css" />
-      <header>
-        <h1><a href="/">Hacker's Path</a></h1>
-      </header>
+    <div className="container">
+      <Head>
+        <title>Login - Hacker's Path</title>
+        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" href="/images/favicon.png" />
+      </Head>
+      
       <div className="section">
-        <h2>Login</h2>
-        <form onSubmit={handleSubmit}>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            placeholder="Enter your email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <input
-            type="password"
-            id="password"
-            name="password"
-            placeholder="Enter your password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-          <button type="submit" className="logout-btn">
-            {returnUrl ? 'Login & Return' : 'Login'}
-          </button>
-          {error && <p id="error">{error}</p>}
-        </form>
-        <div className="register-link">
-          <p>Don't have an account? <a href="/register">Create one here</a></p>
+        {/* Include External CSS */}
+        <link rel="stylesheet" href="/styles/login.css"/>
+        
+        <h1>Login to Hacker's Path</h1>
+        
+        <div className="login-form">
+          {error && <div className="error-message">{error}</div>}
+          
+          <form onSubmit={handleSubmit}>
+            <div className="form-group">
+              <label htmlFor="email">Email</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+            
+            <div className="form-group">
+              <label htmlFor="password">Password</label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <button type="submit" className="logout-btn">
+                {loading ? <Loading size="small" /> : 'Login'}
+              </button>
+            </div>
+          </form>
+          
+          <div className="register-link">
+            <p>Don't have an account? <a href="/register">Create one here</a></p>
+          </div>
         </div>
       </div>
     </div>

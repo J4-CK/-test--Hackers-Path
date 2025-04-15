@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
+import Head from 'next/head';
 import Loading from '../components/Loading';
 
 export default function HomePage() {
@@ -43,6 +44,11 @@ export default function HomePage() {
   if (!user) {
     return (
       <div>
+        <Head>
+          <title>Hacker's Path</title>
+          <link rel="icon" href="/favicon.ico" />
+          <link rel="icon" type="image/png" href="/images/favicon.png" />
+        </Head>
         <link rel="stylesheet" href="/styles/homepagestyle.css" />
         <Loading />
       </div>
@@ -51,6 +57,11 @@ export default function HomePage() {
 
   return (
     <div>
+      <Head>
+        <title>Hacker's Path</title>
+        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" href="/images/favicon.png" />
+      </Head>
       <link rel="stylesheet" href="/styles/homepagestyle.css" />
 
       <header>
