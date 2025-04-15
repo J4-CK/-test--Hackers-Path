@@ -50,7 +50,7 @@ export default function RiskBasicsPresentation() {
 
   // Track lesson completion
   useEffect(() => {
-    if (user && currentSlide === slides.length - 1 && !lessonCompleted) {
+    if (user && currentSlide === sections.length - 1 && !lessonCompleted) {
       const trackCompletion = async () => {
         try {
           await fetch('/api/activity/track', {
