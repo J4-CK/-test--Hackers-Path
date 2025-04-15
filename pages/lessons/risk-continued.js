@@ -6,17 +6,24 @@ import { useUser, useSupabaseClient } from '@supabase/auth-helpers-react';
 export default function LessonTemplate() {
   const [currentSection, setCurrentSection] = useState(0);
   const [hasStarted, setHasStarted] = useState(false);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
   const user = useUser();
   const supabase = useSupabaseClient();
 
   useEffect(() => {
-    if (!user) {
+    if (user !== null) {
+      setLoading(false);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (!loading && !user) {
       router.push('/login');
       return;
     }
 
-    if (!hasStarted) {
+    if (!loading && user && !hasStarted) {
       // Track lesson start
       fetch('/api/activity/track', {
         method: 'POST',
@@ -32,7 +39,7 @@ export default function LessonTemplate() {
       });
       setHasStarted(true);
     }
-  }, [user, hasStarted]);
+  }, [user, hasStarted, loading]);
 
   useEffect(() => {
     // Track lesson completion when reaching the last section
@@ -147,16 +154,24 @@ export default function LessonTemplate() {
       </div>
 
       {/* Centered Navigation Buttons */}
-      <div className="lesson-navigation centered-navigation">
-        <button onClick={prevSection} disabled={currentSection === 0}>Previous</button>
-        <button onClick={nextSection} disabled={currentSection === sections.length - 1}>Next</button>
+      <div className="center-nav">
+        {currentSection > 0 && (
+          <button onClick={() => setCurrentSection(currentSection - 1)} className="nav-button">
+            Previous
+          </button>
+        )}
+        {currentSection < sections.length - 1 && (
+          <button onClick={() => setCurrentSection(currentSection + 1)} className="nav-button">
+            Next
+          </button>
+        )}
       </div>
-
-      {/* Centered Final Navigation */}
-      <div className="final-navigation centered-navigation">
-        <a href="/quizzes/example-quiz" className="quiz-link">Take the Quiz</a>
-        <a href="/" className="home-link">Return to Homepage</a>
-      </div>
+      {currentSection === sections.length - 1 && (
+        <div className="final-nav">
+          <a href="/quiz/risk-continued-quiz" className="quiz-link">Take the Quiz</a>
+          <a href="/" className="home-link">Return to Home</a>
+        </div>
+      )}
     </div>
   );
 }
