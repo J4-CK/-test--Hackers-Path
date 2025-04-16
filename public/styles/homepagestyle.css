@@ -90,7 +90,6 @@ header h1 a:hover {
     background: #531d73;
     margin: 0;
     padding: 0;
-    position: relative;
 }
 
 .roadmap {
@@ -157,36 +156,43 @@ header h1 a:hover {
     background-color: #42155c;
 }
 
+/* Hamburger Menu */
+.hamburger {
+    display: none;
+    background: #6a1b9a;
+    color: white;
+    border: none;
+    font-size: 1.8em;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin: 10px auto;
+    z-index: 10;
+}
+
+.close-btn {
+    background: #42155c;
+}
+
 /* Mobile Styles */
 @media (max-width: 768px) {
     .hamburger {
         display: block;
-        margin: 10px auto;
-        width: auto;
-    }
-    
-    .hamburger:hover {
-        background-color: #42155c;
     }
 
     .roadmap {
         display: none;
         flex-direction: column;
         padding: 10px;
-        width: 100%;
-        position: absolute;
-        z-index: 100;
     }
 
     .roadmap.open {
         display: flex;
-        width: 100%;
     }
 
     .roadmap a {
         width: 100%;
         max-width: none;
-        margin: 5px 0;
     }
 
     .buttons {
@@ -201,24 +207,6 @@ header h1 a:hover {
     .container {
         padding: 15px;
     }
-}
-
-/* Hamburger Menu */
-.hamburger {
-    display: none;
-    background: #6a1b9a;
-    color: white;
-    border: none;
-    font-size: 1.8em;
-    padding: 8px 16px;
-    cursor: pointer;
-    border-radius: 5px;
-    margin: 10px auto;
-    transition: background-color 0.3s ease;
-}
-
-.close-btn {
-    background: #42155c;
 }
 
 /* Player Stats Section */
