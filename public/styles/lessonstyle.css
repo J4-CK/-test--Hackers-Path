@@ -128,13 +128,13 @@ header h1 a:hover {
 
 .lesson-content {
     flex: 1;
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: #ffffff;
     padding: 30px;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
     text-align: left;
     min-height: 400px;
-    color: #e0e0e0;
+    color: #333333;
 }
 
 .lesson-sidebar h3 {
@@ -174,13 +174,18 @@ header h1 a:hover {
     margin-bottom: 15px;
     line-height: 1.6;
     text-align: left;
-    color: #e0e0e0;
+    color: #333333;
 }
 
 .lesson-content h2 {
-    color: #8c30c2;
+    color: #6a1b9a;
     margin-top: 0;
     text-align: left;
+}
+
+.lesson-content b {
+    color: #42155c;
+    font-weight: bold;
 }
 
 /* Navigation Buttons */
