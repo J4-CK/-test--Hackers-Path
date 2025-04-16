@@ -116,6 +116,9 @@ export default function HomePage() {
           <div className="buttons">
             <a href="/quiz/CIA-Triad-Quiz">CIA Triad Quiz</a>
             <a href="/quiz/strong-passwords-quiz">Strong Passwords Quiz</a>
+            <a href="/quiz/risk-basics-quiz">Risk Basics Quiz</a>
+            <a href="/quiz/risk-continued-quiz">Risk Continued Quiz</a>
+            <a href="/quiz/security-controls-quiz">Security Controls Quiz</a>
           </div>
         </div>
 

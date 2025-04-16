@@ -71,9 +71,24 @@ export default function Quizzes() {
           <div className="buttons">
             <a href="/quiz/CIA-Triad-Quiz">
               CIA Triad Quiz
-              <p>test your knowledge of the CIA Triad</p>
+              <p>Test your knowledge of the CIA Triad</p>
             </a>
-            {/* Add more quizzes here as they become available */}
+            <a href="/quiz/strong-passwords-quiz">
+              Strong Passwords Quiz
+              <p>Test your knowledge of password security</p>
+            </a>
+            <a href="/quiz/risk-basics-quiz">
+              Risk Basics Quiz
+              <p>Test your understanding of security risk fundamentals</p>
+            </a>
+            <a href="/quiz/risk-continued-quiz">
+              Risk Continued Quiz
+              <p>Advanced risk management and assessment concepts</p>
+            </a>
+            <a href="/quiz/security-controls-quiz">
+              Security Controls Quiz
+              <p>Test your knowledge of different security controls</p>
+            </a>
           </div>
         </div>
       </div>
