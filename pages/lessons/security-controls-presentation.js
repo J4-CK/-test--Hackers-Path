@@ -25,6 +25,13 @@ export default function SecurityControlsPresentation() {
     checkSession();
   }, [router]);
 
+  // Close menu on scroll
+  useEffect(() => {
+    const handleScroll = () => setMenuOpen(false);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   // Track lesson start
   useEffect(() => {
     if (user && !lessonStarted) {
@@ -124,6 +131,11 @@ export default function SecurityControlsPresentation() {
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
   };
+  
+  // Close menu when nav link is clicked
+  const handleNavLinkClick = () => {
+    setMenuOpen(false);
+  };
 
   if (!user) {
     return <div>Loading...</div>;
@@ -143,19 +155,19 @@ export default function SecurityControlsPresentation() {
 
       <div className="roadmap-wrapper">
         {!menuOpen ? (
-          <button className="hamburger" onClick={() => setMenuOpen(true)}>
+          <button className="hamburger" onClick={toggleMenu}>
             ☰
           </button>
         ) : (
-          <button className="hamburger close-btn" onClick={() => setMenuOpen(false)}>
+          <button className="hamburger close-btn" onClick={toggleMenu}>
             ×
           </button>
         )}
         <nav className={`roadmap ${menuOpen ? 'open' : ''}`}>
-          <a href="/leaderboard">Leaderboard</a>
-          <a href="/lessons">Lessons</a>
-          <a href="/quiz">Quizzes</a>
-          <a href="/profile">Profile</a>
+          <a href="/leaderboard" onClick={handleNavLinkClick}>Leaderboard</a>
+          <a href="/lessons" onClick={handleNavLinkClick}>Lessons</a>
+          <a href="/quiz" onClick={handleNavLinkClick}>Quizzes</a>
+          <a href="/profile" onClick={handleNavLinkClick}>Profile</a>
         </nav>
       </div>
 

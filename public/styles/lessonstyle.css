@@ -44,6 +44,7 @@ header h1 a:hover {
     background: #531d73;
     margin: 0;
     padding: 0;
+    position: relative;
 }
 
 .roadmap {
@@ -78,33 +79,17 @@ header h1 a:hover {
 }
 
 /* Hamburger Menu */
-.hamburger-menu {
-    display: none;
-    cursor: pointer;
-    padding: 10px;
-    z-index: 1000;
-}
-
-.hamburger-menu div {
-    width: 30px;
-    height: 3px;
-    background-color: #e0e0e0;
-    margin: 6px 0;
-    transition: 0.4s;
-}
-
-/* Alternative Hamburger Menu Styles from homepagestyle */
 .hamburger {
     display: none;
     background: #6a1b9a;
     color: white;
     border: none;
     font-size: 1.8em;
-    padding: 10px 15px;
+    padding: 8px 16px;
     cursor: pointer;
     border-radius: 5px;
     margin: 10px auto;
-    z-index: 10;
+    transition: background-color 0.3s ease;
 }
 
 .close-btn {
@@ -266,62 +251,83 @@ header h1 a:hover {
 
 /* Mobile Styles */
 @media (max-width: 768px) {
-    .hamburger-menu {
-        display: block;
-        position: relative;
-        top: auto;
-        right: auto;
-    }
-    
-    /* Hamburger icon animation */
-    .hamburger-menu.active div:nth-child(1) {
-        transform: rotate(-45deg) translate(-5px, 6px);
-    }
-    
-    .hamburger-menu.active div:nth-child(2) {
-        opacity: 0;
-    }
-    
-    .hamburger-menu.active div:nth-child(3) {
-        transform: rotate(45deg) translate(-5px, -6px);
-    }
-    
     .hamburger {
         display: block;
+        padding: 8px 16px;
+        margin: 8px auto;
+        font-size: 1.5em;
+    }
+    
+    .hamburger:hover {
+        background-color: #42155c;
     }
 
     .roadmap {
         display: none;
+        flex-direction: column;
+        width: 100%;
+        max-width: 100%;
+        padding: 0;
+        margin: 0;
     }
 
     .roadmap.open {
         display: flex;
+        padding-bottom: 10px;
     }
     
     .roadmap a {
-        width: 100%;
+        width: 90%;
         max-width: none;
+        margin: 5px auto;
+        box-sizing: border-box;
     }
 
     .lesson-container {
         flex-direction: column;
         width: 95%;
+        gap: 15px;
+        margin-top: 1rem;
     }
 
     .lesson-sidebar {
         width: 100%;
-        flex: auto;
+        flex: none;
         position: static;
-        margin-bottom: 20px;
+        margin-bottom: 15px;
+        box-sizing: border-box;
+    }
+    
+    .lesson-content {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 20px;
     }
 
     .final-navigation {
         flex-direction: column;
         align-items: center;
+        width: 95%;
+        margin: 20px auto;
+        gap: 10px;
     }
 
     .final-navigation a {
-        width: 80%;
+        width: 90%;
+        box-sizing: border-box;
+        padding: 12px 0;
+    }
+    
+    .lesson-navigation {
+        width: 95%;
+        margin: 15px auto;
+        gap: 10px;
+    }
+    
+    .lesson-navigation button {
+        padding: 10px 0;
+        width: 45%;
+        box-sizing: border-box;
     }
 }
   
