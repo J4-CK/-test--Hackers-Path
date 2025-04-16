@@ -35,11 +35,10 @@ header h1 a:hover {
 /* Roadmap Navigation Styles */
 .roadmap {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    gap: 10px;
-    padding: 15px;
+    padding: 15px 10%;
     background: #531d73;
     width: 100%;
     margin: 0;
@@ -47,12 +46,14 @@ header h1 a:hover {
 }
 
 .roadmap a {
-    flex: 0 0 auto;
+    flex: 1;
+    margin: 0 5px;
     padding: 10px 20px;
     text-decoration: none;
     color: #e0e0e0;
     background-color: #6a1b9a;
     border-radius: 5px;
+    text-align: center;
     transition: all 0.3s ease;
 }
 
@@ -99,6 +100,7 @@ header h1 a:hover {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
     text-align: left;
     min-height: 400px;
+    color: #e0e0e0;
 }
 
 .lesson-sidebar h3 {
@@ -138,6 +140,7 @@ header h1 a:hover {
     margin-bottom: 15px;
     line-height: 1.6;
     text-align: left;
+    color: #e0e0e0;
 }
 
 .lesson-content h2 {
@@ -204,11 +207,12 @@ header h1 a:hover {
 }
 
 .quiz-link {
-    background-color: #006064 !important;
+    background-color: #42155c !important;
+    color: white !important;
 }
 
 .quiz-link:hover {
-    background-color: #00838f !important;
+    background-color: #531d73 !important;
 }
 
 /* Mobile Styles */
@@ -223,6 +227,14 @@ header h1 a:hover {
         flex: auto;
         position: static;
         margin-bottom: 20px;
+    }
+
+    .roadmap {
+        padding: 15px 5%;
+    }
+
+    .roadmap a {
+        margin: 5px;
     }
 
     .final-navigation {
