@@ -8,6 +8,7 @@ export default function StrongPasswordsPresentation() {
   const [user, setUser] = useState(null);
   const [lessonStarted, setLessonStarted] = useState(false);
   const [lessonCompleted, setLessonCompleted] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   // Fetch session on load
   useEffect(() => {
@@ -23,6 +24,13 @@ export default function StrongPasswordsPresentation() {
     }
     checkSession();
   }, [router]);
+
+  // Close menu on scroll
+  useEffect(() => {
+    const handleScroll = () => setMenuOpen(false);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Track lesson start
   useEffect(() => {
@@ -74,74 +82,51 @@ export default function StrongPasswordsPresentation() {
 
   const sections = [
     {
-      title: "What is a Strong Password?",
+      title: "Introduction to Password Security",
       content: (
         <>
-          <p className="lesson-text">A strong password is designed to resist various types of password attacks:</p>
-          <div className="lesson-text">- Uses a combination of letters, numbers, and symbols</div>
-          <div className="lesson-text">- Has sufficient length (at least 12 characters)</div>
-          <div className="lesson-text">- Is unique and not used across multiple accounts</div>
-          <div className="lesson-text">- Avoids common words, phrases, or personal information</div>
+          <p className="lesson-text">Passwords are the first line of defense for your accounts and information.</p>
+          <p className="lesson-text">According to security research, weak or stolen passwords are responsible for 81% of hacking-related breaches.</p>
+          <p className="lesson-text">In this lesson, we'll explore what makes a strong password and how to protect your accounts.</p>
         </>
       ),
     },
     {
-      title: "Examples of Weak Passwords",
+      title: "What Makes a Password Weak?",
       content: (
         <>
-          <p className="lesson-text">The following passwords are considered weak and should be avoided:</p>
-          <div className="lesson-text"><b>123456:</b> Too simple and commonly used in data breaches</div>
-          <div className="lesson-text"><b>password:</b> One of the first passwords attackers will try</div>
-          <div className="lesson-text"><b>qwerty:</b> Based on keyboard patterns that are easy to guess</div>
-          <div className="lesson-text"><b>birthdays/names:</b> Personal information that might be publicly available</div>
+          <p className="lesson-text">There are several common password mistakes to avoid:</p>
+          <div className="lesson-text">- Using common passwords like "password" or "123456"</div>
+          <div className="lesson-text">- Using personal information like your name or birthday</div>
+          <div className="lesson-text">- Using short passwords with fewer than 8 characters</div>
+          <div className="lesson-text">- Using only lowercase letters</div>
+          <div className="lesson-text">- Using the same password for multiple accounts</div>
         </>
       ),
     },
     {
-      title: "Tips for Creating Strong Passwords",
+      title: "Creating Strong Passwords",
       content: (
         <>
-          <p className="lesson-text">Follow these guidelines to create strong, secure passwords:</p>
-          <div className="lesson-text">- Use at least 12 characters; longer is generally better</div>
-          <div className="lesson-text">- Include uppercase and lowercase letters, numbers, and symbols</div>
-          <div className="lesson-text">- Consider using a passphrase (a sequence of random words)</div>
-          <div className="lesson-text">- Avoid using the same password for multiple accounts</div>
+          <p className="lesson-text">A strong password should include:</p>
+          <div className="lesson-text">- At least 12 characters in length (longer is better)</div>
+          <div className="lesson-text">- A mix of uppercase and lowercase letters</div>
+          <div className="lesson-text">- Numbers and special characters</div>
+          <div className="lesson-text">- No obvious personal information</div>
+          <div className="lesson-text">- Unique passwords for each service</div>
         </>
       ),
     },
     {
-      title: "Password Managers",
+      title: "Password Management Best Practices",
       content: (
         <>
-          <p className="lesson-text">Password managers help overcome the challenge of remembering multiple complex passwords:</p>
-          <div className="lesson-text">- Securely store all your passwords in an encrypted vault</div>
-          <div className="lesson-text">- Generate strong, unique passwords for each account</div>
-          <div className="lesson-text">- Auto-fill credentials on websites and apps</div>
-          <div className="lesson-text">- Sync passwords across all your devices</div>
-        </>
-      ),
-    },
-    {
-      title: "Multi-Factor Authentication (MFA)",
-      content: (
-        <>
-          <p className="lesson-text">MFA adds an extra layer of security beyond just passwords:</p>
-          <div className="lesson-text">- Requires something you know (password) and something you have (phone/token)</div>
-          <div className="lesson-text">- Protects your account even if your password is compromised</div>
-          <div className="lesson-text">- Common forms include SMS codes, authenticator apps, and security keys</div>
-          <div className="lesson-text">- Should be enabled on all important accounts (email, banking, social media)</div>
-        </>
-      ),
-    },
-    {
-      title: "Common Password Attacks",
-      content: (
-        <>
-          <p className="lesson-text">Understanding how passwords are attacked helps you better protect them:</p>
-          <div className="lesson-text"><b>Brute Force:</b> Systematically trying all possible password combinations</div>
-          <div className="lesson-text"><b>Dictionary Attack:</b> Trying common words and variations</div>
-          <div className="lesson-text"><b>Credential Stuffing:</b> Using leaked passwords from one site to access others</div>
-          <div className="lesson-text"><b>Phishing:</b> Tricking users into revealing passwords through fake websites or emails</div>
+          <p className="lesson-text">Managing many strong passwords can be challenging. Here are some best practices:</p>
+          <div className="lesson-text">- Use a password manager to securely store your passwords</div>
+          <div className="lesson-text">- Enable two-factor authentication (2FA) whenever possible</div>
+          <div className="lesson-text">- Change passwords periodically, especially after a breach</div>
+          <div className="lesson-text">- Consider using passphrase sentences that are easier to remember but hard to guess</div>
+          <div className="lesson-text">- Never share your passwords with others</div>
         </>
       ),
     },
@@ -150,6 +135,15 @@ export default function StrongPasswordsPresentation() {
   const nextSection = () => setCurrentSlide((currentSlide + 1) % sections.length);
   const prevSection = () => setCurrentSlide((currentSlide - 1 + sections.length) % sections.length);
   const goToSection = (index) => setCurrentSlide(index);
+
+  const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
+  };
+  
+  // Close menu when nav link is clicked
+  const handleNavLinkClick = () => {
+    setMenuOpen(false);
+  };
 
   if (!user) {
     return <div>Loading...</div>;
@@ -160,17 +154,29 @@ export default function StrongPasswordsPresentation() {
       <Head>
         <title>Strong Passwords Lesson</title>
         <link rel="stylesheet" href="/styles/homepagestyle.css" />
+        <link rel="stylesheet" href="/styles/lessonstyle.css" />
       </Head>
 
       <header>
         <h1><a href="/">Hacker's Path</a></h1>
       </header>
 
-      <div className="roadmap">
-        <a href="/leaderboard">Leaderboard</a>
-        <a href="/lessons">Lessons</a>
-        <a href="/quiz">Quizzes</a>
-        <a href="/profile">Profile</a>
+      <div className="roadmap-wrapper">
+        {!menuOpen ? (
+          <button className="hamburger" onClick={toggleMenu}>
+            ☰
+          </button>
+        ) : (
+          <button className="hamburger close-btn" onClick={toggleMenu}>
+            ×
+          </button>
+        )}
+        <nav className={`roadmap ${menuOpen ? 'open' : ''}`}>
+          <a href="/leaderboard" onClick={handleNavLinkClick}>Leaderboard</a>
+          <a href="/lessons" onClick={handleNavLinkClick}>Lessons</a>
+          <a href="/quiz" onClick={handleNavLinkClick}>Quizzes</a>
+          <a href="/profile" onClick={handleNavLinkClick}>Profile</a>
+        </nav>
       </div>
 
       <div className="lesson-container">

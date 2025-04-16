@@ -8,6 +8,7 @@ export default function CIATriadPresentation() {
   const [user, setUser] = useState(null);
   const [lessonStarted, setLessonStarted] = useState(false);
   const [lessonCompleted, setLessonCompleted] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   // Fetch session on load
   useEffect(() => {
@@ -23,6 +24,13 @@ export default function CIATriadPresentation() {
     }
     checkSession();
   }, [router]);
+
+  // Close menu on scroll
+  useEffect(() => {
+    const handleScroll = () => setMenuOpen(false);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Track lesson start
   useEffect(() => {
@@ -123,6 +131,15 @@ export default function CIATriadPresentation() {
   const prevSection = () => setCurrentSlide((currentSlide - 1 + sections.length) % sections.length);
   const goToSection = (index) => setCurrentSlide(index);
 
+  const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
+  };
+  
+  // Close menu when nav link is clicked
+  const handleNavLinkClick = () => {
+    setMenuOpen(false);
+  };
+
   if (!user) {
     return <div>Loading...</div>;
   }
@@ -132,17 +149,29 @@ export default function CIATriadPresentation() {
       <Head>
         <title>CIA Triad Lesson</title>
         <link rel="stylesheet" href="/styles/homepagestyle.css" />
+        <link rel="stylesheet" href="/styles/lessonstyle.css" />
       </Head>
 
       <header>
         <h1><a href="/">Hacker's Path</a></h1>
       </header>
 
-      <div className="roadmap">
-        <a href="/leaderboard">Leaderboard</a>
-        <a href="/lessons">Lessons</a>
-        <a href="/quiz">Quizzes</a>
-        <a href="/profile">Profile</a>
+      <div className="roadmap-wrapper">
+        {!menuOpen ? (
+          <button className="hamburger" onClick={toggleMenu}>
+            ☰
+          </button>
+        ) : (
+          <button className="hamburger close-btn" onClick={toggleMenu}>
+            ×
+          </button>
+        )}
+        <nav className={`roadmap ${menuOpen ? 'open' : ''}`}>
+          <a href="/leaderboard" onClick={handleNavLinkClick}>Leaderboard</a>
+          <a href="/lessons" onClick={handleNavLinkClick}>Lessons</a>
+          <a href="/quiz" onClick={handleNavLinkClick}>Quizzes</a>
+          <a href="/profile" onClick={handleNavLinkClick}>Profile</a>
+        </nav>
       </div>
 
       <div className="lesson-container">

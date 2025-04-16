@@ -1,108 +1,126 @@
 import { useState, useEffect } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useUser, useSupabaseClient } from '@supabase/auth-helpers-react';
 
-export default function RiskContinuedLesson() {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [hasStarted, setHasStarted] = useState(false);
-  const [loading, setLoading] = useState(true);
+export default function RiskContinued() {
   const router = useRouter();
-  const user = useUser();
-  const supabase = useSupabaseClient();
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [user, setUser] = useState(null);
+  const [lessonStarted, setLessonStarted] = useState(false);
+  const [lessonCompleted, setLessonCompleted] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
+  // Fetch session on load
   useEffect(() => {
-    if (user !== null) {
-      setLoading(false);
-    }
-  }, [user]);
+    async function checkSession() {
+      const res = await fetch('/api/auth/session');
+      const data = await res.json();
 
+      if (res.ok) {
+        setUser(data.user);
+      } else {
+        router.push('/login');
+      }
+    }
+    checkSession();
+  }, [router]);
+
+  // Close menu on scroll
   useEffect(() => {
-    if (!loading && !user) {
-      router.push('/login');
-      return;
-    }
+    const handleScroll = () => setMenuOpen(false);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
-    if (!loading && user && !hasStarted) {
-      // Track lesson start
-      fetch('/api/activity/track', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          userId: user.id,
-          activityType: 'lesson_start',
-          description: 'Started Risk Continued lesson',
-          lessonId: 'risk-continued'
-        }),
-      });
-      setHasStarted(true);
-    }
-  }, [user, hasStarted, loading]);
-
+  // Track lesson start
   useEffect(() => {
-    // Track lesson completion when reaching the last section
-    if (currentSlide === sections.length - 1 && user) {
-      fetch('/api/activity/track', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          userId: user.id,
-          activityType: 'lesson_complete',
-          description: 'Completed Risk Continued lesson',
-          lessonId: 'risk-continued'
-        }),
-      });
+    if (user && !lessonStarted) {
+      const trackStart = async () => {
+        try {
+          await fetch('/api/activity/track', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              activity: 'Started Risk Continued lesson',
+              userId: user.id
+            }),
+          });
+          setLessonStarted(true);
+        } catch (error) {
+          console.error('Failed to track lesson start:', error);
+        }
+      };
+      trackStart();
     }
-  }, [currentSlide, user]);
+  }, [user, lessonStarted]);
 
-  // Define lesson sections here.
+  // Track lesson completion
+  useEffect(() => {
+    if (user && currentSlide === sections.length - 1 && !lessonCompleted) {
+      const trackCompletion = async () => {
+        try {
+          await fetch('/api/activity/track', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              activity: 'Completed Risk Continued lesson',
+              userId: user.id
+            }),
+          });
+          setLessonCompleted(true);
+        } catch (error) {
+          console.error('Failed to track lesson completion:', error);
+        }
+      };
+      trackCompletion();
+    }
+  }, [user, currentSlide, lessonCompleted]);
+
   const sections = [
     {
-      title: "Risk Continued",
+      title: "Advanced Risk Concepts",
       content: (
         <>
-          <p className="lesson-text">Now that we understand what risk consists of how do we address it?</p>
-          <div className="lesson-text"><b>Risk Identification:</b> How do we identify risk?</div>
-          <div className="lesson-text"><b>Risk Assessment:</b> How do we quantify risk?</div>
-          <div className="lesson-text"><b>Risk Treatment:</b> How do we treat risk?</div>
+          <p className="lesson-text">Now that we understand the basics of risk, let's explore more advanced risk management concepts.</p>
+          <p className="lesson-text">In this lesson, we'll cover risk metrics, risk frameworks, and risk governance.</p>
         </>
       ),
     },
     {
-      title: "Risk Identification",
+      title: "Quantitative vs. Qualitative Risk Assessment",
       content: (
         <>
-          <p className="lesson-text">We talked previously about assets, threats, and vulnerabilities. These are all aspects involved in Risk Identification.</p>
-          <p className="lesson-text">Risk Identification is important because we can't protect against what we can't see.</p>
-          <p className="lesson-text">Risk Identification also isn't just done once. It's a continuous process of finding, understanding, and preparing for risk.</p>
-          <p className="lesson-text">Everyone within an organization should be identifying risk and communicate clearly when they find it.</p>
+          <p className="lesson-text">There are two main approaches to risk assessment:</p>
+          <div className="lesson-text"><b>Quantitative:</b> Assigns monetary values and numerical probabilities to risks</div>
+          <div className="lesson-text"><b>Qualitative:</b> Uses descriptive categories (high/medium/low) to evaluate risks</div>
+          <p className="lesson-text">Many organizations use a hybrid approach, combining both methods.</p>
         </>
       ),
     },
     {
-      title: "Risk Assessment",
+      title: "Risk Metrics",
       content: (
         <>
-          <p className="lesson-text">We've mentioned in the previous lesson that risk assessment involves finding risks based on likelihood and impact, but there is more to it than that.</p>
-          <p className="lesson-text">Risk assessment also includes prioritizing risk based on what your organization needs. This could also include evaluating which mitigations to use.</p>
-          <p className="lesson-text">The end result of conducting risk assessment is usually a report or presentation on the risk to management.</p>
+          <p className="lesson-text">Common risk metrics include:</p>
+          <div className="lesson-text"><b>Annual Loss Expectancy (ALE) = Single Loss Expectancy (SLE) × Annual Rate of Occurrence (ARO)</b></div>
+          <div className="lesson-text"><b>Risk Exposure = Probability × Impact</b></div>
+          <div className="lesson-text"><b>Risk Priority Number (RPN) = Severity × Occurrence × Detection</b></div>
+          <p className="lesson-text">These metrics help prioritize risks and allocate resources effectively.</p>
         </>
       ),
     },
     {
-      title: "Risk Treatment",
+      title: "Risk Management Frameworks",
       content: (
         <>
-          <p className="lesson-text">After identifying and assessing risk, we have to address how to treat it. There are four options to do this.</p>
-          <p className="lesson-text">Option 1: Avoid the Risk. This usually involves stopping an activity because the impact and/or likelihood of the risk is too high.</p>
-          <p className="lesson-text">Option 2: Accept the Risk. This involves continuing the activity after calculating that the impact and/or likelihood of the risk is low, or the benefits heavily outweigh the costs of the risk.</p>
-          <p className="lesson-text">Option 3: Mitigate the Risk. This involves taking steps to reduce or prevent a risk's impact or likelihood. They can involve controls or plans on how to address the risk if it happens.</p>
-          <p className="lesson-text">Option 4: Transfer the Risk. This usually involves passing on the cost of the risk to someone else willing to accept it for a price. An example of this would be insurance.</p>
-          <p className="lesson-text"><b>Note: There is no such thing as ignoring risk!</b></p>
+          <p className="lesson-text">Several frameworks guide organizational risk management:</p>
+          <div className="lesson-text"><b>NIST RMF:</b> The Risk Management Framework from the National Institute of Standards and Technology</div>
+          <div className="lesson-text"><b>ISO 31000:</b> International standard for risk management principles and guidelines</div>
+          <div className="lesson-text"><b>FAIR:</b> Factor Analysis of Information Risk - a model for understanding, analyzing and measuring information risk</div>
         </>
       ),
     },
@@ -112,22 +130,47 @@ export default function RiskContinuedLesson() {
   const prevSection = () => setCurrentSlide((currentSlide - 1 + sections.length) % sections.length);
   const goToSection = (index) => setCurrentSlide(index);
 
+  const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
+  };
+  
+  // Close menu when nav link is clicked
+  const handleNavLinkClick = () => {
+    setMenuOpen(false);
+  };
+
+  if (!user) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="lesson-wrapper">
       <Head>
-        <title>Risk Continued Lesson</title>
+        <title>Risk Management Continued</title>
         <link rel="stylesheet" href="/styles/homepagestyle.css" />
+        <link rel="stylesheet" href="/styles/lessonstyle.css" />
       </Head>
 
       <header>
         <h1><a href="/">Hacker's Path</a></h1>
       </header>
 
-      <div className="roadmap">
-        <a href="/leaderboard">Leaderboard</a>
-        <a href="/lessons">Lessons</a>
-        <a href="/quiz">Quizzes</a>
-        <a href="/profile">Profile</a>
+      <div className="roadmap-wrapper">
+        {!menuOpen ? (
+          <button className="hamburger" onClick={toggleMenu}>
+            ☰
+          </button>
+        ) : (
+          <button className="hamburger close-btn" onClick={toggleMenu}>
+            ×
+          </button>
+        )}
+        <nav className={`roadmap ${menuOpen ? 'open' : ''}`}>
+          <a href="/leaderboard" onClick={handleNavLinkClick}>Leaderboard</a>
+          <a href="/lessons" onClick={handleNavLinkClick}>Lessons</a>
+          <a href="/quiz" onClick={handleNavLinkClick}>Quizzes</a>
+          <a href="/profile" onClick={handleNavLinkClick}>Profile</a>
+        </nav>
       </div>
 
       <div className="lesson-container">
@@ -153,12 +196,10 @@ export default function RiskContinuedLesson() {
         <button onClick={nextSection} disabled={currentSlide === sections.length - 1}>Next</button>
       </div>
 
-      {currentSlide === sections.length - 1 && (
-        <div className="final-navigation centered-navigation">
-          <a href="/quiz/risk-continued-quiz" className="quiz-link">Take the Quiz</a>
-          <a href="/" className="home-link">Return to Homepage</a>
-        </div>
-      )}
+      <div className="final-navigation centered-navigation">
+        <a href="/quiz/risk-continued-quiz" className="quiz-link">Take the Quiz</a>
+        <a href="/" className="home-link">Return to Homepage</a>
+      </div>
     </div>
   );
 }

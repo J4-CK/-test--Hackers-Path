@@ -8,6 +8,7 @@ export default function RiskBasicsPresentation() {
   const [user, setUser] = useState(null);
   const [lessonStarted, setLessonStarted] = useState(false);
   const [lessonCompleted, setLessonCompleted] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   // Fetch session on load
   useEffect(() => {
@@ -23,6 +24,13 @@ export default function RiskBasicsPresentation() {
     }
     checkSession();
   }, [router]);
+
+  // Close menu on scroll
+  useEffect(() => {
+    const handleScroll = () => setMenuOpen(false);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Track lesson start
   useEffect(() => {
@@ -74,23 +82,23 @@ export default function RiskBasicsPresentation() {
 
   const sections = [
     {
-      title: "What is Risk?",
+      title: "Risk Basics",
       content: (
         <>
-          <p className="lesson-text">Risk is simply the possibility of something bad happening. Every decision you make has risk involved.</p>
-          <p className="lesson-text">For example, think about riding a bike. You can move much faster, travel farther, and sometimes use the road. However, the chance of injury is higher compared to walking.</p>
-          <p className="lesson-text"><b>Risk tolerance</b> is the amount of risk someone is willing to take. Each person has a different level of risk tolerance.</p>
+          <p className="lesson-text">Understanding risk is key to effective cybersecurity.</p>
+          <p className="lesson-text">Risk is defined as the potential for loss, damage, or destruction of assets or data as a result of a threat exploiting a vulnerability.</p>
+          <p className="lesson-text">In this lesson, we'll explore the fundamentals of risk and how to assess it.</p>
         </>
       ),
     },
     {
-      title: "Risk Terminology",
+      title: "Risk Components",
       content: (
         <>
-          <p className="lesson-text">Here are some terms that are related to risk:</p>
-          <div className="lesson-text"><b>Asset:</b> Something you want to protect. For example, your phone would be considered an asset.</div>
-          <div className="lesson-text"><b>Vulnerability:</b> A weakness in protection. An example of a vulnerability is a weak password for your phone.</div>
-          <div className="lesson-text"><b>Threat:</b> Someone or something trying to exploit a vulnerability. For example, if someone knows you have a weak password, they could try to access your phone. This person or action is the threat.</div>
+          <p className="lesson-text">Risk consists of three primary components:</p>
+          <div className="lesson-text"><b>Asset:</b> Something of value that needs protection (data, systems, etc.)</div>
+          <div className="lesson-text"><b>Threat:</b> A potential cause of an unwanted incident</div>
+          <div className="lesson-text"><b>Vulnerability:</b> A weakness that can be exploited by a threat</div>
         </>
       ),
     },
@@ -98,21 +106,23 @@ export default function RiskBasicsPresentation() {
       title: "Risk Assessment",
       content: (
         <>
-          <p className="lesson-text">There are two main factors when it comes to calculating risk:</p>
-          <div className="lesson-text">1. How severe the bad outcome is.</div>
-          <div className="lesson-text">2. How likely it is that something bad will happen.</div>
+          <p className="lesson-text">Risk assessment involves:</p>
+          <div className="lesson-text">1. Identifying valuable assets</div>
+          <div className="lesson-text">2. Determining potential threats</div>
+          <div className="lesson-text">3. Identifying vulnerabilities</div>
+          <div className="lesson-text">4. Assessing the likelihood and impact of exploitation</div>
         </>
       ),
     },
     {
-      title: "Risk Assessment Example",
+      title: "Risk Management",
       content: (
         <>
-          <p className="lesson-text">Imagine you are not doing well in a class and are considering cheating on a test. This could help you get a high score to boost your grade. However, the severity of the risk is that if you are caught, your test score becomes a zero and you might face punishment from the school. The likelihood of the risk can change, but let's assume your teacher is known for catching cheaters.</p>
-          <p className="lesson-text">Let's assess this risk:</p>
-          <div className="lesson-text"><b>Severity:</b> A zero on the test and potential punishment from the school.</div>
-          <div className="lesson-text"><b>Likelihood:</b> High, especially because your teacher is known for catching cheaters.</div>
-          <p className="lesson-text">Given the high likelihood and severe consequences, this risk would likely not be worth taking.</p>
+          <p className="lesson-text">After assessing risks, organizations can manage them through:</p>
+          <div className="lesson-text"><b>Risk Avoidance:</b> Eliminating the risk entirely</div>
+          <div className="lesson-text"><b>Risk Mitigation:</b> Reducing the likelihood or impact</div>
+          <div className="lesson-text"><b>Risk Transfer:</b> Shifting the risk to another party (e.g., insurance)</div>
+          <div className="lesson-text"><b>Risk Acceptance:</b> Acknowledging and accepting the risk</div>
         </>
       ),
     },
@@ -122,22 +132,47 @@ export default function RiskBasicsPresentation() {
   const prevSection = () => setCurrentSlide((currentSlide - 1 + sections.length) % sections.length);
   const goToSection = (index) => setCurrentSlide(index);
 
+  const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
+  };
+  
+  // Close menu when nav link is clicked
+  const handleNavLinkClick = () => {
+    setMenuOpen(false);
+  };
+
+  if (!user) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="lesson-wrapper">
       <Head>
         <title>Risk Basics Lesson</title>
         <link rel="stylesheet" href="/styles/homepagestyle.css" />
+        <link rel="stylesheet" href="/styles/lessonstyle.css" />
       </Head>
 
       <header>
         <h1><a href="/">Hacker's Path</a></h1>
       </header>
 
-      <div className="roadmap">
-        <a href="/leaderboard">Leaderboard</a>
-        <a href="/lessons">Lessons</a>
-        <a href="/quiz">Quizzes</a>
-        <a href="/profile">Profile</a>
+      <div className="roadmap-wrapper">
+        {!menuOpen ? (
+          <button className="hamburger" onClick={toggleMenu}>
+            ☰
+          </button>
+        ) : (
+          <button className="hamburger close-btn" onClick={toggleMenu}>
+            ×
+          </button>
+        )}
+        <nav className={`roadmap ${menuOpen ? 'open' : ''}`}>
+          <a href="/leaderboard" onClick={handleNavLinkClick}>Leaderboard</a>
+          <a href="/lessons" onClick={handleNavLinkClick}>Lessons</a>
+          <a href="/quiz" onClick={handleNavLinkClick}>Quizzes</a>
+          <a href="/profile" onClick={handleNavLinkClick}>Profile</a>
+        </nav>
       </div>
 
       <div className="lesson-container">
@@ -164,7 +199,7 @@ export default function RiskBasicsPresentation() {
       </div>
 
       <div className="final-navigation centered-navigation">
-        <a href="/quizzes/risk-basics-quiz" className="quiz-link">Take the Quiz</a>
+        <a href="/quiz/risk-basics-quiz" className="quiz-link">Take the Quiz</a>
         <a href="/" className="home-link">Return to Homepage</a>
       </div>
     </div>
