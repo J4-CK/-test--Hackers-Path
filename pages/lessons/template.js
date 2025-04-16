@@ -138,54 +138,56 @@ export default function LessonTemplate() {
         <link rel="stylesheet" href="/styles/lessonstyle.css" />
       </Head>
 
-      <header>
-        <h1><a href="/">Hacker's Path</a></h1>
-      </header>
+      <div id="page-wrapper">
+        <header>
+          <h1><a href="/">Hacker's Path</a></h1>
+        </header>
 
-      <div className="roadmap-wrapper">
-        {!menuOpen ? (
-          <button className="hamburger" onClick={toggleMenu}>
-            ☰
-          </button>
-        ) : (
-          <button className="hamburger close-btn" onClick={toggleMenu}>
-            ×
-          </button>
-        )}
-        <nav className={`roadmap ${menuOpen ? 'open' : ''}`}>
-          <a href="/leaderboard" onClick={handleNavLinkClick}>Leaderboard</a>
-          <a href="/lessons" onClick={handleNavLinkClick}>Lessons</a>
-          <a href="/quiz" onClick={handleNavLinkClick}>Quizzes</a>
-          <a href="/profile" onClick={handleNavLinkClick}>Profile</a>
-        </nav>
-      </div>
-
-      <div className="lesson-container">
-        <div className="lesson-sidebar">
-          <h3>Lesson Progress</h3>
-          <ul>
-            {sections.map((section, index) => (
-              <li key={index} className={index === currentSlide ? "active" : ""} onClick={() => goToSection(index)}>
-                {section.title}
-              </li>
-            ))}
-          </ul>
+        <div className="roadmap-wrapper">
+          {!menuOpen ? (
+            <button className="hamburger" onClick={toggleMenu}>
+              ☰
+            </button>
+          ) : (
+            <button className="hamburger close-btn" onClick={toggleMenu}>
+              ×
+            </button>
+          )}
+          <nav className={`roadmap ${menuOpen ? 'open' : ''}`}>
+            <a href="/leaderboard" onClick={handleNavLinkClick}>Leaderboard</a>
+            <a href="/lessons" onClick={handleNavLinkClick}>Lessons</a>
+            <a href="/quiz" onClick={handleNavLinkClick}>Quizzes</a>
+            <a href="/profile" onClick={handleNavLinkClick}>Profile</a>
+          </nav>
         </div>
 
-        <div className="lesson-content">
-          <h2 className="lesson-text">{sections[currentSlide].title}</h2>
-          {sections[currentSlide].content}
+        <div className="lesson-container">
+          <div className="lesson-sidebar">
+            <h3>Lesson Progress</h3>
+            <ul>
+              {sections.map((section, index) => (
+                <li key={index} className={index === currentSlide ? "active" : ""} onClick={() => goToSection(index)}>
+                  {section.title}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="lesson-content">
+            <h2 className="lesson-text">{sections[currentSlide].title}</h2>
+            {sections[currentSlide].content}
+          </div>
         </div>
-      </div>
 
-      <div className="lesson-navigation centered-navigation">
-        <button onClick={prevSection} disabled={currentSlide === 0}>Previous</button>
-        <button onClick={nextSection} disabled={currentSlide === sections.length - 1}>Next</button>
-      </div>
+        <div className="lesson-navigation centered-navigation">
+          <button onClick={prevSection} disabled={currentSlide === 0}>Previous</button>
+          <button onClick={nextSection} disabled={currentSlide === sections.length - 1}>Next</button>
+        </div>
 
-      <div className="final-navigation centered-navigation">
-        <a href="/quiz/template-quiz" className="quiz-link">Take the Quiz</a>
-        <a href="/" className="home-link">Return to Homepage</a>
+        <div className="final-navigation centered-navigation">
+          <a href="/quiz/template-quiz" className="quiz-link">Take the Quiz</a>
+          <a href="/" className="home-link">Return to Homepage</a>
+        </div>
       </div>
 
       <Footer />

@@ -32,6 +32,11 @@ export default function HomePage() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Toggle menu open/closed
+  const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
+  };
+
   // Close menu on link click
   const handleNavLinkClick = () => {
     setMenuOpen(false);
@@ -66,67 +71,69 @@ export default function HomePage() {
       </Head>
       <link rel="stylesheet" href="/styles/homepagestyle.css" />
 
-      <header>
-        <h1><a href="/">Hacker's Path</a></h1>
-      </header>
+      <div id="page-wrapper">
+        <header>
+          <h1><a href="/">Hacker's Path</a></h1>
+        </header>
 
-      <div className="roadmap-wrapper">
-        {!menuOpen ? (
-          <button className="hamburger" onClick={() => setMenuOpen(true)}>
-            ☰
+        <div className="roadmap-wrapper">
+          {!menuOpen ? (
+            <button className="hamburger" onClick={toggleMenu}>
+              ☰
+            </button>
+          ) : (
+            <button className="hamburger close-btn" onClick={toggleMenu}>
+              ×
+            </button>
+          )}
+          <nav className={`roadmap ${menuOpen ? 'open' : ''}`}>
+            <a href="/leaderboard" onClick={handleNavLinkClick}>Leaderboard</a>
+            <a href="/lessons" onClick={handleNavLinkClick}>Lessons</a>
+            <a href="/quiz" onClick={handleNavLinkClick}>Quizzes</a>
+            <a href="/profile" onClick={handleNavLinkClick}>
+              {user.username ? `Profile (${user.username})` : 'Profile'}
+            </a>
+          </nav>
+        </div>
+
+        <div className="container">
+          <div className="stats">
+            <div className="box">
+              <h3>Daily Points</h3>
+              <p>{user.streak || 0}</p>
+            </div>
+            <div className="box">
+              <h3>All-Time Points</h3>
+              <p>{user.totalPoints || 0}</p>
+            </div>
+          </div>
+
+          <div className="section">
+            <h2>Lessons</h2>
+            <div className="buttons">
+              <a href="/lessons/strong-passwords-presentation">Strong Passwords</a>
+              <a href="/lessons/CIA-triad-presentation">CIA Triad</a>
+              <a href="/lessons/risk-basics-presentation">Risk Basics</a>
+              <a href="/lessons/risk-continued">Risk Continued</a>
+              <a href="/lessons/security-controls-presentation">Security Controls</a>
+            </div>
+          </div>
+
+          <div className="section">
+            <h2>Quizzes</h2>
+            <div className="buttons">
+              <a href="/quiz/CIA-Triad-Quiz">CIA Triad Quiz</a>
+              <a href="/quiz/strong-passwords-quiz">Strong Passwords Quiz</a>
+              <a href="/quiz/risk-basics-quiz">Risk Basics Quiz</a>
+              <a href="/quiz/risk-continued-quiz">Risk Continued Quiz</a>
+              <a href="/quiz/security-controls-quiz">Security Controls Quiz</a>
+            </div>
+          </div>
+
+          <button onClick={handleLogout} className="logout-btn">
+            Logout
           </button>
-        ) : (
-          <button className="hamburger close-btn" onClick={() => setMenuOpen(false)}>
-            ×
-          </button>
-        )}
-        <nav className={`roadmap ${menuOpen ? 'open' : ''}`}>
-          <a href="/leaderboard" onClick={handleNavLinkClick}>Leaderboard</a>
-          <a href="/lessons" onClick={handleNavLinkClick}>Lessons</a>
-          <a href="/quiz" onClick={handleNavLinkClick}>Quizzes</a>
-          <a href="/profile" onClick={handleNavLinkClick}>
-            {user.username ? `Profile (${user.username})` : 'Profile'}
-          </a>
-        </nav>
-      </div>
-
-      <div className="container">
-        <div className="stats">
-          <div className="box">
-            <h3>Daily Points</h3>
-            <p>{user.streak || 0}</p>
-          </div>
-          <div className="box">
-            <h3>All-Time Points</h3>
-            <p>{user.totalPoints || 0}</p>
-          </div>
         </div>
-
-        <div className="section">
-          <h2>Lessons</h2>
-          <div className="buttons">
-            <a href="/lessons/strong-passwords-presentation">Strong Passwords</a>
-            <a href="/lessons/CIA-triad-presentation">CIA Triad</a>
-            <a href="/lessons/risk-basics-presentation">Risk Basics</a>
-            <a href="/lessons/risk-continued">Risk Continued</a>
-            <a href="/lessons/security-controls-presentation">Security Controls</a>
-          </div>
-        </div>
-
-        <div className="section">
-          <h2>Quizzes</h2>
-          <div className="buttons">
-            <a href="/quiz/CIA-Triad-Quiz">CIA Triad Quiz</a>
-            <a href="/quiz/strong-passwords-quiz">Strong Passwords Quiz</a>
-            <a href="/quiz/risk-basics-quiz">Risk Basics Quiz</a>
-            <a href="/quiz/risk-continued-quiz">Risk Continued Quiz</a>
-            <a href="/quiz/security-controls-quiz">Security Controls Quiz</a>
-          </div>
-        </div>
-
-        <button onClick={handleLogout} className="logout-btn">
-          Logout
-        </button>
       </div>
 
       <Footer />
