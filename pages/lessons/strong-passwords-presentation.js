@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
+import Loading from '../../components/Loading';
 
 export default function StrongPasswordsPresentation() {
   const router = useRouter();
@@ -146,7 +147,16 @@ export default function StrongPasswordsPresentation() {
   };
 
   if (!user) {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        <Head>
+          <title>Strong Passwords Lesson</title>
+          <link rel="stylesheet" href="/styles/homepagestyle.css" />
+          <link rel="stylesheet" href="/styles/lessonstyle.css" />
+        </Head>
+        <Loading />
+      </div>
+    );
   }
 
   return (

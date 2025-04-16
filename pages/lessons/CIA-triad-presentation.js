@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
+import Loading from '../../components/Loading';
 
 export default function CIATriadPresentation() {
   const router = useRouter();
@@ -141,7 +142,16 @@ export default function CIATriadPresentation() {
   };
 
   if (!user) {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        <Head>
+          <title>CIA Triad Lesson</title>
+          <link rel="stylesheet" href="/styles/homepagestyle.css" />
+          <link rel="stylesheet" href="/styles/lessonstyle.css" />
+        </Head>
+        <Loading />
+      </div>
+    );
   }
 
   return (
