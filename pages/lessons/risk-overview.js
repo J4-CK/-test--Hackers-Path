@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 
-export default function SecurityControlsPresentation() {
+export default function RiskOverview() {
   const router = useRouter();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [user, setUser] = useState(null);
@@ -36,7 +36,7 @@ export default function SecurityControlsPresentation() {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              activity: 'Started Security Controls lesson',
+              activity: 'Started Risk Overview lesson',
               userId: user.id
             }),
           });
@@ -60,7 +60,7 @@ export default function SecurityControlsPresentation() {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              activity: 'Completed Security Controls lesson',
+              activity: 'Completed Risk Overview lesson',
               userId: user.id
             }),
           });
@@ -73,49 +73,7 @@ export default function SecurityControlsPresentation() {
     }
   }, [user, currentSlide, lessonCompleted]);
 
-  const sections = [
-    {
-      title: "Security Controls",
-      content: (
-        <>
-          <p className="lesson-text">So how do we protect against risk? The answer to that question is that we use security controls.</p>
-          <p className="lesson-text">Security controls consists of things we use and processes we follow to help protect against risk to the CIA triad.</p>
-          <p className="lesson-text">Security controls consist of three categories:</p>
-          <p className="lesson-text"><b>Physical Controls, Technical Controls, and Administrative Controls</b></p>
-        </>
-      ),
-    },
-    {
-      title: "Physical Controls",
-      content: (
-        <>
-          <p className="lesson-text">Physical Controls work to protect against risk by using physical devices.</p>
-          <div className="lesson-text">Some examples of physical controls include badge readers, cameras, or even building design.</div>
-          <div className="lesson-text">Physical controls usually work hand-in-hand with techinical controls to form an overall security system.</div>
-        </>
-      ),
-    },
-    {
-      title: "Technical Controls",
-      content: (
-        <>
-          <p className="lesson-text">Technical controls are security controls that are put in place by computer systems and networks. Another name for technical controls are logical controls.</p>
-          <div className="lesson-text">Techincal controls work to provide automated protection against the misuse of data and applications.</div>
-          <div className="lesson-text">Some example of a technical control would be a firewall or an access control list.</div>
-        </>
-      ),
-    },
-    {
-      title: "Administrative Controls",
-      content: (
-        <>
-          <p className="lesson-text">Administrative controls are security controls that are put in place by management. Administrative controls are also known as managerial controls.</p>
-          <p className="lesson-text">Administrative controls work to protect the people within an organization and keep them safe against risk.</p>
-          <div className="lesson-text">Some examples of administrative controls would be training, security guidelines, and security frameworks.</div>
-        </>
-      ),
-    },
-  ];
+  // ... rest of sections array ...
 
   const nextSection = () => setCurrentSlide((currentSlide + 1) % sections.length);
   const prevSection = () => setCurrentSlide((currentSlide - 1 + sections.length) % sections.length);
@@ -132,7 +90,7 @@ export default function SecurityControlsPresentation() {
   return (
     <div className="lesson-wrapper">
       <Head>
-        <title>Security Controls Lesson</title>
+        <title>Risk Overview Lesson</title>
         <link rel="stylesheet" href="/styles/homepagestyle.css" />
         <link rel="stylesheet" href="/styles/lessonstyle.css" />
       </Head>
@@ -177,9 +135,9 @@ export default function SecurityControlsPresentation() {
       </div>
 
       <div className="final-navigation centered-navigation">
-        <a href="/quiz/security-controls-quiz" className="quiz-link">Take the Quiz</a>
+        <a href="/quiz/risk-overview-quiz" className="quiz-link">Take the Quiz</a>
         <a href="/" className="home-link">Return to Homepage</a>
       </div>
     </div>
   );
-}
+} 

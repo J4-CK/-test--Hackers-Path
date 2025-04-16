@@ -18,6 +18,15 @@ header {
     background: #531d73;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
     margin: 0;
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header h1 {
+    margin: 0;
 }
 
 header h1 a {
@@ -35,10 +44,10 @@ header h1 a:hover {
 /* Roadmap Navigation Styles */
 .roadmap {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
     flex-wrap: wrap;
-    padding: 15px 10%;
+    padding: 15px 0;
     background: #531d73;
     width: 100%;
     margin: 0;
@@ -46,8 +55,8 @@ header h1 a:hover {
 }
 
 .roadmap a {
-    flex: 1;
-    margin: 0 5px;
+    min-width: 150px;
+    margin: 0 10px;
     padding: 10px 20px;
     text-decoration: none;
     color: #e0e0e0;
@@ -60,6 +69,22 @@ header h1 a:hover {
 .roadmap a:hover {
     background-color: #42155c;
     color: #ffffff;
+}
+
+/* Hamburger Menu */
+.hamburger-menu {
+    display: none;
+    cursor: pointer;
+    padding: 10px;
+    z-index: 1000;
+}
+
+.hamburger-menu div {
+    width: 30px;
+    height: 3px;
+    background-color: #e0e0e0;
+    margin: 6px 0;
+    transition: 0.4s;
 }
 
 /* Lesson-specific Styles */
@@ -217,6 +242,47 @@ header h1 a:hover {
 
 /* Mobile Styles */
 @media (max-width: 768px) {
+    .hamburger-menu {
+        display: block;
+        position: relative;
+        top: auto;
+        right: auto;
+    }
+    
+    /* Hamburger icon animation */
+    .hamburger-menu.active div:nth-child(1) {
+        transform: rotate(-45deg) translate(-5px, 6px);
+    }
+    
+    .hamburger-menu.active div:nth-child(2) {
+        opacity: 0;
+    }
+    
+    .hamburger-menu.active div:nth-child(3) {
+        transform: rotate(45deg) translate(-5px, -6px);
+    }
+    
+    .roadmap {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        width: 100%;
+        background-color: #531d73;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        z-index: 999;
+    }
+    
+    .roadmap.active {
+        display: flex;
+    }
+    
+    .roadmap a {
+        width: 80%;
+        margin: 5px 0;
+    }
+
     .lesson-container {
         flex-direction: column;
         width: 95%;
@@ -227,14 +293,6 @@ header h1 a:hover {
         flex: auto;
         position: static;
         margin-bottom: 20px;
-    }
-
-    .roadmap {
-        padding: 15px 5%;
-    }
-
-    .roadmap a {
-        margin: 5px;
     }
 
     .final-navigation {
