@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from "react";
 import { supabase } from "../../config/supabaseClient";
 import { useRouter } from "next/router";
+import Head from 'next/head';
+import Loading from '../../components/Loading';
 
 export default function QuizPage() {
   const [user, setUser] = useState(null);
@@ -9,6 +11,7 @@ export default function QuizPage() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [score, setScore] = useState(0);
   const [showResults, setShowResults] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const router = useRouter();
 
   // Quiz questions
@@ -51,13 +54,39 @@ export default function QuizPage() {
       setCurrentQuestion(currentQuestion + 1);
     } else {
       setShowResults(true);
+      saveScore(score + (isCorrect ? 1 : 0));
     }
   };
 
-  const resetQuiz = () => {
-    setCurrentQuestion(0);
-    setScore(0);
-    setShowResults(false);
+  const saveScore = async (finalScore) => {
+    if (!user) return;
+    
+    try {
+      const { error } = await supabase
+        .from('quiz_scores')
+        .insert([{ 
+          user_id: user.id, 
+          quiz_name: 'CIA Triad Quiz', 
+          score: finalScore,
+          max_score: questions.length 
+        }]);
+      
+      if (error) console.error('Error saving score:', error);
+    } catch (error) {
+      console.error('Error:', error.message);
+    }
+  };
+
+  // Close menu on scroll
+  useEffect(() => {
+    const handleScroll = () => setMenuOpen(false);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Close menu on link click
+  const handleNavLinkClick = () => {
+    setMenuOpen(false);
   };
 
   useEffect(() => {
@@ -122,78 +151,93 @@ export default function QuizPage() {
     router.push('/login');
   };
 
-  if (loading) return <p>Loading...</p>;
+  const resetQuiz = () => {
+    setCurrentQuestion(0);
+    setScore(0);
+    setShowResults(false);
+  };
+
+  if (loading) return <Loading />;
 
   return (
-    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
-      {!user ? (
-        <>
-          <p>Please log in to take the quiz.</p>
-          <button onClick={handleLogin}>Log In</button>
-        </>
-      ) : (
-        <>
-          <div style={{ 
-            display: 'flex', 
-            justifyContent: 'space-around', 
-            marginBottom: '20px',
-            padding: '10px',
-            backgroundColor: '#f0f0f0',
-            borderRadius: '5px'
-          }}>
-            <a href="/leaderboard" style={{ marginRight: '15px' }}>Leaderboard</a>
-            <a href="/lessons" style={{ marginRight: '15px' }}>Lessons</a>
-            <a href="/quiz" style={{ marginRight: '15px' }}>Quizzes</a>
-            <a href="/profile">Profile</a>
+    <div>
+      <Head>
+        <title>CIA Triad Quiz - Hacker's Path</title>
+        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" href="/images/favicon.png" />
+      </Head>
+      <link rel="stylesheet" href="/styles/homepagestyle.css" />
+
+      <header>
+        <h1><a href="/">Hacker's Path</a></h1>
+      </header>
+
+      <div className="roadmap-wrapper">
+        {!menuOpen ? (
+          <button className="hamburger" onClick={() => setMenuOpen(true)}>
+            ☰
+          </button>
+        ) : (
+          <button className="hamburger close-btn" onClick={() => setMenuOpen(false)}>
+            ×
+          </button>
+        )}
+        <nav className={`roadmap ${menuOpen ? 'open' : ''}`}>
+          <a href="/leaderboard" onClick={handleNavLinkClick}>Leaderboard</a>
+          <a href="/lessons" onClick={handleNavLinkClick}>Lessons</a>
+          <a href="/quiz" onClick={handleNavLinkClick}>Quizzes</a>
+          <a href="/profile" onClick={handleNavLinkClick}>Profile</a>
+        </nav>
+      </div>
+
+      <div className="container">
+        {!user ? (
+          <div className="section">
+            <h2>Please log in to take the quiz</h2>
+            <button onClick={handleLogin} className="logout-btn">Log In</button>
           </div>
-          
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
-            <p>Welcome, {user.email}!</p>
-            <button onClick={handleLogout}>Log Out</button>
-          </div>
-          
-          <div style={{ 
-            backgroundColor: '#f9f9f9', 
-            padding: '20px', 
-            borderRadius: '8px', 
-            boxShadow: '0 2px 4px rgba(0,0,0,0.1)' 
-          }}>
-            {showResults ? (
-              <div style={{ textAlign: 'center', padding: '20px' }}>
-                <h2>Quiz Complete!</h2>
-                <p>Your score: {score} out of {questions.length}</p>
-                <button onClick={resetQuiz} style={{ marginTop: '15px' }}>Retake Quiz</button>
-              </div>
-            ) : (
-              <>
-                <h2>CIA Triad Quiz</h2>
-                <p>Question {currentQuestion + 1} of {questions.length}</p>
-                <h3>{questions[currentQuestion].questionText}</h3>
-                <div>
-                  {questions[currentQuestion].options.map((option, index) => (
-                    <div key={index} style={{ margin: '10px 0' }}>
-                      <button
-                        onClick={() => handleAnswerClick(option)}
-                        style={{
-                          width: '100%',
-                          padding: '10px',
-                          textAlign: 'left',
-                          backgroundColor: '#e0e0e0',
-                          border: 'none',
-                          borderRadius: '4px',
-                          cursor: 'pointer'
+        ) : (
+          <>
+            <div className="section">
+              <h2>CIA Triad Quiz</h2>
+              
+              {showResults ? (
+                <div className="quiz-container">
+                  <h3>Quiz Complete!</h3>
+                  <p>Your score: {score} out of {questions.length}</p>
+                  <button onClick={resetQuiz} className="logout-btn">Retake Quiz</button>
+                </div>
+              ) : (
+                <div className="quiz-container">
+                  <div className="question">
+                    <p>Question {currentQuestion + 1} of {questions.length}</p>
+                    <h3>{questions[currentQuestion].questionText}</h3>
+                  </div>
+                  
+                  <div className="buttons">
+                    {questions[currentQuestion].options.map((option, index) => (
+                      <a 
+                        key={index}
+                        href="#" 
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleAnswerClick(option);
                         }}
                       >
                         {option}
-                      </button>
-                    </div>
-                  ))}
+                      </a>
+                    ))}
+                  </div>
                 </div>
-              </>
-            )}
-          </div>
-        </>
-      )}
+              )}
+            </div>
+            
+            <button onClick={handleLogout} className="logout-btn">
+              Logout
+            </button>
+          </>
+        )}
+      </div>
     </div>
   );
 }
