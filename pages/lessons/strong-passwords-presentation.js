@@ -75,39 +75,49 @@ export default function StrongPasswordsPresentation() {
   const sections = [
     {
       title: "What is a Strong Password?",
-      img: "https://via.placeholder.com/800x300/0072ff/ffffff?text=Strong+Passwords",
-      content: "A strong password is long, unique, and combines letters, numbers, and symbols. It makes it harder for hackers to guess or crack.",
+      content: (
+        <>
+          <p className="lesson-text">A strong password is designed to resist various types of password attacks:</p>
+          <div className="lesson-text">- Uses a combination of letters, numbers, and symbols</div>
+          <div className="lesson-text">- Has sufficient length (at least 12 characters)</div>
+          <div className="lesson-text">- Is unique and not used across multiple accounts</div>
+          <div className="lesson-text">- Avoids common words, phrases, or personal information</div>
+        </>
+      ),
     },
     {
       title: "Examples of Weak Passwords",
       content: (
-        <ul>
-          <li><b>123456:</b> Common and easily guessed.</li>
-          <li><b>password:</b> Too simple and widely used.</li>
-          <li><b>qwerty:</b> Based on keyboard patterns.</li>
-        </ul>
+        <>
+          <p className="lesson-text">The following passwords are considered weak and should be avoided:</p>
+          <div className="lesson-text"><b>123456:</b> Too simple and commonly used in data breaches</div>
+          <div className="lesson-text"><b>password:</b> One of the first passwords attackers will try</div>
+          <div className="lesson-text"><b>qwerty:</b> Based on keyboard patterns that are easy to guess</div>
+          <div className="lesson-text"><b>birthdays/names:</b> Personal information that might be publicly available</div>
+        </>
       ),
     },
     {
       title: "Tips for Creating Strong Passwords",
       content: (
-        <ul>
-          <li>Use at least 12 characters.</li>
-          <li>Include uppercase and lowercase letters, numbers, and symbols.</li>
-          <li>Avoid personal information like names or birthdays.</li>
-        </ul>
+        <>
+          <p className="lesson-text">Follow these guidelines to create strong, secure passwords:</p>
+          <div className="lesson-text">- Use at least 12 characters; longer is generally better</div>
+          <div className="lesson-text">- Include uppercase and lowercase letters, numbers, and symbols</div>
+          <div className="lesson-text">- Consider using a passphrase (a sequence of random words)</div>
+          <div className="lesson-text">- Avoid using the same password for multiple accounts</div>
+        </>
       ),
     },
     {
       title: "Password Managers",
       content: (
         <>
-          <p>Using a password manager can help you create and store strong, unique passwords for each account.</p>
-          <ul>
-            <li>Automates password generation and storage.</li>
-            <li>Eliminates the need to remember multiple passwords.</li>
-            <li>Improves overall account security.</li>
-          </ul>
+          <p className="lesson-text">Password managers help overcome the challenge of remembering multiple complex passwords:</p>
+          <div className="lesson-text">- Securely store all your passwords in an encrypted vault</div>
+          <div className="lesson-text">- Generate strong, unique passwords for each account</div>
+          <div className="lesson-text">- Auto-fill credentials on websites and apps</div>
+          <div className="lesson-text">- Sync passwords across all your devices</div>
         </>
       ),
     },
@@ -115,23 +125,24 @@ export default function StrongPasswordsPresentation() {
       title: "Multi-Factor Authentication (MFA)",
       content: (
         <>
-          <p>Pairing strong passwords with MFA adds an extra layer of security to your accounts.</p>
-          <ul>
-            <li>Requires an additional verification step, like a code or biometric scan.</li>
-            <li>Even if your password is compromised, your account remains protected.</li>
-            <li>Recommended for all sensitive accounts (e.g., banking, email).</li>
-          </ul>
+          <p className="lesson-text">MFA adds an extra layer of security beyond just passwords:</p>
+          <div className="lesson-text">- Requires something you know (password) and something you have (phone/token)</div>
+          <div className="lesson-text">- Protects your account even if your password is compromised</div>
+          <div className="lesson-text">- Common forms include SMS codes, authenticator apps, and security keys</div>
+          <div className="lesson-text">- Should be enabled on all important accounts (email, banking, social media)</div>
         </>
       ),
     },
     {
-      title: "Common Attacks on Passwords",
+      title: "Common Password Attacks",
       content: (
-        <ul>
-          <li><b>Brute Force:</b> Automated guessing of passwords.</li>
-          <li><b>Phishing:</b> Tricking users into revealing passwords via fake sites or emails.</li>
-          <li><b>Keylogging:</b> Tracking what you type to steal passwords.</li>
-        </ul>
+        <>
+          <p className="lesson-text">Understanding how passwords are attacked helps you better protect them:</p>
+          <div className="lesson-text"><b>Brute Force:</b> Systematically trying all possible password combinations</div>
+          <div className="lesson-text"><b>Dictionary Attack:</b> Trying common words and variations</div>
+          <div className="lesson-text"><b>Credential Stuffing:</b> Using leaked passwords from one site to access others</div>
+          <div className="lesson-text"><b>Phishing:</b> Tricking users into revealing passwords through fake websites or emails</div>
+        </>
       ),
     },
   ];
@@ -176,10 +187,7 @@ export default function StrongPasswordsPresentation() {
 
         <div className="lesson-content">
           <h2 className="lesson-text">{sections[currentSlide].title}</h2>
-          {sections[currentSlide].img && (
-            <img src={sections[currentSlide].img} alt={sections[currentSlide].title} />
-          )}
-          <div>{sections[currentSlide].content}</div>
+          {sections[currentSlide].content}
         </div>
       </div>
 
