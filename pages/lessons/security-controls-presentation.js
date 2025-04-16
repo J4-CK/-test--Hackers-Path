@@ -129,51 +129,7 @@ export default function SecurityControlsPresentation() {
       <Head>
         <title>Security Controls Lesson</title>
         <link rel="stylesheet" href="/styles/homepagestyle.css" />
-        <style jsx global>{`
-          .lesson-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            padding: 0 10px;
-            box-sizing: border-box;
-          }
-
-          .lesson-sidebar {
-            width: 25%;
-            min-width: 200px;
-            background-color: #222831;
-            padding: 20px 10px 20px 20px;
-            border-radius: 8px 0 0 8px;
-            margin-right: 0;
-          }
-
-          .lesson-content {
-            flex-grow: 1;
-            background-color: rgba(0, 0, 0, 0.6);
-            padding: 20px 20px 20px 10px;
-            border-radius: 0 8px 8px 0;
-            margin-left: 0;
-          }
-
-          @media (max-width: 768px) {
-            .lesson-container {
-              flex-direction: column;
-            }
-            
-            .lesson-sidebar {
-              width: 100%;
-              border-radius: 8px 8px 0 0;
-              padding: 10px 20px;
-              margin-bottom: 0;
-            }
-            
-            .lesson-content {
-              border-radius: 0 0 8px 8px;
-              padding: 20px;
-              margin-top: 0;
-            }
-          }
-        `}</style>
+        <link rel="stylesheet" href="/styles/lessonstyle.css" />
       </Head>
 
       <header>
