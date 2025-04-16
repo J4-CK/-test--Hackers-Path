@@ -2,11 +2,13 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 import Loading from '../components/Loading';
+import Footer from '../components/Footer';
 
 export default function HomePage() {
   const router = useRouter();
   const [user, setUser] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const currentYear = new Date().getFullYear();
 
   // Fetch session on load
   useEffect(() => {
@@ -126,6 +128,8 @@ export default function HomePage() {
           Logout
         </button>
       </div>
+
+      <Footer />
     </div>
   );
 }

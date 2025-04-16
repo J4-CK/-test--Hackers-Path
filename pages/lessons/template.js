@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import Loading from "../../components/Loading";
+import Footer from "../../components/Footer";
 
 export default function LessonTemplate() {
   const router = useRouter();
@@ -186,6 +187,8 @@ export default function LessonTemplate() {
         <a href="/quiz/template-quiz" className="quiz-link">Take the Quiz</a>
         <a href="/" className="home-link">Return to Homepage</a>
       </div>
+
+      <Footer />
     </div>
   );
 }

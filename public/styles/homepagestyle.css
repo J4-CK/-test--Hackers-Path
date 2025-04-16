@@ -554,5 +554,33 @@ header h1 a:hover {
     background: #666; /* Slightly lighter grey on hover */
 }
 
+/* Footer Styles */
+.footer {
+    background-color: #222831;
+    color: #e0e0e0;
+    text-align: center;
+    padding: 20px;
+    margin-top: 40px;
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 0.9rem;
+    box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.footer p {
+    margin: 0;
+    opacity: 0.8;
+}
+
+.footer a {
+    color: #8c30c2;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer a:hover {
+    color: #d9adff;
+}
+
    
   
