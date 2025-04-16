@@ -139,18 +139,24 @@ export default function SecurityControlsPresentation() {
 
       <header>
         <h1><a href="/">Hacker's Path</a></h1>
-        <div className={`hamburger-menu ${menuOpen ? 'active' : ''}`} onClick={toggleMenu}>
-          <div></div>
-          <div></div>
-          <div></div>
-        </div>
       </header>
 
-      <div className={`roadmap ${menuOpen ? 'active' : ''}`}>
-        <a href="/leaderboard">Leaderboard</a>
-        <a href="/lessons">Lessons</a>
-        <a href="/quiz">Quizzes</a>
-        <a href="/profile">Profile</a>
+      <div className="roadmap-wrapper">
+        {!menuOpen ? (
+          <button className="hamburger" onClick={() => setMenuOpen(true)}>
+            ☰
+          </button>
+        ) : (
+          <button className="hamburger close-btn" onClick={() => setMenuOpen(false)}>
+            ×
+          </button>
+        )}
+        <nav className={`roadmap ${menuOpen ? 'open' : ''}`}>
+          <a href="/leaderboard">Leaderboard</a>
+          <a href="/lessons">Lessons</a>
+          <a href="/quiz">Quizzes</a>
+          <a href="/profile">Profile</a>
+        </nav>
       </div>
 
       <div className="lesson-container">
