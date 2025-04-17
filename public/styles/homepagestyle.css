@@ -173,6 +173,7 @@ header h1 a:hover {
     border-radius: 5px;
     margin: 10px auto;
     transition: background-color 0.3s ease;
+    z-index: 1000;
 }
 
 .close-btn {
@@ -183,13 +184,22 @@ header h1 a:hover {
 @media (max-width: 768px) {
     header {
         text-align: left;
+        position: relative;
+    }
+    
+    .roadmap-wrapper {
+        padding: 0;
+        margin: 0;
+        background: transparent;
     }
     
     .hamburger {
         display: block;
-        float: right;
+        position: absolute;
+        top: 12px;
+        right: 15px;
         margin: 0;
-        margin-top: -50px;
+        padding: 5px 10px;
         font-size: 1.5em;
     }
     
@@ -203,11 +213,12 @@ header h1 a:hover {
         width: 100%;
         padding: 0;
         margin: 0;
+        background: #531d73;
     }
 
     .roadmap.open {
         display: flex;
-        padding-bottom: 10px;
+        padding: 10px 0;
     }
     
     .roadmap a {
