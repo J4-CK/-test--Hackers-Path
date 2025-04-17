@@ -63,6 +63,13 @@ header {
     background: #531d73;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
     margin: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header h1 {
+    margin: 0;
 }
 
 header h1 a {
@@ -177,10 +184,23 @@ header h1 a:hover {
 
 /* Mobile Styles */
 @media (max-width: 768px) {
+    header {
+        padding: 0.5rem 1rem;
+    }
+    
+    .roadmap-wrapper {
+        background: transparent;
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: auto;
+        padding: 0.5rem 1rem;
+    }
+    
     .hamburger {
         display: block;
-        padding: 8px 16px;
-        margin: 8px auto;
+        padding: 5px 10px;
+        margin: 0;
         font-size: 1.5em;
     }
     
@@ -195,6 +215,12 @@ header h1 a:hover {
         max-width: 100%;
         padding: 0;
         margin: 0;
+        position: absolute;
+        top: 100%;
+        right: 0;
+        left: 0;
+        background: #531d73;
+        z-index: 100;
     }
 
     .roadmap.open {
