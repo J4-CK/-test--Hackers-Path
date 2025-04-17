@@ -20,9 +20,6 @@ header {
     margin: 0;
     width: 100%;
     box-sizing: border-box;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
 }
 
 header h1 {
@@ -260,7 +257,7 @@ header h1 a:hover {
 /* Mobile Styles */
 @media (max-width: 768px) {
     header {
-        padding: 0.5rem 1rem;
+        text-align: left;
     }
     
     .roadmap-wrapper {
@@ -274,8 +271,9 @@ header h1 a:hover {
     
     .hamburger {
         display: block;
-        padding: 5px 10px;
+        float: right;
         margin: 0;
+        margin-top: -50px;
         font-size: 1.5em;
     }
     
@@ -287,15 +285,8 @@ header h1 a:hover {
         display: none;
         flex-direction: column;
         width: 100%;
-        max-width: 100%;
         padding: 0;
         margin: 0;
-        position: absolute;
-        top: 100%;
-        right: 0;
-        left: 0;
-        background: #531d73;
-        z-index: 100;
     }
 
     .roadmap.open {
@@ -304,10 +295,9 @@ header h1 a:hover {
     }
     
     .roadmap a {
-        width: 90%;
+        width: 100%;
         max-width: none;
-        margin: 5px auto;
-        box-sizing: border-box;
+        margin: 5px 0;
     }
 
     .lesson-container {
