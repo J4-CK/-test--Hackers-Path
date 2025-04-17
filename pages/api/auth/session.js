@@ -46,14 +46,14 @@ export default async function handler(req, res) {
 
     // Fetch profile data
     const { data: profile } = await supabase
-      .from("profiles")
-      .select("username, region")
+      .from("accounts")
+      .select("name, region")
       .eq("id", userId)
       .single();
 
     // Fetch streak data
     const { data: streakData } = await supabase
-      .from("streak_tracking")
+      .from("streaktracker")
       .select("streak, last_streak_update")
       .eq("user_id", userId)
       .single();
