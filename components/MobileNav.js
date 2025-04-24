@@ -36,7 +36,15 @@ export default function MobileNav({ username }) {
   };
 
   return (
-    <div className="roadmap-wrapper">
+    <div className="navigation-wrapper">
+      <a 
+        href="/" 
+        className="home-btn"
+        aria-label="Go to homepage"
+      >
+        Home
+      </a>
+      
       <button 
         className={`hamburger ${menuOpen ? 'close-btn' : ''}`}
         onClick={toggleMenu} 
@@ -54,6 +62,85 @@ export default function MobileNav({ username }) {
           {username ? `Profile (${username})` : 'Profile'}
         </a>
       </nav>
+
+      <style jsx>{`
+        .navigation-wrapper {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          display: flex;
+          justify-content: space-between;
+          padding: 10px 15px;
+          z-index: 1000;
+        }
+
+        .home-btn {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background-color: #5cb85c;
+          color: white;
+          border: none;
+          width: 60px;
+          height: 40px;
+          border-radius: 4px;
+          font-weight: bold;
+          text-decoration: none;
+          font-size: 14px;
+        }
+
+        .hamburger {
+          background-color: #007bff;
+          color: white;
+          border: none;
+          width: 40px;
+          height: 40px;
+          border-radius: 4px;
+          font-size: 24px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          margin-left: auto;
+        }
+
+        .close-btn {
+          background-color: #dc3545;
+        }
+
+        .roadmap {
+          position: fixed;
+          top: 60px;
+          right: -250px;
+          width: 250px;
+          height: 100vh;
+          background-color: #333;
+          padding: 20px;
+          transition: right 0.3s ease;
+          z-index: 999;
+          display: flex;
+          flex-direction: column;
+          gap: 15px;
+        }
+
+        .roadmap.open {
+          right: 0;
+        }
+
+        .roadmap a {
+          color: white;
+          text-decoration: none;
+          font-size: 18px;
+          padding: 10px;
+          border-radius: 4px;
+          transition: background-color 0.2s;
+        }
+
+        .roadmap a:hover {
+          background-color: #444;
+        }
+      `}</style>
     </div>
   );
 } 

@@ -19,6 +19,7 @@ body {
     flex: 1 0 auto;
     display: flex;
     flex-direction: column;
+    padding-top: 60px;
 }
 
 /* Loading Animation */
@@ -88,7 +89,7 @@ header h1 a:hover {
     transition: all 0.3s ease;
 }
 
-/* Roadmap Navigation Styles */
+/* Roadmap Navigation Styles - Legacy styles kept for backward compatibility */
 .roadmap-wrapper {
     width: 100%;
     background: #531d73;
@@ -96,6 +97,7 @@ header h1 a:hover {
     padding: 0;
 }
 
+/* The following styles apply to old code and won't interfere with our new navigation */
 .roadmap {
     display: flex;
     justify-content: center;
