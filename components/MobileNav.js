@@ -146,13 +146,11 @@ export default function MobileNav({ username }) {
         /* Mobile Navigation Controls */
         .mobile-nav-controls {
           display: none;
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          padding: 0;
+          position: relative;
+          width: 100%;
+          padding: 10px 0;
           background: #531d73;
-          z-index: 1000;
+          z-index: 100;
           box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
           height: 60px;
         }
@@ -183,7 +181,7 @@ export default function MobileNav({ username }) {
         
         /* Animated Hamburger Button */
         .hamburger {
-          position: fixed; /* Changed from absolute to fixed */
+          position: absolute;
           right: 15px;
           top: 10px;
           display: flex;
@@ -218,18 +216,6 @@ export default function MobileNav({ username }) {
         
         .hamburger.active {
           background: #42155c;
-        }
-        
-        .hamburger.active .hamburger-line:nth-child(1) {
-          transform: translateY(8px) rotate(45deg);
-        }
-        
-        .hamburger.active .hamburger-line:nth-child(2) {
-          opacity: 0;
-        }
-        
-        .hamburger.active .hamburger-line:nth-child(3) {
-          transform: translateY(-8px) rotate(-45deg);
         }
         
         .close-icon {
@@ -303,29 +289,20 @@ export default function MobileNav({ username }) {
             display: block;
           }
           
-          /* This fixes the title placement by pushing it down */
+          /* Remove top margin from header since nav is now below header */
           header h1 {
-            margin-top: 75px !important; /* Increased to provide more space */
-            padding-top: 5px !important;
-            font-size: 2rem !important; /* Ensure title is fully visible */
+            margin-top: 0 !important;
+            padding-top: 0 !important;
           }
           
-          /* Add top padding to body for the fixed header */
+          /* Remove top padding from body since nav is no longer fixed */
           body {
-            padding-top: 70px; /* Increased padding */
+            padding-top: 0;
           }
           
-          /* Ensure all pages keep the navigation in view */
+          /* Adjust page wrapper margin */
           #page-wrapper {
-            margin-top: 70px; /* Increased margin */
-            position: relative;
-            z-index: 900; /* Lower than navbar */
-          }
-          
-          /* Fix for lesson pages specifically */
-          .lesson-content, .lesson-progress {
-            position: relative;
-            z-index: 900; /* Lower than navbar */
+            margin-top: 0;
           }
         }
       `}</style>
