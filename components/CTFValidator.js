@@ -43,7 +43,7 @@ export default function CTFValidator() {
       word.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0), 0);
     
     // The magic number is the sum of ASCII values for the correct phrase
-    return checksum === 3113;
+    return checksum === 2028;
   };
 
   const handleValidate = () => {
