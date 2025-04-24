@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { HiBars3, HiXMark, HiHome } from 'react-icons/hi2';
-import { IoLocationOutline } from 'react-icons/io5';
 
 export default function MobileNav({ username }) {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -46,11 +45,6 @@ export default function MobileNav({ username }) {
           <Link href="/" legacyBehavior>
             <a className="home-btn" aria-label="Home">
               <HiHome />
-            </a>
-          </Link>
-          <Link href="/location" legacyBehavior>
-            <a className="location-btn" aria-label="Location">
-              <IoLocationOutline />
             </a>
           </Link>
         </div>
@@ -195,7 +189,7 @@ export default function MobileNav({ username }) {
           text-align: center;
         }
         
-        .home-btn, .location-btn {
+        .home-btn {
           background: none;
           border: none;
           font-size: 24px;
@@ -209,7 +203,7 @@ export default function MobileNav({ username }) {
           transition: color 0.3s ease;
         }
         
-        .home-btn:hover, .location-btn:hover {
+        .home-btn:hover {
           color: #8c30c2;
         }
         
@@ -390,7 +384,7 @@ export default function MobileNav({ username }) {
             font-size: 18px;
           }
           
-          .home-btn, .location-btn {
+          .home-btn {
             font-size: 22px;
           }
           

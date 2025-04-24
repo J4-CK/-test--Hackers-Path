@@ -57,10 +57,6 @@ export default function HomePage() {
       <link rel="stylesheet" href="/styles/homepagestyle.css" />
 
       <div id="page-wrapper">
-        <header>
-          <h1><a href="/">Hacker's Path</a></h1>
-        </header>
-
         <MobileNav username={user.username} />
 
         <div className="container">
