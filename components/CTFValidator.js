@@ -4,6 +4,7 @@ export default function CTFValidator() {
   const [showHint, setShowHint] = useState(false);
   const [flagInput, setFlagInput] = useState('');
   const [validationResult, setValidationResult] = useState(null);
+  const [showStuckHelp, setShowStuckHelp] = useState(false);
 
   // This function validates the flag without directly exposing the answer
   // It uses a simple algorithm to check the answer
@@ -101,6 +102,41 @@ export default function CTFValidator() {
             {validationResult}
           </div>
         )}
+        
+        {/* Still Stuck Button and Help Section */}
+        <div className="stuck-help-section">
+          <button 
+            className="stuck-btn"
+            onClick={() => setShowStuckHelp(!showStuckHelp)}
+          >
+            Still Stuck? Click for Detailed Help
+          </button>
+          
+          {showStuckHelp && (
+            <div className="stuck-content">
+              <h4>Detailed Flag Locations:</h4>
+              <ol>
+                <li>
+                  <strong>Flag 1:</strong> Check the bottom of the CIA Triad Quiz page. There's a hidden element that reveals itself on hover.
+                </li>
+                <li>
+                  <strong>Flag 2:</strong> Robots.txt file is available at the root of the website - check what's in there!
+                </li>
+                <li>
+                  <strong>Flag 3:</strong> Hidden in the Security Controls lesson presentation. Look for a special hint box.
+                </li>
+                <li>
+                  <strong>Flag 4:</strong> Examine the page source of the Strong Passwords Quiz. Search for "meta" tags.
+                </li>
+                <li>
+                  <strong>Flag 5:</strong> Visit the API endpoint at <code>/api/ctf/flag</code> directly in your browser. 
+                  This flag is designed to make you check our <a href="https://github.com/hackerspathorg/hackerspath" target="_blank" rel="noopener noreferrer">GitHub repository</a> where you'll find additional CTF guidance.
+                </li>
+              </ol>
+              <p className="special-note">Remember: The CTF flags need to be combined in numerical order to form a complete sentence!</p>
+            </div>
+          )}
+        </div>
       </div>
       
       <style jsx>{`
@@ -319,6 +355,95 @@ export default function CTFValidator() {
             overflow-x: visible;
             white-space: normal;
             padding-bottom: 10px;
+          }
+        }
+
+        /* Stuck Help Styles */
+        .stuck-help-section {
+          margin-top: 25px;
+          text-align: center;
+          border-top: 1px dashed #ddd;
+          padding-top: 20px;
+        }
+        
+        .stuck-btn {
+          background-color: #5bc0de;
+          color: white;
+          border: none;
+          padding: 10px 18px;
+          border-radius: 50px;
+          cursor: pointer;
+          font-weight: bold;
+          transition: all 0.3s ease;
+          margin: 0 auto;
+          font-size: 15px;
+        }
+        
+        .stuck-btn:hover {
+          background-color: #31b0d5;
+          transform: translateY(-2px);
+          box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .stuck-content {
+          margin-top: 15px;
+          background-color: #f8f9fa;
+          padding: 20px;
+          border-radius: 8px;
+          border-left: 4px solid #5bc0de;
+          text-align: left;
+          animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        .stuck-content h4 {
+          color: #000;
+          margin-top: 0;
+          margin-bottom: 15px;
+          border-bottom: 2px dashed #5bc0de;
+          padding-bottom: 10px;
+        }
+        
+        .stuck-content ol {
+          padding-left: 25px;
+          color: #000;
+        }
+        
+        .stuck-content li {
+          margin-bottom: 12px;
+          line-height: 1.5;
+        }
+        
+        .stuck-content code {
+          background: #e9ecef;
+          padding: 2px 5px;
+          border-radius: 3px;
+          font-family: monospace;
+          color: #d63384;
+        }
+        
+        .stuck-content a {
+          color: #0d6efd;
+          text-decoration: none;
+          font-weight: bold;
+        }
+        
+        .stuck-content a:hover {
+          text-decoration: underline;
+        }
+        
+        .special-note {
+          margin-top: 15px;
+          font-style: italic;
+          background-color: #fff3cd;
+          padding: 10px;
+          border-radius: 5px;
+          border-left: 4px solid #ffc107;
+          color: #856404;
+        }
+        
+        @media (max-width: 768px) {
+          .stuck-content {
+            padding: 15px;
           }
         }
       `}</style>
