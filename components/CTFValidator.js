@@ -84,7 +84,7 @@ export default function CTFValidator() {
         <div className="ctf-validation">
           <input 
             type="text" 
-            placeholder="Enter the complete flag (all 5 parts combined)"
+            placeholder="Enter all 5 flags in order"
             value={flagInput}
             onChange={(e) => setFlagInput(e.target.value)}
             className="ctf-input"
@@ -272,6 +272,9 @@ export default function CTFValidator() {
           margin-top: 20px;
           display: flex;
           gap: 10px;
+          width: 100%;
+          max-width: 100%;
+          flex-wrap: wrap; /* Allow elements to wrap on smaller screens */
         }
         
         .ctf-input {
@@ -282,6 +285,10 @@ export default function CTFValidator() {
           font-size: 16px;
           color: #000;
           transition: all 0.3s ease;
+          min-width: 200px; /* Ensure minimum width */
+          width: calc(100% - 140px); /* Account for button width and gap */
+          box-sizing: border-box;
+          text-overflow: ellipsis; /* Add ellipsis for text overflow */
         }
         
         .ctf-input:focus {
@@ -300,6 +307,7 @@ export default function CTFValidator() {
           font-weight: bold;
           transition: all 0.3s ease;
           white-space: nowrap;
+          min-width: 120px;
         }
         
         .validate-btn:hover {
