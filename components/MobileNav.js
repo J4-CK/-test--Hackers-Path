@@ -78,9 +78,15 @@ export default function MobileNav({ username }) {
           aria-expanded={menuOpen}
           type="button"
         >
-          <span className="hamburger-line"></span>
-          <span className="hamburger-line"></span>
-          <span className="hamburger-line"></span>
+          {menuOpen ? (
+            <span className="close-icon">&#10005;</span>
+          ) : (
+            <>
+              <span className="hamburger-line"></span>
+              <span className="hamburger-line"></span>
+              <span className="hamburger-line"></span>
+            </>
+          )}
         </button>
       </div>
       
@@ -140,19 +146,21 @@ export default function MobileNav({ username }) {
         /* Mobile Navigation Controls */
         .mobile-nav-controls {
           display: none;
-          justify-content: space-between;
-          align-items: center;
-          padding: 10px 15px;
-          background: #531d73;
           position: fixed;
           top: 0;
           left: 0;
           right: 0;
+          padding: 0;
+          background: #531d73;
           z-index: 1000;
           box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+          height: 60px;
         }
         
         .home-btn {
+          position: absolute;
+          left: 15px;
+          top: 10px;
           background: #6a1b9a;
           color: white;
           border: none;
@@ -174,6 +182,9 @@ export default function MobileNav({ username }) {
         
         /* Animated Hamburger Button */
         .hamburger {
+          position: absolute;
+          right: 15px;
+          top: 10px;
           display: flex;
           flex-direction: column;
           justify-content: space-between;
@@ -186,6 +197,7 @@ export default function MobileNav({ username }) {
           cursor: pointer;
           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
           transition: background-color 0.2s;
+          z-index: 1001; /* Ensure hamburger stays above everything */
         }
         
         .hamburger:hover {
@@ -215,6 +227,16 @@ export default function MobileNav({ username }) {
         
         .hamburger.active .hamburger-line:nth-child(3) {
           transform: translateY(-8px) rotate(-45deg);
+        }
+        
+        .close-icon {
+          font-size: 24px;
+          color: white;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 100%;
+          height: 100%;
         }
         
         /* Mobile Menu Overlay */
@@ -275,11 +297,22 @@ export default function MobileNav({ username }) {
           }
           
           .mobile-nav-controls {
-            display: flex;
+            display: block;
           }
           
+          /* This fixes the title placement by pushing it down */
+          header h1 {
+            margin-top: 60px !important; /* Important to override any other styles */
+          }
+          
+          /* Add top padding to body for the fixed header */
           body {
-            padding-top: 60px; /* Add padding to body for fixed header */
+            padding-top: 60px;
+          }
+          
+          /* Ensure all pages keep the navigation in view */
+          #page-wrapper {
+            margin-top: 60px;
           }
         }
       `}</style>
