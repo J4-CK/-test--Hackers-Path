@@ -170,11 +170,9 @@ header h1 a:hover {
     padding: 10px 15px;
     cursor: pointer;
     border-radius: 5px;
-    margin: 0;
+    margin: 0 auto;
     z-index: 1000;
-    position: absolute;
-    left: 20px;
-    top: 80px;
+    position: relative;
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
     user-select: none;
@@ -187,21 +185,22 @@ header h1 a:hover {
 /* Mobile Styles */
 @media (max-width: 768px) {
     header {
-        margin-bottom: 60px; /* Add space below header for hamburger button */
+        margin-bottom: 10px; /* Reduce space below header */
     }
 
     .hamburger {
         display: block;
         min-width: 48px;
         min-height: 48px;
-        /* Ensure larger tap target for mobile */
         box-sizing: border-box;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        margin: 15px auto; /* Center horizontally with margin */
     }
 
     .roadmap-wrapper {
         position: relative;
-        margin-top: 0; /* Reset top margin */
+        margin: 0 auto 20px; /* Center and add space below */
+        text-align: center;
     }
 
     .roadmap {
@@ -211,7 +210,7 @@ header h1 a:hover {
         width: 100%;
         z-index: 999;
         left: 0;
-        top: 140px; /* Position below hamburger */
+        top: 120px; /* Position below hamburger */
         box-sizing: border-box;
     }
 
@@ -230,6 +229,15 @@ header h1 a:hover {
     @keyframes slideDown {
         from { opacity: 0; transform: translateY(-20px); }
         to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Adjustments for container spacing */
+    .container {
+        margin-top: 0; /* Remove extra margin at top */
+    }
+
+    .stats {
+        margin-top: 0; /* Reduce space at top of stats */
     }
 
     .roadmap a {

@@ -68,8 +68,8 @@ export default function HomePage() {
               <p>{user.streak || 0}</p>
             </div>
             <div className="box">
-              <h3>All-Time Points</h3>
-              <p>{user.totalPoints || 0}</p>
+              <h3>Login Streak</h3>
+              <p>1</p>
             </div>
           </div>
 
