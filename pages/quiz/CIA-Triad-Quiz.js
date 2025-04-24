@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { supabase } from "../../config/supabaseClient";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import Head from 'next/head';
 import Loading from '../../components/Loading';
 
@@ -43,7 +42,37 @@ export default function QuizPage() {
     },
   ];
 
-  const handleAnswerClick = (selectedAnswer) => {
+  // Fetch session on load
+  useEffect(() => {
+    async function checkSession() {
+      try {
+        const res = await fetch('/api/auth/session');
+        const data = await res.json();
+
+        if (res.ok && data.user) {
+          setUser(data.user);
+        } else {
+          console.error('Session error:', data.error);
+          router.push('/login');
+        }
+      } catch (error) {
+        console.error('Failed to check session:', error);
+        router.push('/login');
+      } finally {
+        setLoading(false);
+      }
+    }
+    checkSession();
+  }, [router]);
+
+  // Close menu on scroll
+  useEffect(() => {
+    const handleScroll = () => setMenuOpen(false);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const handleAnswerClick = async (selectedAnswer) => {
     const isCorrect = selectedAnswer === questions[currentQuestion].correctAnswer;
     
     if (isCorrect) {
@@ -54,7 +83,7 @@ export default function QuizPage() {
       setCurrentQuestion(currentQuestion + 1);
     } else {
       setShowResults(true);
-      saveScore(score + (isCorrect ? 1 : 0));
+      await saveScore(score + (isCorrect ? 1 : 0));
     }
   };
 
@@ -62,93 +91,29 @@ export default function QuizPage() {
     if (!user) return;
     
     try {
-      const { error } = await supabase
-        .from('quiz_scores')
-        .insert([{ 
-          user_id: user.id, 
-          quiz_name: 'CIA Triad Quiz', 
+      const response = await fetch('/api/quiz/save-score', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          quizName: 'CIA Triad Quiz',
           score: finalScore,
-          max_score: questions.length 
-        }]);
-      
-      if (error) console.error('Error saving score:', error);
+          maxScore: questions.length
+        }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        console.error('Error saving score:', data.error);
+      }
     } catch (error) {
-      console.error('Error:', error.message);
+      console.error('Failed to save score:', error);
     }
   };
 
-  // Close menu on scroll
-  useEffect(() => {
-    const handleScroll = () => setMenuOpen(false);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  // Close menu on link click
   const handleNavLinkClick = () => {
     setMenuOpen(false);
-  };
-
-  useEffect(() => {
-    const checkUser = async () => {
-      try {
-        setLoading(true);
-        const { data: { session }, error } = await supabase.auth.getSession();
-
-        if (error) {
-          console.error("Error fetching session:", error.message);
-          router.push('/login');
-          return;
-        }
-
-        if (!session) {
-          router.push('/login');
-          return;
-        }
-
-        setUser(session.user);
-      } catch (error) {
-        console.error("Error:", error.message);
-        router.push('/login');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    checkUser();
-
-    // Listen for authentication changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session) {
-        setUser(session.user);
-      } else {
-        setUser(null);
-        router.push('/login');
-      }
-      setLoading(false);
-    });
-
-    return () => {
-      subscription?.unsubscribe();
-    };
-  }, [router]);
-
-  const handleLogin = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({ 
-      provider: "google",
-      options: {
-        redirectTo: `${window.location.origin}/quiz/CIA-Triad-Quiz`
-      }
-    });
-    if (error) {
-      console.error("Login Error:", error.message);
-    }
-  };
-
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    setUser(null);
-    router.push('/login');
   };
 
   const resetQuiz = () => {
@@ -157,7 +122,29 @@ export default function QuizPage() {
     setShowResults(false);
   };
 
-  if (loading) return <Loading />;
+  if (loading) {
+    return (
+      <div>
+        <Head>
+          <title>CIA Triad Quiz</title>
+          <link rel="stylesheet" href="/styles/homepagestyle.css" />
+        </Head>
+        <Loading />
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div>
+        <Head>
+          <title>CIA Triad Quiz</title>
+          <link rel="stylesheet" href="/styles/homepagestyle.css" />
+        </Head>
+        <Loading />
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -191,56 +178,40 @@ export default function QuizPage() {
       </div>
 
       <div className="container">
-        {!user ? (
-          <div className="section">
-            <h2>Please log in to take the quiz</h2>
-            <button onClick={handleLogin} className="logout-btn">Log In</button>
-          </div>
-        ) : (
-          <>
-            <div className="section">
-              <h2>CIA Triad Quiz</h2>
-              
-              {showResults ? (
-                <div className="quiz-container">
-                  <h3>Quiz Complete!</h3>
-                  <p>Your score: {score} out of {questions.length}</p>
-                  <button onClick={resetQuiz} className="logout-btn">Retake Quiz</button>
-                </div>
-              ) : (
-                <div className="quiz-container">
-                  <div className="question">
-                    <p>Question {currentQuestion + 1} of {questions.length}</p>
-                    <h3>{questions[currentQuestion].questionText}</h3>
-                  </div>
-                  
-                  <div className="buttons">
-                    {questions[currentQuestion].options.map((option, index) => (
-                      <a 
-                        key={index}
-                        href="#" 
-                        onClick={(e) => {
-                          e.preventDefault();
-                          handleAnswerClick(option);
-                        }}
-                      >
-                        {option}
-                      </a>
-                    ))}
-                  </div>
-                </div>
-              )}
+        <div className="section">
+          <h2>CIA Triad Quiz</h2>
+          
+          {showResults ? (
+            <div className="quiz-container">
+              <h3>Quiz Complete!</h3>
+              <p>Your score: {score} out of {questions.length}</p>
+              <button onClick={resetQuiz} className="logout-btn">Retake Quiz</button>
             </div>
-            
-            <button onClick={handleLogout} className="logout-btn">
-              Logout
-            </button>
-          </>
-        )}
+          ) : (
+            <div className="quiz-container">
+              <div className="question">
+                <p>Question {currentQuestion + 1} of {questions.length}</p>
+                <h3>{questions[currentQuestion].questionText}</h3>
+              </div>
+              
+              <div className="buttons">
+                {questions[currentQuestion].options.map((option, index) => (
+                  <a 
+                    key={index}
+                    href="#" 
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleAnswerClick(option);
+                    }}
+                  >
+                    {option}
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
-}
-
-
-
+} 
