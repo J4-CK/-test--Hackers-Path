@@ -163,15 +163,15 @@ export default function MobileNav({ username }) {
           top: 0;
           left: 0;
           right: 0;
-          height: 60px;
+          height: 64px;
           display: flex;
           justify-content: space-between;
           align-items: center;
           background-color: #1a1a2e;
           color: white;
-          padding: 0 15px;
+          padding: 0 16px;
           z-index: 1000;
-          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+          box-shadow: 0 2px 15px rgba(0, 0, 0, 0.6);
         }
         
         .nav-left, .nav-right {
@@ -181,12 +181,13 @@ export default function MobileNav({ username }) {
         }
         
         .site-title {
-          font-size: 20px;
+          font-size: 22px;
           font-weight: bold;
-          color: #8c30c2;
-          text-shadow: 0 0 5px rgba(140, 48, 194, 0.3);
+          color: #a742c6;
+          text-shadow: 0 0 8px rgba(140, 48, 194, 0.4);
           flex: 1;
           text-align: center;
+          letter-spacing: 0.5px;
         }
         
         .home-btn {
@@ -195,16 +196,19 @@ export default function MobileNav({ username }) {
           font-size: 24px;
           color: white;
           cursor: pointer;
-          padding: 5px;
+          padding: 8px;
           margin-right: 0;
           display: flex;
           align-items: center;
           justify-content: center;
-          transition: color 0.3s ease;
+          transition: all 0.3s ease;
+          border-radius: 50%;
         }
         
         .home-btn:hover {
-          color: #8c30c2;
+          color: #a742c6;
+          background-color: rgba(255, 255, 255, 0.05);
+          transform: translateY(-2px);
         }
         
         .hamburger-btn {
@@ -213,20 +217,24 @@ export default function MobileNav({ username }) {
           font-size: 28px;
           color: white;
           cursor: pointer;
-          padding: 5px;
+          padding: 8px;
           display: flex;
           align-items: center;
           justify-content: center;
-          transition: transform 0.3s ease, color 0.3s ease;
+          transition: all 0.3s ease;
+          border-radius: 50%;
+          position: relative;
         }
         
         .hamburger-btn:hover {
-          color: #8c30c2;
+          color: #a742c6;
+          background-color: rgba(255, 255, 255, 0.05);
         }
         
         .hamburger-btn.open {
           transform: rotate(90deg);
-          color: #8c30c2;
+          color: #a742c6;
+          background-color: rgba(140, 48, 194, 0.15);
         }
         
         /* Menu overlay */
@@ -252,16 +260,17 @@ export default function MobileNav({ username }) {
         .mobile-menu {
           position: fixed;
           top: 0;
-          right: -280px;
-          width: 280px;
+          right: -300px;
+          width: 300px;
           height: 100%;
           background-color: #0f0f1a;
           z-index: 1002;
           overflow-y: auto;
-          transition: right 0.3s ease;
-          box-shadow: -2px 0 10px rgba(0, 0, 0, 0.5);
+          transition: right 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+          box-shadow: -4px 0 20px rgba(0, 0, 0, 0.7);
           display: flex;
           flex-direction: column;
+          color: #e0e0e0;
         }
         
         .mobile-menu.open {
@@ -269,9 +278,10 @@ export default function MobileNav({ username }) {
         }
         
         .menu-header {
-          padding: 20px;
+          padding: 24px 20px;
           background-color: #1a1a2e;
           border-bottom: 1px solid #292945;
+          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
         }
         
         .user-info {
@@ -280,21 +290,26 @@ export default function MobileNav({ username }) {
         }
         
         .avatar {
-          width: 40px;
-          height: 40px;
+          width: 45px;
+          height: 45px;
           border-radius: 50%;
-          background-color: #8c30c2;
+          background: linear-gradient(135deg, #a742c6 0%, #8030c2 100%);
           color: white;
           display: flex;
           align-items: center;
           justify-content: center;
           font-weight: bold;
-          margin-right: 10px;
+          margin-right: 12px;
+          box-shadow: 0 2px 8px rgba(140, 48, 194, 0.4);
+          text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+          font-size: 18px;
         }
         
         .username {
           color: white;
-          font-weight: 500;
+          font-weight: 600;
+          font-size: 16px;
+          letter-spacing: 0.5px;
         }
         
         .menu-nav {
@@ -303,62 +318,121 @@ export default function MobileNav({ username }) {
         }
         
         .menu-nav h3 {
-          color: #8c30c2;
-          margin: 15px 0 10px;
-          font-size: 14px;
+          color: #a742c6;
+          margin: 20px 0 12px;
+          font-size: 15px;
           text-transform: uppercase;
-          letter-spacing: 1px;
+          letter-spacing: 1.5px;
+          font-weight: 700;
+          text-shadow: 0 0 10px rgba(140, 48, 194, 0.4);
         }
         
         .menu-nav ul {
           list-style: none;
           padding: 0;
-          margin: 0 0 20px;
+          margin: 0 0 25px;
         }
         
         .menu-nav li {
-          margin-bottom: 2px;
-          border-radius: 4px;
-          transition: background-color 0.3s ease;
+          margin-bottom: 6px;
+          border-radius: 8px;
+          transition: all 0.3s ease;
         }
         
         .menu-nav li.active {
-          background-color: rgba(140, 48, 194, 0.2);
+          background-color: rgba(140, 48, 194, 0.15);
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .menu-nav li.active a {
+          color: #fff;
+          font-weight: 600;
         }
         
         .menu-nav li a {
-          padding: 10px 15px;
+          padding: 12px 16px;
           color: #e0e0e0;
           text-decoration: none;
           display: block;
-          border-radius: 4px;
-          transition: background-color 0.3s ease;
+          border-radius: 8px;
+          transition: all 0.3s ease;
+          font-size: 15px;
+          position: relative;
+          overflow: hidden;
+        }
+        
+        .menu-nav li a:before {
+          content: '';
+          position: absolute;
+          left: 0;
+          bottom: 0;
+          height: 2px;
+          width: 0;
+          background: linear-gradient(90deg, #a742c6, #8030c2);
+          transition: width 0.3s ease;
         }
         
         .menu-nav li a:hover {
-          background-color: rgba(255, 255, 255, 0.05);
+          background-color: rgba(255, 255, 255, 0.07);
+          transform: translateX(3px);
+          color: #fff;
+        }
+        
+        .menu-nav li a:hover:before {
+          width: 100%;
         }
         
         .menu-footer {
-          padding: 15px;
+          padding: 20px;
           border-top: 1px solid #292945;
           margin-top: auto;
+          background-color: #1a1a2e;
         }
         
         .logout-btn {
           width: 100%;
-          padding: 10px;
-          background-color: #8c30c2;
+          padding: 14px;
+          background: linear-gradient(135deg, #a742c6 0%, #8030c2 100%);
           color: white;
           border: none;
-          border-radius: 4px;
+          border-radius: 8px;
           cursor: pointer;
-          font-weight: 500;
-          transition: background-color 0.3s ease;
+          font-weight: 600;
+          transition: all 0.3s ease;
+          font-size: 16px;
+          letter-spacing: 0.5px;
+          box-shadow: 0 4px 12px rgba(140, 48, 194, 0.3);
+          position: relative;
+          overflow: hidden;
+        }
+        
+        .logout-btn:after {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(90deg, 
+            rgba(255, 255, 255, 0) 0%, 
+            rgba(255, 255, 255, 0.2) 50%, 
+            rgba(255, 255, 255, 0) 100%);
+          transition: left 0.7s ease;
         }
         
         .logout-btn:hover {
-          background-color: #7628a0;
+          background: linear-gradient(135deg, #b347d6 0%, #9035d7 100%);
+          transform: translateY(-2px);
+          box-shadow: 0 6px 15px rgba(140, 48, 194, 0.4);
+        }
+        
+        .logout-btn:hover:after {
+          left: 100%;
+        }
+        
+        .logout-btn:active {
+          transform: translateY(1px);
+          box-shadow: 0 2px 8px rgba(140, 48, 194, 0.3);
         }
         
         /* Add top padding to the body to prevent content from going behind fixed header */
