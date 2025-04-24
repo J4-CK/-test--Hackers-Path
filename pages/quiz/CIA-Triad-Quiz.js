@@ -236,19 +236,22 @@ export default function QuizPage() {
           position: absolute;
           top: 10px;
           right: 10px;
-          color: transparent;
-          background-color: transparent;
-          font-size: 0.1px;
-          user-select: all;
+          color: #a742c6;
+          background-color: #f5f5f5;
+          font-size: 12px;
           cursor: pointer;
-          padding: 20px;
+          padding: 8px;
           border-radius: 5px;
+          border: 1px dashed #a742c6;
           transition: all 0.3s ease;
           z-index: 10;
+          opacity: 0.4;
         }
         
         .secret-flag:hover {
-          background-color: rgba(255, 255, 255, 0.05);
+          opacity: 0.8;
+          background-color: #f0f0f0;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         
         .secret-flag.revealed {
@@ -257,6 +260,8 @@ export default function QuizPage() {
           font-size: 16px;
           padding: 10px 15px;
           box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+          opacity: 1;
+          border: none;
         }
       `}</style>
     </div>

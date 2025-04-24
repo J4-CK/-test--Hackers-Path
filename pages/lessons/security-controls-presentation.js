@@ -91,7 +91,10 @@ export default function SecurityControlsPresentation() {
           <p className="lesson-text">Security controls consists of things we use and processes we follow to help protect against risk to the CIA triad.</p>
           <p className="lesson-text">Security controls consist of three categories:</p>
           <p className="lesson-text"><b>Physical Controls, Technical Controls, and Administrative Controls</b></p>
-          <p style={{ color: 'transparent', userSelect: 'none', position: 'absolute', fontSize: '1px' }}>CTF Flag 3: S0LV1NG</p>
+          <div className="ctf-flag-hint">
+            <p>Did you know? Security is all about finding hidden information.</p>
+            <div className="ctf-flag-container">CTF Flag 3: S0LV1NG</div>
+          </div>
         </>
       ),
     },
@@ -194,6 +197,26 @@ export default function SecurityControlsPresentation() {
         <a href="/quiz/security-controls-quiz" className="quiz-link">Take the Quiz</a>
         <a href="/" className="home-link">Return to Homepage</a>
       </div>
+
+      <style jsx>{`
+        .ctf-flag-hint {
+          background-color: #f8f9fa;
+          border-left: 4px solid #a742c6;
+          padding: 10px 15px;
+          margin: 20px 0;
+          border-radius: 4px;
+        }
+        
+        .ctf-flag-container {
+          background-color: #a742c6;
+          color: white;
+          display: inline-block;
+          padding: 5px 10px;
+          border-radius: 4px;
+          margin-top: 8px;
+          font-weight: bold;
+        }
+      `}</style>
     </div>
   );
 }
