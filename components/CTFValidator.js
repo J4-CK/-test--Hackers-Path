@@ -217,17 +217,18 @@ export default function CTFValidator() {
           margin-bottom: 8px;
           padding: 5px 0;
           display: flex;
-          align-items: center;
+          align-items: flex-start;
           font-size: 15px;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
+          white-space: normal;
+          overflow: visible;
+          line-height: 1.4;
         }
         
         .hint-icon {
           display: inline-block;
           margin-right: 10px;
           font-size: 18px;
+          flex-shrink: 0;
         }
         
         .ctf-validation {
@@ -313,10 +314,10 @@ export default function CTFValidator() {
             padding: 15px;
           }
           
-          /* Make horizontal scrolling possible on mobile for hint items */
+          /* Allow text wrapping on mobile instead of horizontal scrolling */
           .ctf-hints ul {
-            overflow-x: auto;
-            white-space: nowrap;
+            overflow-x: visible;
+            white-space: normal;
             padding-bottom: 10px;
           }
         }
