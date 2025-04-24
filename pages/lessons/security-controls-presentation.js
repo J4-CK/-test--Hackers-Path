@@ -91,6 +91,7 @@ export default function SecurityControlsPresentation() {
           <p className="lesson-text">Security controls consists of things we use and processes we follow to help protect against risk to the CIA triad.</p>
           <p className="lesson-text">Security controls consist of three categories:</p>
           <p className="lesson-text"><b>Physical Controls, Technical Controls, and Administrative Controls</b></p>
+          <p style={{ color: 'transparent', userSelect: 'none', position: 'absolute', fontSize: '1px' }}>CTF Flag 3: S0LV1NG</p>
         </>
       ),
     },

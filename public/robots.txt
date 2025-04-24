@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+
+# Disallow crawling of admin areas
+Disallow: /admin
+Disallow: /dashboard/admin
+
+# Security through obscurity is not real security
+# CTF Flag 2: L0V3
+
+Sitemap: https://hackerspath.com/sitemap.xml 

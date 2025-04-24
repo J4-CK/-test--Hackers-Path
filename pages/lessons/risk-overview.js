@@ -150,6 +150,7 @@ export default function RiskOverview() {
       <div className="final-navigation centered-navigation">
         <a href="/quiz/risk-overview-quiz" className="quiz-link">Take the Quiz</a>
         <a href="/" className="home-link">Return to Homepage</a>
+        {/* Only those who examine the source will know there are 5 flags hidden throughout the site... */}
       </div>
     </div>
   );

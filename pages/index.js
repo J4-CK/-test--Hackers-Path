@@ -4,6 +4,7 @@ import Head from 'next/head';
 import Loading from '../components/Loading';
 import Footer from '../components/Footer';
 import MobileNav from '../components/MobileNav';
+import CTFValidator from '../components/CTFValidator';
 
 export default function HomePage() {
   const router = useRouter();
@@ -93,6 +94,13 @@ export default function HomePage() {
               <a href="/quiz/risk-continued-quiz">Risk Continued Quiz</a>
               <a href="/quiz/security-controls-quiz">Security Controls Quiz</a>
             </div>
+          </div>
+          
+          {/* CTF Challenge Section */}
+          <div className="section">
+            <h2>Security Challenge</h2>
+            <p>Test your cybersecurity skills with our Capture The Flag challenge!</p>
+            <CTFValidator />
           </div>
 
           <button onClick={handleLogout} className="logout-btn">

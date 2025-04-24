@@ -164,6 +164,7 @@ export default function QuizPage() {
         <title>CIA Triad Quiz - Hacker's Path</title>
         <link rel="icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" href="/images/favicon.png" />
+        {/* <!-- CTF Flag 1: H4CK3RS --> */}
       </Head>
       <link rel="stylesheet" href="/styles/homepagestyle.css" />
 

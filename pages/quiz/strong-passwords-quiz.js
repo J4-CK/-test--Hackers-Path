@@ -165,6 +165,9 @@ export default function QuizPage() {
         <title>Strong Passwords Quiz - Hacker's Path</title>
         <link rel="icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" href="/images/favicon.png" />
+        <meta name="description" content="Test your knowledge of password security best practices" />
+        <meta name="ctf-challenge" content="Look in page source for hidden flags" />
+        <meta name="ctf-flag-4" content="C00L" />
       </Head>
       <link rel="stylesheet" href="/styles/homepagestyle.css" />
 
