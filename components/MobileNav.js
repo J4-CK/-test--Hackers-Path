@@ -174,6 +174,7 @@ export default function MobileNav({ username }) {
           height: 40px;
           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
           transition: background-color 0.2s;
+          z-index: 1002; /* Ensure it's above other elements */
         }
         
         .home-btn:hover {
@@ -182,22 +183,23 @@ export default function MobileNav({ username }) {
         
         /* Animated Hamburger Button */
         .hamburger {
-          position: absolute;
+          position: fixed; /* Changed from absolute to fixed */
           right: 15px;
           top: 10px;
           display: flex;
           flex-direction: column;
-          justify-content: space-between;
+          justify-content: center;
+          align-items: center;
           width: 40px;
           height: 40px;
-          padding: 10px 8px;
+          padding: 8px;
           background: #6a1b9a;
           border: none;
           border-radius: 5px;
           cursor: pointer;
           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
           transition: background-color 0.2s;
-          z-index: 1001; /* Ensure hamburger stays above everything */
+          z-index: 1002; /* Increased z-index to ensure visibility */
         }
         
         .hamburger:hover {
@@ -206,10 +208,11 @@ export default function MobileNav({ username }) {
         
         .hamburger-line {
           display: block;
-          width: 100%;
-          height: 3px;
+          width: 24px;
+          height: 2px;
+          margin: 2px 0;
           background-color: white;
-          border-radius: 3px;
+          border-radius: 2px;
           transition: transform 0.3s, opacity 0.3s;
         }
         
@@ -230,7 +233,7 @@ export default function MobileNav({ username }) {
         }
         
         .close-icon {
-          font-size: 24px;
+          font-size: 18px;
           color: white;
           display: flex;
           align-items: center;
@@ -302,17 +305,27 @@ export default function MobileNav({ username }) {
           
           /* This fixes the title placement by pushing it down */
           header h1 {
-            margin-top: 60px !important; /* Important to override any other styles */
+            margin-top: 75px !important; /* Increased to provide more space */
+            padding-top: 5px !important;
+            font-size: 2rem !important; /* Ensure title is fully visible */
           }
           
           /* Add top padding to body for the fixed header */
           body {
-            padding-top: 60px;
+            padding-top: 70px; /* Increased padding */
           }
           
           /* Ensure all pages keep the navigation in view */
           #page-wrapper {
-            margin-top: 60px;
+            margin-top: 70px; /* Increased margin */
+            position: relative;
+            z-index: 900; /* Lower than navbar */
+          }
+          
+          /* Fix for lesson pages specifically */
+          .lesson-content, .lesson-progress {
+            position: relative;
+            z-index: 900; /* Lower than navbar */
           }
         }
       `}</style>
