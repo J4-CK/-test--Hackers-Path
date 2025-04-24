@@ -71,6 +71,10 @@ export default function MobileNav({ username }) {
           &#8962;
         </a>
         
+        <div className="site-title">
+          <a href="/">Hacker's Path</a>
+        </div>
+        
         <button 
           className={`hamburger ${menuOpen ? 'active' : ''}`}
           onClick={toggleMenu} 
@@ -161,6 +165,30 @@ export default function MobileNav({ username }) {
           z-index: 1500;
           box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
           height: 60px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+        
+        /* Site Title */
+        .site-title {
+          flex: 1;
+          text-align: center;
+        }
+        
+        .site-title a {
+          color: #e0e0e0;
+          text-decoration: none;
+          font-size: 1.8rem;
+          font-weight: bold;
+          display: block;
+          margin: 0;
+          line-height: 1;
+        }
+        
+        .site-title a:hover {
+          color: #8c30c2;
+          transition: color 0.3s ease;
         }
         
         .home-btn {
@@ -314,7 +342,12 @@ export default function MobileNav({ username }) {
           }
           
           .mobile-nav-controls {
-            display: block;
+            display: flex;
+          }
+          
+          /* Hide the regular header since we now have the title in the navbar */
+          header {
+            display: none !important;
           }
           
           /* Remove top margin from header since nav is now below header */
