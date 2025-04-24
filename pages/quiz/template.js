@@ -13,6 +13,7 @@ export default function QuizTemplate() {
   // Authentication state
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [authChecked, setAuthChecked] = useState(false); // Add state to prevent redirect loops
   const router = useRouter();
 
   // TEMPLATE: Replace this with your actual quiz questions
@@ -37,6 +38,7 @@ export default function QuizTemplate() {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
       setLoading(false);
+      setAuthChecked(true); // Mark auth as checked on auth state change
     });
 
     // Cleanup subscription on unmount
@@ -54,12 +56,15 @@ export default function QuizTemplate() {
       
       if (error) {
         console.error("Error checking auth status:", error.message);
+        setAuthChecked(true); // Mark auth as checked even on error
         return;
       }
 
       setUser(session?.user ?? null);
+      setAuthChecked(true); // Mark auth as checked
     } catch (error) {
       console.error("Error:", error.message);
+      setAuthChecked(true); // Mark auth as checked even on error
     } finally {
       setLoading(false);
     }
@@ -154,7 +159,7 @@ export default function QuizTemplate() {
       </div>
 
       <div className="quiz-container">
-        {!user ? (
+        {!user && authChecked ? (
           // Not logged in state
           <div className="text-center">
             <p className="mb-4">Please log in to take the quiz.</p>

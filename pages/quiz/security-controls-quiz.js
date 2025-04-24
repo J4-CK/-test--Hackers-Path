@@ -11,6 +11,7 @@ export default function QuizPage() {
   const [score, setScore] = useState(0);
   const [showResults, setShowResults] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [authChecked, setAuthChecked] = useState(false);
   const router = useRouter();
 
   // Quiz questions
@@ -121,19 +122,18 @@ export default function QuizPage() {
 
         if (error) {
           console.error("Error fetching session:", error.message);
-          router.push('/login');
+          setAuthChecked(true);
           return;
         }
 
-        if (!session) {
-          router.push('/login');
-          return;
+        if (session) {
+          setUser(session.user);
         }
-
-        setUser(session.user);
+        
+        setAuthChecked(true);
       } catch (error) {
         console.error("Error:", error.message);
-        router.push('/login');
+        setAuthChecked(true);
       } finally {
         setLoading(false);
       }
@@ -147,15 +147,15 @@ export default function QuizPage() {
         setUser(session.user);
       } else {
         setUser(null);
-        router.push('/login');
       }
       setLoading(false);
+      setAuthChecked(true);
     });
 
     return () => {
       subscription?.unsubscribe();
     };
-  }, [router]);
+  }, []);
 
   const handleLogin = async () => {
     const { error } = await supabase.auth.signInWithOAuth({ 
@@ -215,7 +215,7 @@ export default function QuizPage() {
       </div>
 
       <div className="container">
-        {!user ? (
+        {!user && authChecked ? (
           <div className="section">
             <h2>Please log in to take the quiz</h2>
             <button onClick={handleLogin} className="logout-btn">Log In</button>
