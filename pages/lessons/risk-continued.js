@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import Loading from "../../components/Loading";
+import MobileNav from '../../components/MobileNav';
 
 export default function RiskContinued() {
   const router = useRouter();
@@ -165,23 +166,7 @@ export default function RiskContinued() {
         <h1><a href="/">Hacker's Path</a></h1>
       </header>
 
-      <div className="roadmap-wrapper">
-        {!menuOpen ? (
-          <button className="hamburger" onClick={toggleMenu}>
-            ☰
-          </button>
-        ) : (
-          <button className="hamburger close-btn" onClick={toggleMenu}>
-            ×
-          </button>
-        )}
-        <nav className={`roadmap ${menuOpen ? 'open' : ''}`}>
-          <a href="/leaderboard" onClick={handleNavLinkClick}>Leaderboard</a>
-          <a href="/lessons" onClick={handleNavLinkClick}>Lessons</a>
-          <a href="/quiz" onClick={handleNavLinkClick}>Quizzes</a>
-          <a href="/profile" onClick={handleNavLinkClick}>Profile</a>
-        </nav>
-      </div>
+      <MobileNav username={user?.username} />
 
       <div className="lesson-container">
         <div className="lesson-sidebar">

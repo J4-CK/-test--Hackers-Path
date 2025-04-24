@@ -1,8 +1,10 @@
-import { useEffect, useState } from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { supabase } from "../../config/supabaseClient";
 import Head from 'next/head';
 import Loading from '../../components/Loading';
+import MobileNav from '../../components/MobileNav';
 
 export default function QuizPage() {
   const [user, setUser] = useState(null);
@@ -196,23 +198,7 @@ export default function QuizPage() {
         <h1><a href="/">Hacker's Path</a></h1>
       </header>
 
-      <div className="roadmap-wrapper">
-        {!menuOpen ? (
-          <button className="hamburger" onClick={() => setMenuOpen(true)}>
-            ☰
-          </button>
-        ) : (
-          <button className="hamburger close-btn" onClick={() => setMenuOpen(false)}>
-            ×
-          </button>
-        )}
-        <nav className={`roadmap ${menuOpen ? 'open' : ''}`}>
-          <a href="/leaderboard" onClick={handleNavLinkClick}>Leaderboard</a>
-          <a href="/lessons" onClick={handleNavLinkClick}>Lessons</a>
-          <a href="/quiz" onClick={handleNavLinkClick}>Quizzes</a>
-          <a href="/profile" onClick={handleNavLinkClick}>Profile</a>
-        </nav>
-      </div>
+      <MobileNav username={user?.username} />
 
       <div className="container">
         {!user && authChecked ? (

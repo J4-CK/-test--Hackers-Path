@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import Loading from '../../components/Loading';
+import MobileNav from '../../components/MobileNav';
 
 export default function CIATriadPresentation() {
   const router = useRouter();
@@ -9,7 +10,6 @@ export default function CIATriadPresentation() {
   const [user, setUser] = useState(null);
   const [lessonStarted, setLessonStarted] = useState(false);
   const [lessonCompleted, setLessonCompleted] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
 
   // Fetch session on load
   useEffect(() => {
@@ -25,13 +25,6 @@ export default function CIATriadPresentation() {
     }
     checkSession();
   }, [router]);
-
-  // Close menu on scroll
-  useEffect(() => {
-    const handleScroll = () => setMenuOpen(false);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   // Track lesson start
   useEffect(() => {
@@ -132,15 +125,6 @@ export default function CIATriadPresentation() {
   const prevSection = () => setCurrentSlide((currentSlide - 1 + sections.length) % sections.length);
   const goToSection = (index) => setCurrentSlide(index);
 
-  const toggleMenu = () => {
-    setMenuOpen(!menuOpen);
-  };
-  
-  // Close menu when nav link is clicked
-  const handleNavLinkClick = () => {
-    setMenuOpen(false);
-  };
-
   if (!user) {
     return (
       <div>
@@ -166,23 +150,7 @@ export default function CIATriadPresentation() {
         <h1><a href="/">Hacker's Path</a></h1>
       </header>
 
-      <div className="roadmap-wrapper">
-        {!menuOpen ? (
-          <button className="hamburger" onClick={toggleMenu}>
-            ☰
-          </button>
-        ) : (
-          <button className="hamburger close-btn" onClick={toggleMenu}>
-            ×
-          </button>
-        )}
-        <nav className={`roadmap ${menuOpen ? 'open' : ''}`}>
-          <a href="/leaderboard" onClick={handleNavLinkClick}>Leaderboard</a>
-          <a href="/lessons" onClick={handleNavLinkClick}>Lessons</a>
-          <a href="/quiz" onClick={handleNavLinkClick}>Quizzes</a>
-          <a href="/profile" onClick={handleNavLinkClick}>Profile</a>
-        </nav>
-      </div>
+      <MobileNav username={user.username} />
 
       <div className="lesson-container">
         <div className="lesson-sidebar">

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { supabase } from "../../config/supabaseClient";
 import { useRouter } from "next/router";
 import Head from "next/head";
+import MobileNav from "../../components/MobileNav";
 
 export default function QuizTemplate() {
   // Basic quiz state
@@ -150,13 +151,7 @@ export default function QuizTemplate() {
         <h1><a href="/">Hacker's Path</a></h1>
       </header>
 
-      {/* Roadmap Navigation */}
-      <div className="roadmap">
-        <a href="/leaderboard">Leaderboard</a>
-        <a href="/lessons">Lessons</a>
-        <a href="/quiz">Quizzes</a>
-        <a href="/profile">Profile</a>
-      </div>
+      <MobileNav username={user?.username} />
 
       <div className="quiz-container">
         {!user && authChecked ? (

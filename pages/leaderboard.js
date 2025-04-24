@@ -3,6 +3,7 @@ import Head from 'next/head';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import Loading from '../components/Loading';
+import MobileNav from '../components/MobileNav';
 
 export default function Leaderboard({ initialPlayers }) {
   const router = useRouter();
@@ -10,7 +11,6 @@ export default function Leaderboard({ initialPlayers }) {
   const [players, setPlayers] = useState(initialPlayers);
   const [leaderboardType, setLeaderboardType] = useState('default');
   const [loading, setLoading] = useState(true);
-  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     async function checkSession() {
@@ -70,22 +70,16 @@ export default function Leaderboard({ initialPlayers }) {
         <title>Hacker's Path</title>
         <link rel="stylesheet" href="/styles/homepagestyle.css" />
       </Head>
-      <div>
-        <header>
-          <h1><a href="/">Hacker's Path</a></h1>
-        </header>
-      </div>
-      <div className="roadmap">
-        <a href="/leaderboard">Leaderboard</a>
-        <a href="/lessons">Lessons</a>
-        <a href="/quiz">Quizzes</a>
-        <a href="/profile">{user?.username ? `Profile (${user.username})` : 'Profile'}</a>
-      </div>
+      <header>
+        <h1><a href="/">Hacker's Path</a></h1>
+      </header>
+      
+      <MobileNav username={user.username} />
 
-        <div style={{ textAlign: 'center', padding: '20px' }}>
-          <button style={styles.button} onClick={() => fetchData('default')}>Overall</button>
-          <button style={styles.button} onClick={() => fetchData('streak')}>Streak</button>
-          <button style={styles.button} onClick={() => fetchData('monthly')}>Monthly</button>
+      <div style={{ textAlign: 'center', padding: '20px' }}>
+        <button style={styles.button} onClick={() => fetchData('default')}>Overall</button>
+        <button style={styles.button} onClick={() => fetchData('streak')}>Streak</button>
+        <button style={styles.button} onClick={() => fetchData('monthly')}>Monthly</button>
 
         <div className="leaderboard">
           <h1>{leaderboardType === 'default' ? 'Top 20 Leaderboard' : leaderboardType === 'streak' ? 'Top 20 Streak Leaderboard' : 'Top 20 Monthly Points Leaderboard'}</h1>

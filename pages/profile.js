@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import Loading from "../components/Loading";
+import MobileNav from "../components/MobileNav";
 
 export default function ProfilePage() {
   const router = useRouter();
   const [user, setUser] = useState(null);
-  const [menuOpen, setMenuOpen] = useState(false);
 
   // Fetch session on load
   useEffect(() => {
@@ -28,18 +28,6 @@ export default function ProfilePage() {
     }
     fetchUserData();
   }, [router]);
-
-  // Close menu on scroll
-  useEffect(() => {
-    const handleScroll = () => setMenuOpen(false);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  // Close menu on link click
-  const handleNavLinkClick = () => {
-    setMenuOpen(false);
-  };
 
   // Handle logout
   async function handleLogout() {
@@ -78,25 +66,7 @@ export default function ProfilePage() {
         <h1><a href="/">Hacker's Path</a></h1>
       </header>
 
-      <div className="roadmap-wrapper">
-        {!menuOpen ? (
-          <button className="hamburger" onClick={() => setMenuOpen(true)}>
-            ☰
-          </button>
-        ) : (
-          <button className="hamburger close-btn" onClick={() => setMenuOpen(false)}>
-            ×
-          </button>
-        )}
-        <nav className={`roadmap ${menuOpen ? 'open' : ''}`}>
-          <a href="/leaderboard" onClick={handleNavLinkClick}>Leaderboard</a>
-          <a href="/lessons" onClick={handleNavLinkClick}>Lessons</a>
-          <a href="/quiz" onClick={handleNavLinkClick}>Quizzes</a>
-          <a href="/profile" onClick={handleNavLinkClick}>
-            {user.username ? `Profile (${user.username})` : 'Profile'}
-          </a>
-        </nav>
-      </div>
+      <MobileNav username={user.username} />
 
       <div className="container">
         {/* Profile Details Section */}
