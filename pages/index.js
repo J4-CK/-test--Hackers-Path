@@ -27,13 +27,28 @@ export default function HomePage() {
 
   // Close menu on scroll
   useEffect(() => {
-    const handleScroll = () => setMenuOpen(false);
+    let scrollTimer;
+    
+    const handleScroll = () => {
+      // Use a small delay to prevent closing menu immediately after opening on mobile
+      clearTimeout(scrollTimer);
+      scrollTimer = setTimeout(() => {
+        setMenuOpen(false);
+      }, 150);
+    };
+    
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      clearTimeout(scrollTimer);
+    };
   }, []);
 
   // Toggle menu open/closed
-  const toggleMenu = () => {
+  const toggleMenu = (e) => {
+    // Prevent event propagation to avoid triggering scroll events
+    e.preventDefault();
+    e.stopPropagation();
     setMenuOpen(!menuOpen);
   };
 

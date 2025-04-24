@@ -33,14 +33,34 @@ export default function Lessons() {
 
   // Close menu on scroll
   useEffect(() => {
-    const handleScroll = () => setMenuOpen(false);
+    let scrollTimer;
+    
+    const handleScroll = () => {
+      // Use a small delay to prevent closing menu immediately after opening on mobile
+      clearTimeout(scrollTimer);
+      scrollTimer = setTimeout(() => {
+        setMenuOpen(false);
+      }, 150);
+    };
+    
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      clearTimeout(scrollTimer);
+    };
   }, []);
 
   // Close menu on link click
   const handleNavLinkClick = () => {
     setMenuOpen(false);
+  };
+  
+  // Toggle menu function
+  const toggleMenu = (e) => {
+    // Prevent event propagation to avoid triggering scroll events
+    e.preventDefault();
+    e.stopPropagation();
+    setMenuOpen(!menuOpen);
   };
 
   if (loading) {
@@ -87,11 +107,11 @@ export default function Lessons() {
 
       <div className="roadmap-wrapper">
         {!menuOpen ? (
-          <button className="hamburger" onClick={() => setMenuOpen(true)}>
+          <button className="hamburger" onClick={toggleMenu}>
             ☰
           </button>
         ) : (
-          <button className="hamburger close-btn" onClick={() => setMenuOpen(false)}>
+          <button className="hamburger close-btn" onClick={toggleMenu}>
             ×
           </button>
         )}
