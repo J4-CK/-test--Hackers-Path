@@ -77,6 +77,19 @@ export default function MobileNav({ username }) {
               {username ? username.charAt(0).toUpperCase() : "U"}
             </div>
             <span className="username">{username || "User"}</span>
+            <Link href="/profile">
+              <div className="avatar-container">
+                <div className="avatar-wrapper">
+                  <div className="avatar">
+                    {username ? username.charAt(0).toUpperCase() : "U"}
+                  </div>
+                  <div className="user-details">
+                    <span className="username">{username || "User"}</span>
+                    <span className="view-profile">View Profile</span>
+                  </div>
+                </div>
+              </div>
+            </Link>
           </div>
         </div>
         <nav className="menu-nav">
@@ -85,6 +98,11 @@ export default function MobileNav({ username }) {
             <li className={currentPath === '/' ? 'active' : ''}>
               <Link href="/">
                 <span>Home</span>
+              </Link>
+            </li>
+            <li className={currentPath === '/profile' ? 'active' : ''}>
+              <Link href="/profile">
+                <span>Profile</span>
               </Link>
             </li>
           </ul>
@@ -303,6 +321,49 @@ export default function MobileNav({ username }) {
           box-shadow: 0 2px 8px rgba(140, 48, 194, 0.4);
           text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
           font-size: 18px;
+          flex-shrink: 0;
+        }
+        
+        .avatar-container {
+          display: flex;
+          flex-direction: column;
+          cursor: pointer;
+          position: relative;
+          padding: 5px;
+          border-radius: 10px;
+          transition: all 0.3s ease;
+          width: 100%;
+        }
+        
+        .avatar-container:hover {
+          background-color: rgba(255, 255, 255, 0.05);
+        }
+        
+        .avatar-wrapper {
+          display: flex;
+          align-items: center;
+        }
+        
+        .avatar-container .avatar {
+          width: 45px;
+          height: 45px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #a742c6 0%, #8030c2 100%);
+          color: white;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: bold;
+          margin-right: 12px;
+          box-shadow: 0 2px 8px rgba(140, 48, 194, 0.4);
+          text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+          font-size: 18px;
+          flex-shrink: 0;
+        }
+        
+        .user-details {
+          display: flex;
+          flex-direction: column;
         }
         
         .username {
@@ -310,6 +371,27 @@ export default function MobileNav({ username }) {
           font-weight: 600;
           font-size: 16px;
           letter-spacing: 0.5px;
+          margin-bottom: 4px;
+        }
+        
+        .avatar-container .username {
+          color: white;
+          font-weight: 600;
+          font-size: 16px;
+          letter-spacing: 0.5px;
+          margin-bottom: 4px;
+        }
+        
+        .view-profile {
+          font-size: 12px;
+          color: #a742c6;
+          opacity: 0.8;
+          transition: all 0.3s ease;
+        }
+        
+        .avatar-container:hover .view-profile {
+          opacity: 1;
+          text-decoration: underline;
         }
         
         .menu-nav {
@@ -325,6 +407,17 @@ export default function MobileNav({ username }) {
           letter-spacing: 1.5px;
           font-weight: 700;
           text-shadow: 0 0 10px rgba(140, 48, 194, 0.4);
+          padding-left: 5px;
+          display: flex;
+          align-items: center;
+        }
+        
+        .menu-nav h3:after {
+          content: '';
+          flex: 1;
+          height: 1px;
+          background: linear-gradient(90deg, rgba(140, 48, 194, 0.4), transparent);
+          margin-left: 10px;
         }
         
         .menu-nav ul {
@@ -334,7 +427,7 @@ export default function MobileNav({ username }) {
         }
         
         .menu-nav li {
-          margin-bottom: 6px;
+          margin-bottom: 8px;
           border-radius: 8px;
           transition: all 0.3s ease;
         }
@@ -342,11 +435,14 @@ export default function MobileNav({ username }) {
         .menu-nav li.active {
           background-color: rgba(140, 48, 194, 0.15);
           box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+          transform: translateX(3px);
         }
         
         .menu-nav li.active a {
           color: #fff;
           font-weight: 600;
+          background-color: rgba(255, 255, 255, 0.07);
+          border-color: rgba(140, 48, 194, 0.3);
         }
         
         .menu-nav li a {
@@ -354,11 +450,21 @@ export default function MobileNav({ username }) {
           color: #e0e0e0;
           text-decoration: none;
           display: block;
+          display: flex;
+          align-items: center;
           border-radius: 8px;
           transition: all 0.3s ease;
           font-size: 15px;
           position: relative;
           overflow: hidden;
+          background-color: rgba(255, 255, 255, 0.03);
+          border: 1px solid rgba(140, 48, 194, 0.1);
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .menu-nav li a span {
+          position: relative;
+          z-index: 2;
         }
         
         .menu-nav li a:before {
@@ -370,12 +476,14 @@ export default function MobileNav({ username }) {
           width: 0;
           background: linear-gradient(90deg, #a742c6, #8030c2);
           transition: width 0.3s ease;
+          z-index: 1;
         }
         
         .menu-nav li a:hover {
           background-color: rgba(255, 255, 255, 0.07);
           transform: translateX(3px);
           color: #fff;
+          border-color: rgba(140, 48, 194, 0.3);
         }
         
         .menu-nav li a:hover:before {
