@@ -8,4 +8,5 @@ export default function Footer() {
       <p>Hacker's Path &copy; {currentYear} All rights reserved.</p>
     </footer>
   );
+  
 } 
