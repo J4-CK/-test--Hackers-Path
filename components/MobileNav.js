@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-export default function MobileNav() {
+export default function MobileNav({ username }) {
   const [menuOpen, setMenuOpen] = useState(false);
   
   // Handle window clicks to close menu if clicking outside
@@ -50,7 +50,9 @@ export default function MobileNav() {
         <a href="/leaderboard" onClick={handleNavLinkClick}>Leaderboard</a>
         <a href="/lessons" onClick={handleNavLinkClick}>Lessons</a>
         <a href="/quiz" onClick={handleNavLinkClick}>Quizzes</a>
-        <a href="/profile" onClick={handleNavLinkClick}>Profile</a>
+        <a href="/profile" onClick={handleNavLinkClick}>
+          {username ? `Profile (${username})` : 'Profile'}
+        </a>
       </nav>
     </div>
   );

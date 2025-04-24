@@ -73,7 +73,7 @@ export default function Quizzes() {
         <h1><a href="/">Hacker's Path</a></h1>
       </header>
 
-      <MobileNav />
+      <MobileNav username={user.username} />
 
       <div className="container">
         <div className="section">

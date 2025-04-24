@@ -59,7 +59,7 @@ export default function HomePage() {
           <h1><a href="/">Hacker's Path</a></h1>
         </header>
 
-        <MobileNav />
+        <MobileNav username={user.username} />
 
         <div className="container">
           <div className="stats">

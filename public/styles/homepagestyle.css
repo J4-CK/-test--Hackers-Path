@@ -170,9 +170,11 @@ header h1 a:hover {
     padding: 10px 15px;
     cursor: pointer;
     border-radius: 5px;
-    margin: 10px auto;
+    margin: 0;
     z-index: 1000;
-    position: relative;
+    position: absolute;
+    left: 20px;
+    top: 80px;
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
     user-select: none;
@@ -184,25 +186,33 @@ header h1 a:hover {
 
 /* Mobile Styles */
 @media (max-width: 768px) {
+    header {
+        margin-bottom: 60px; /* Add space below header for hamburger button */
+    }
+
     .hamburger {
         display: block;
-        float: right;
-        margin-top: -50px;
-        padding: 15px;
         min-width: 48px;
         min-height: 48px;
         /* Ensure larger tap target for mobile */
         box-sizing: border-box;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .roadmap-wrapper {
+        position: relative;
+        margin-top: 0; /* Reset top margin */
     }
 
     .roadmap {
         display: none;
         background: rgba(106, 27, 154, 0.98);
-        position: absolute;
+        position: fixed; /* Fixed position covers entire screen width */
         width: 100%;
         z-index: 999;
-        top: 80px;
         left: 0;
+        top: 140px; /* Position below hamburger */
+        box-sizing: border-box;
     }
 
     .roadmap.open {
@@ -211,6 +221,10 @@ header h1 a:hover {
         padding: 15px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
         animation: slideDown 0.3s ease-out;
+        width: 100%; /* Full width */
+        left: 0;
+        right: 0;
+        box-sizing: border-box;
     }
 
     @keyframes slideDown {
