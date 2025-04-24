@@ -43,7 +43,7 @@ export default function MobileNav({ username }) {
           className="home-btn"
           aria-label="Go to homepage"
         >
-          Home
+          &#8962;
         </a>
         
         <button 
@@ -74,24 +74,32 @@ export default function MobileNav({ username }) {
         }
         
         .button-container {
-          display: flex;
+          display: none; /* Hide by default on desktop */
+          justify-content: space-between;
           align-items: center;
-          justify-content: center;
-          padding: 10px;
+          padding: 10px 15px;
           position: relative;
         }
         
         .home-btn {
-          position: absolute;
-          left: 15px;
-          background-color: #5cb85c;
+          background: #6a1b9a;
           color: white;
           border: none;
-          padding: 8px 15px;
-          border-radius: 4px;
-          font-weight: bold;
+          font-size: 1.8em;
+          padding: 10px 15px;
+          border-radius: 5px;
           text-decoration: none;
-          font-size: 14px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          min-width: 48px;
+          min-height: 48px;
+          box-sizing: border-box;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .home-btn:hover {
+          background: #42155c;
         }
         
         .hamburger {
@@ -106,6 +114,11 @@ export default function MobileNav({ username }) {
           touch-action: manipulation;
           -webkit-tap-highlight-color: transparent;
           user-select: none;
+          display: none;
+          min-width: 48px;
+          min-height: 48px;
+          box-sizing: border-box;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
         
         .close-btn {
@@ -113,30 +126,34 @@ export default function MobileNav({ username }) {
         }
         
         .roadmap {
-          display: none;
-          flex-direction: column;
-          width: 100%;
-          background-color: #333;
-          padding: 0;
-          margin: 0;
-        }
-        
-        .roadmap.open {
           display: flex;
-          animation: slideDown 0.3s ease-in-out;
+          justify-content: center;
+          align-items: center;
+          flex-wrap: wrap;
+          gap: 10px;
+          padding: 15px;
+          width: 100%;
+          max-width: 1200px;
+          margin: 0 auto;
+          box-sizing: border-box;
         }
         
         .roadmap a {
-          color: white;
+          flex: 1;
+          min-width: 150px;
+          max-width: 250px;
+          padding: 10px 20px;
           text-decoration: none;
-          font-size: 18px;
-          padding: 15px;
-          transition: background-color 0.2s;
+          color: #e0e0e0;
+          background-color: #6a1b9a;
+          border-radius: 5px;
           text-align: center;
+          transition: all 0.3s ease;
         }
         
         .roadmap a:hover {
-          background-color: #444;
+          background-color: #42155c;
+          color: #ffffff;
         }
         
         @keyframes slideDown {
@@ -144,9 +161,36 @@ export default function MobileNav({ username }) {
           to { opacity: 1; transform: translateY(0); }
         }
         
+        /* Mobile Styles */
         @media (max-width: 768px) {
+          .button-container {
+            display: flex; /* Show on mobile */
+          }
+          
           .hamburger {
             display: block;
+          }
+          
+          .roadmap {
+            display: none;
+            flex-direction: column;
+            width: 100%;
+            background-color: #333;
+            padding: 0;
+            margin: 0;
+          }
+          
+          .roadmap.open {
+            display: flex;
+            animation: slideDown 0.3s ease-in-out;
+          }
+          
+          .roadmap a {
+            flex: 1;
+            min-width: 100%;
+            max-width: 100%;
+            margin: 5px 0;
+            text-align: center;
           }
         }
       `}</style>
