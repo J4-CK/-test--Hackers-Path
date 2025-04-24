@@ -130,7 +130,7 @@ export default function CTFValidator() {
                 </li>
                 <li>
                   <strong>Flag 5:</strong> Visit the API endpoint at <code>/api/ctf/flag</code> directly in your browser. 
-                  This flag is designed to make you check our <a href="https://github.com/hackerspathorg/hackerspath" target="_blank" rel="noopener noreferrer">GitHub repository</a> where you'll find additional CTF guidance.
+                  This flag is designed to make you check our <a href="https://github.com/J4-CK/-test--Hackers-Path" target="_blank" rel="noopener noreferrer">GitHub repository</a> where you'll find additional CTF guidance.
                 </li>
               </ol>
               <p className="special-note">Remember: The CTF flags need to be combined in numerical order to form a complete sentence!</p>
@@ -199,12 +199,13 @@ export default function CTFValidator() {
         }
         
         .ctf-hint-content.show {
-          max-height: 1000px;
+          max-height: 2000px; /* Increased from 1000px to allow more content */
           opacity: 1;
           transform: translateY(0);
           margin-top: 20px;
           padding: 25px;
           border-left: 5px solid #f0ad4e;
+          overflow: visible; /* Added to ensure content isn't cut off */
         }
         
         .ctf-title {
@@ -364,6 +365,7 @@ export default function CTFValidator() {
           text-align: center;
           border-top: 1px dashed #ddd;
           padding-top: 20px;
+          margin-bottom: 20px; /* Added to ensure spacing at the bottom */
         }
         
         .stuck-btn {
@@ -393,6 +395,9 @@ export default function CTFValidator() {
           border-left: 4px solid #5bc0de;
           text-align: left;
           animation: fadeIn 0.5s ease-in-out;
+          overflow: visible; /* Added to ensure content isn't cut off */
+          position: relative; /* Added to ensure proper stacking */
+          z-index: 10; /* Added to ensure content appears above other elements */
         }
         
         .stuck-content h4 {
