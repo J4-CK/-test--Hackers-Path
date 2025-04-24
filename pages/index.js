@@ -59,6 +59,20 @@ export default function HomePage() {
       <div id="page-wrapper">
         <MobileNav username={user.username} />
 
+        {/* Hidden flag 2 - small invisible button that reveals flag when clicked */}
+        <div className="hidden-flag-container">
+          <button 
+            className="hidden-flag" 
+            title="Robots are watching..."
+            onClick={(e) => {
+              e.currentTarget.textContent = "CTF Flag 2: L0V3";
+              e.currentTarget.classList.add('revealed');
+            }}
+          >
+            🤖
+          </button>
+        </div>
+
         <div className="container">
           <div className="stats">
             <div className="box">
@@ -107,6 +121,58 @@ export default function HomePage() {
       </div>
 
       <Footer />
+
+      <style jsx>{`
+        .hidden-flag-container {
+          position: absolute;
+          top: 65px;
+          right: 10px;
+          z-index: 10;
+        }
+        
+        .hidden-flag {
+          background: transparent;
+          border: none;
+          color: transparent;
+          font-size: 5px;
+          cursor: pointer;
+          width: 30px;
+          height: 30px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: all 0.3s ease;
+          border-radius: 50%;
+          position: relative;
+          overflow: hidden;
+        }
+        
+        .hidden-flag:before {
+          content: '🤖';
+          position: absolute;
+          opacity: 0.05;
+          font-size: 20px;
+        }
+        
+        .hidden-flag:hover:before {
+          opacity: 0.2;
+        }
+        
+        .hidden-flag.revealed {
+          background-color: #a742c6;
+          color: white;
+          padding: 10px 15px;
+          font-size: 16px;
+          width: auto;
+          height: auto;
+          border-radius: 8px;
+          box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        
+        .hidden-flag.revealed:before {
+          display: none;
+        }
+      `}</style>
     </div>
   );
 }

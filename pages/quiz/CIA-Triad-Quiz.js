@@ -164,7 +164,6 @@ export default function QuizPage() {
         <title>CIA Triad Quiz - Hacker's Path</title>
         <link rel="icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" href="/images/favicon.png" />
-        {/* <!-- CTF Flag 1: H4CK3RS --> */}
       </Head>
       <link rel="stylesheet" href="/styles/homepagestyle.css" />
 
@@ -184,6 +183,12 @@ export default function QuizPage() {
           <>
             <div className="section">
               <h2>CIA Triad Quiz</h2>
+              
+              <div className="secret-flag" 
+                  onClick={(e) => e.currentTarget.classList.toggle('revealed')}
+                  title="You found something! Click to reveal...">
+                CTF Flag 1: H4CK3RS
+              </div>
               
               {showResults ? (
                 <div className="quiz-container">
@@ -222,6 +227,38 @@ export default function QuizPage() {
           </>
         )}
       </div>
+
+      <style jsx>{`
+        /* Existing styles... */
+        
+        /* Secret flag styling */
+        .secret-flag {
+          position: absolute;
+          top: 10px;
+          right: 10px;
+          color: transparent;
+          background-color: transparent;
+          font-size: 0.1px;
+          user-select: all;
+          cursor: pointer;
+          padding: 20px;
+          border-radius: 5px;
+          transition: all 0.3s ease;
+          z-index: 10;
+        }
+        
+        .secret-flag:hover {
+          background-color: rgba(255, 255, 255, 0.05);
+        }
+        
+        .secret-flag.revealed {
+          color: #fff;
+          background-color: #a742c6;
+          font-size: 16px;
+          padding: 10px 15px;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+      `}</style>
     </div>
   );
 } 
