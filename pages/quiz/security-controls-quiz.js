@@ -13,7 +13,6 @@ export default function QuizPage() {
   const [score, setScore] = useState(0);
   const [showResults, setShowResults] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [authChecked, setAuthChecked] = useState(false);
   const router = useRouter();
 
   // Quiz questions
@@ -124,18 +123,19 @@ export default function QuizPage() {
 
         if (error) {
           console.error("Error fetching session:", error.message);
-          setAuthChecked(true);
+          router.push('/login');
           return;
         }
 
-        if (session) {
-          setUser(session.user);
+        if (!session) {
+          router.push('/login');
+          return;
         }
-        
-        setAuthChecked(true);
+
+        setUser(session.user);
       } catch (error) {
         console.error("Error:", error.message);
-        setAuthChecked(true);
+        router.push('/login');
       } finally {
         setLoading(false);
       }
@@ -149,15 +149,15 @@ export default function QuizPage() {
         setUser(session.user);
       } else {
         setUser(null);
+        router.push('/login');
       }
       setLoading(false);
-      setAuthChecked(true);
     });
 
     return () => {
       subscription?.unsubscribe();
     };
-  }, []);
+  }, [router]);
 
   const handleLogin = async () => {
     const { error } = await supabase.auth.signInWithOAuth({ 
@@ -201,7 +201,7 @@ export default function QuizPage() {
       <MobileNav username={user?.username} />
 
       <div className="container">
-        {!user && authChecked ? (
+        {!user ? (
           <div className="section">
             <h2>Please log in to take the quiz</h2>
             <button onClick={handleLogin} className="logout-btn">Log In</button>

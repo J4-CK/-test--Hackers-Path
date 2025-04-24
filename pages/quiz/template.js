@@ -4,148 +4,151 @@ import { supabase } from "../../config/supabaseClient";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import MobileNav from "../../components/MobileNav";
+import Loading from '../../components/Loading';
 
 export default function QuizTemplate() {
-  // Basic quiz state
-  const [questionIndex, setQuestionIndex] = useState(0);
-  const [selectedOption, setSelectedOption] = useState("");
-  const [score, setScore] = useState(0);
-  
-  // Authentication state
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [authChecked, setAuthChecked] = useState(false); // Add state to prevent redirect loops
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [score, setScore] = useState(0);
+  const [showResults, setShowResults] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const router = useRouter();
 
-  // TEMPLATE: Replace this with your actual quiz questions
+  // Quiz questions
   const questions = [
     {
-      question: "Template Question 1?",
-      options: ["Option 1", "Option 2", "Option 3", "Option 4"],
-      correctAnswer: "Option 1",
+      questionText: 'Sample Question 1?',
+      options: ['Option 1', 'Option 2', 'Option 3', 'Option 4'],
+      correctAnswer: 'Option 2',
     },
-    {
-      question: "Template Question 2?",
-      options: ["Option A", "Option B", "Option C", "Option D"],
-      correctAnswer: "Option B",
-    },
+    // Add more questions as needed
   ];
 
-  // Authentication setup
-  useEffect(() => {
-    checkUser();
+  const handleAnswerClick = (selectedAnswer) => {
+    const isCorrect = selectedAnswer === questions[currentQuestion].correctAnswer;
     
-    // Set up auth listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-      setLoading(false);
-      setAuthChecked(true); // Mark auth as checked on auth state change
-    });
+    if (isCorrect) {
+      setScore(score + 1);
+    }
 
-    // Cleanup subscription on unmount
-    return () => {
-      if (subscription) {
-        subscription.unsubscribe();
-      }
-    };
-  }, []);
+    if (currentQuestion < questions.length - 1) {
+      setCurrentQuestion(currentQuestion + 1);
+    } else {
+      setShowResults(true);
+      saveScore(score + (isCorrect ? 1 : 0));
+    }
+  };
 
-  // Check user session
-  const checkUser = async () => {
+  const saveScore = async (finalScore) => {
+    if (!user) return;
+    
     try {
-      const { data: { session }, error } = await supabase.auth.getSession();
-      
-      if (error) {
-        console.error("Error checking auth status:", error.message);
-        setAuthChecked(true); // Mark auth as checked even on error
-        return;
-      }
-
-      setUser(session?.user ?? null);
-      setAuthChecked(true); // Mark auth as checked
-    } catch (error) {
-      console.error("Error:", error.message);
-      setAuthChecked(true); // Mark auth as checked even on error
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Handle answer selection
-  const handleAnswer = (option) => {
-    setSelectedOption(option);
-    if (option === questions[questionIndex].correctAnswer) {
-      setScore((prev) => prev + 1);
-    }
-  };
-
-  // Handle moving to next question
-  const handleNextQuestion = () => {
-    setSelectedOption("");
-    if (questionIndex < questions.length - 1) {
-      setQuestionIndex((prev) => prev + 1);
-    }
-  };
-
-  // Handle quiz submission
-  const handleSubmitQuiz = async () => {
-    if (!user) {
-      handleLoginRedirect();
-      return;
-    }
-
-    try {
-      // TEMPLATE: Replace 'quiz_results' with your specific quiz table name if different
       const { error } = await supabase
-        .from("quiz_results")
+        .from('quiz_scores')
         .insert([{ 
           user_id: user.id, 
-          score,
-          // TEMPLATE: Add any additional fields you need to store
-          quiz_type: "template", // Replace with your quiz type
-          completed_at: new Date().toISOString()
+          quiz_name: 'Template Quiz', 
+          score: finalScore,
+          max_score: questions.length 
         }]);
       
-      if (error) {
-        console.error("Database error:", error);
-        if (error.message.includes('JWT')) {
-          handleLoginRedirect();
-        } else {
-          alert("Error submitting quiz. Please try again.");
-        }
-      } else {
-        alert("Quiz submitted successfully!");
-        router.push("/dashboard"); // TEMPLATE: Replace with your desired redirect path
-      }
-    } catch (err) {
-      console.error("Submission error:", err);
-      alert("An error occurred while submitting your quiz.");
+      if (error) console.error('Error saving score:', error);
+    } catch (error) {
+      console.error('Error:', error.message);
     }
   };
 
-  // Handle login redirect
-  const handleLoginRedirect = () => {
-    // TEMPLATE: Replace with your actual quiz path
-    const currentPath = "/quiz/template";
-    router.push(`/login?returnUrl=${encodeURIComponent(currentPath)}`);
+  // Close menu on scroll
+  useEffect(() => {
+    const handleScroll = () => setMenuOpen(false);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Close menu on link click
+  const handleNavLinkClick = () => {
+    setMenuOpen(false);
   };
 
-  // Loading state
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <p>Loading your quiz...</p>
-      </div>
-    );
-  }
+  useEffect(() => {
+    const checkUser = async () => {
+      try {
+        setLoading(true);
+        const { data: { session }, error } = await supabase.auth.getSession();
 
-  // Main render
+        if (error) {
+          console.error("Error fetching session:", error.message);
+          router.push('/login');
+          return;
+        }
+
+        if (!session) {
+          router.push('/login');
+          return;
+        }
+
+        setUser(session.user);
+      } catch (error) {
+        console.error("Error:", error.message);
+        router.push('/login');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkUser();
+
+    // Listen for authentication changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) {
+        setUser(session.user);
+      } else {
+        setUser(null);
+        router.push('/login');
+      }
+      setLoading(false);
+    });
+
+    return () => {
+      subscription?.unsubscribe();
+    };
+  }, [router]);
+
+  const handleLogin = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({ 
+      provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/quiz/template`
+      }
+    });
+    if (error) {
+      console.error("Login Error:", error.message);
+    }
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setUser(null);
+    router.push('/login');
+  };
+
+  const resetQuiz = () => {
+    setCurrentQuestion(0);
+    setScore(0);
+    setShowResults(false);
+  };
+
+  if (loading) return <Loading />;
+
   return (
     <div>
       <Head>
-        <title>Quiz Title</title>
-        <link rel="stylesheet" href="/styles/homepagestyle.css" />
+        <title>Template Quiz - Hacker's Path</title>
+        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" href="/images/favicon.png" />
       </Head>
+      <link rel="stylesheet" href="/styles/homepagestyle.css" />
 
       <header>
         <h1><a href="/">Hacker's Path</a></h1>
@@ -153,69 +156,52 @@ export default function QuizTemplate() {
 
       <MobileNav username={user?.username} />
 
-      <div className="quiz-container">
-        {!user && authChecked ? (
-          // Not logged in state
-          <div className="text-center">
-            <p className="mb-4">Please log in to take the quiz.</p>
-            <button 
-              onClick={handleLoginRedirect}
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-            >
-              Log In
-            </button>
+      <div className="container">
+        {!user ? (
+          <div className="section">
+            <h2>Please log in to take the quiz</h2>
+            <button onClick={handleLogin} className="logout-btn">Log In</button>
           </div>
         ) : (
-          // Quiz content
-          <div>
-            {/* TEMPLATE: Add your quiz title/description here */}
-            <h1 className="text-2xl font-bold mb-6">Quiz Template</h1>
+          <>
+            <div className="section">
+              <h2>Template Quiz</h2>
+              
+              {showResults ? (
+                <div className="quiz-container">
+                  <h3>Quiz Complete!</h3>
+                  <p>Your score: {score} out of {questions.length}</p>
+                  <button onClick={resetQuiz} className="logout-btn">Retake Quiz</button>
+                </div>
+              ) : (
+                <div className="quiz-container">
+                  <div className="question">
+                    <p>Question {currentQuestion + 1} of {questions.length}</p>
+                    <h3>{questions[currentQuestion].questionText}</h3>
+                  </div>
+                  
+                  <div className="buttons">
+                    {questions[currentQuestion].options.map((option, index) => (
+                      <a 
+                        key={index}
+                        href="#" 
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleAnswerClick(option);
+                        }}
+                      >
+                        {option}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
             
-            {/* Question */}
-            <h2 className="text-xl font-bold mb-4">{questions[questionIndex].question}</h2>
-            
-            {/* Options */}
-            <ul className="space-y-2 mb-4">
-              {questions[questionIndex].options.map((option) => (
-                <li
-                  key={option}
-                  onClick={() => handleAnswer(option)}
-                  className={`p-3 border rounded cursor-pointer ${
-                    selectedOption === option
-                      ? option === questions[questionIndex].correctAnswer
-                        ? "bg-green-500 text-white"
-                        : "bg-red-500 text-white"
-                      : "hover:bg-gray-100"
-                  }`}
-                >
-                  {option}
-                </li>
-              ))}
-            </ul>
-
-            {/* Navigation/Submit Buttons */}
-            {selectedOption && questionIndex < questions.length - 1 && (
-              <button 
-                onClick={handleNextQuestion}
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2"
-              >
-                Next Question
-              </button>
-            )}
-            {selectedOption && questionIndex === questions.length - 1 && (
-              <button 
-                onClick={handleSubmitQuiz}
-                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-              >
-                Submit Quiz
-              </button>
-            )}
-
-            {/* Score Display */}
-            <p className="mt-4">Current Score: {score}</p>
-            
-            {/* TEMPLATE: Add any additional UI elements you need */}
-          </div>
+            <button onClick={handleLogout} className="logout-btn">
+              Logout
+            </button>
+          </>
         )}
       </div>
     </div>
