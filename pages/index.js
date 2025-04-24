@@ -3,11 +3,11 @@ import { useRouter } from 'next/router';
 import Head from 'next/head';
 import Loading from '../components/Loading';
 import Footer from '../components/Footer';
+import MobileNav from '../components/MobileNav';
 
 export default function HomePage() {
   const router = useRouter();
   const [user, setUser] = useState(null);
-  const [menuOpen, setMenuOpen] = useState(false);
   const currentYear = new Date().getFullYear();
 
   // Fetch session on load
@@ -24,38 +24,6 @@ export default function HomePage() {
     }
     checkSession();
   }, [router]);
-
-  // Close menu on scroll
-  useEffect(() => {
-    let scrollTimer;
-    
-    const handleScroll = () => {
-      // Use a small delay to prevent closing menu immediately after opening on mobile
-      clearTimeout(scrollTimer);
-      scrollTimer = setTimeout(() => {
-        setMenuOpen(false);
-      }, 150);
-    };
-    
-    window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      clearTimeout(scrollTimer);
-    };
-  }, []);
-
-  // Toggle menu open/closed
-  const toggleMenu = (e) => {
-    // Prevent event propagation to avoid triggering scroll events
-    e.preventDefault();
-    e.stopPropagation();
-    setMenuOpen(!menuOpen);
-  };
-
-  // Close menu on link click
-  const handleNavLinkClick = () => {
-    setMenuOpen(false);
-  };
 
   // Handle logout
   async function handleLogout() {
@@ -91,25 +59,7 @@ export default function HomePage() {
           <h1><a href="/">Hacker's Path</a></h1>
         </header>
 
-        <div className="roadmap-wrapper">
-          {!menuOpen ? (
-            <button className="hamburger" onClick={toggleMenu}>
-              ☰
-            </button>
-          ) : (
-            <button className="hamburger close-btn" onClick={toggleMenu}>
-              ×
-            </button>
-          )}
-          <nav className={`roadmap ${menuOpen ? 'open' : ''}`}>
-            <a href="/leaderboard" onClick={handleNavLinkClick}>Leaderboard</a>
-            <a href="/lessons" onClick={handleNavLinkClick}>Lessons</a>
-            <a href="/quiz" onClick={handleNavLinkClick}>Quizzes</a>
-            <a href="/profile" onClick={handleNavLinkClick}>
-              {user.username ? `Profile (${user.username})` : 'Profile'}
-            </a>
-          </nav>
-        </div>
+        <MobileNav />
 
         <div className="container">
           <div className="stats">

@@ -171,7 +171,11 @@ header h1 a:hover {
     cursor: pointer;
     border-radius: 5px;
     margin: 10px auto;
-    z-index: 10;
+    z-index: 1000;
+    position: relative;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
 }
 
 .close-btn {
@@ -184,21 +188,42 @@ header h1 a:hover {
         display: block;
         float: right;
         margin-top: -50px;
+        padding: 15px;
+        min-width: 48px;
+        min-height: 48px;
+        /* Ensure larger tap target for mobile */
+        box-sizing: border-box;
     }
 
     .roadmap {
         display: none;
+        background: rgba(106, 27, 154, 0.98);
+        position: absolute;
+        width: 100%;
+        z-index: 999;
+        top: 80px;
+        left: 0;
     }
 
     .roadmap.open {
         display: flex;
         flex-direction: column;
+        padding: 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        animation: slideDown 0.3s ease-out;
+    }
+
+    @keyframes slideDown {
+        from { opacity: 0; transform: translateY(-20px); }
+        to { opacity: 1; transform: translateY(0); }
     }
 
     .roadmap a {
         width: 100%;
         max-width: none;
-        margin: 5px 0;
+        margin: 8px 0;
+        padding: 15px;
+        /* Larger touch target */
     }
 
     .buttons {

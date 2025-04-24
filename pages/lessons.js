@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import Loading from '../components/Loading';
 import Head from 'next/head';
+import MobileNav from '../components/MobileNav';
 
 export default function Lessons() {
   const router = useRouter();
   const [user, setUser] = useState(null);
-  const [menuOpen, setMenuOpen] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -30,38 +30,6 @@ export default function Lessons() {
     }
     checkSession();
   }, [router]);
-
-  // Close menu on scroll
-  useEffect(() => {
-    let scrollTimer;
-    
-    const handleScroll = () => {
-      // Use a small delay to prevent closing menu immediately after opening on mobile
-      clearTimeout(scrollTimer);
-      scrollTimer = setTimeout(() => {
-        setMenuOpen(false);
-      }, 150);
-    };
-    
-    window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      clearTimeout(scrollTimer);
-    };
-  }, []);
-
-  // Close menu on link click
-  const handleNavLinkClick = () => {
-    setMenuOpen(false);
-  };
-  
-  // Toggle menu function
-  const toggleMenu = (e) => {
-    // Prevent event propagation to avoid triggering scroll events
-    e.preventDefault();
-    e.stopPropagation();
-    setMenuOpen(!menuOpen);
-  };
 
   if (loading) {
     return (
@@ -105,25 +73,7 @@ export default function Lessons() {
         <h1><a href="/">Hacker's Path</a></h1>
       </header>
 
-      <div className="roadmap-wrapper">
-        {!menuOpen ? (
-          <button className="hamburger" onClick={toggleMenu}>
-            ☰
-          </button>
-        ) : (
-          <button className="hamburger close-btn" onClick={toggleMenu}>
-            ×
-          </button>
-        )}
-        <nav className={`roadmap ${menuOpen ? 'open' : ''}`}>
-          <a href="/leaderboard" onClick={handleNavLinkClick}>Leaderboard</a>
-          <a href="/lessons" onClick={handleNavLinkClick}>Lessons</a>
-          <a href="/quiz" onClick={handleNavLinkClick}>Quizzes</a>
-          <a href="/profile" onClick={handleNavLinkClick}>
-            {user.username ? `Profile (${user.username})` : 'Profile'}
-          </a>
-        </nav>
-      </div>
+      <MobileNav />
 
       <div className="container">
         <div className="section">
