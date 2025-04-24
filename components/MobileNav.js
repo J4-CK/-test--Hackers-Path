@@ -36,23 +36,25 @@ export default function MobileNav({ username }) {
   };
 
   return (
-    <div className="navigation-wrapper">
-      <a 
-        href="/" 
-        className="home-btn"
-        aria-label="Go to homepage"
-      >
-        Home
-      </a>
-      
-      <button 
-        className={`hamburger ${menuOpen ? 'close-btn' : ''}`}
-        onClick={toggleMenu} 
-        aria-label={menuOpen ? "Close menu" : "Open menu"}
-        type="button"
-      >
-        {menuOpen ? '×' : '☰'}
-      </button>
+    <div className="roadmap-wrapper">
+      <div className="button-container">
+        <a 
+          href="/" 
+          className="home-btn"
+          aria-label="Go to homepage"
+        >
+          Home
+        </a>
+        
+        <button 
+          className={`hamburger ${menuOpen ? 'close-btn' : ''}`}
+          onClick={toggleMenu} 
+          aria-label={menuOpen ? "Close menu" : "Open menu"}
+          type="button"
+        >
+          {menuOpen ? '×' : '☰'}
+        </button>
+      </div>
       
       <nav className={`roadmap ${menuOpen ? 'open' : ''}`}>
         <a href="/leaderboard" onClick={handleNavLinkClick}>Leaderboard</a>
@@ -64,81 +66,88 @@ export default function MobileNav({ username }) {
       </nav>
 
       <style jsx>{`
-        .navigation-wrapper {
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          display: flex;
-          justify-content: space-between;
-          padding: 10px 15px;
-          z-index: 1000;
+        .roadmap-wrapper {
+          width: 100%;
+          background: #531d73;
+          margin: 0;
+          padding: 0;
         }
-
-        .home-btn {
+        
+        .button-container {
           display: flex;
           align-items: center;
           justify-content: center;
+          padding: 10px;
+          position: relative;
+        }
+        
+        .home-btn {
+          position: absolute;
+          left: 15px;
           background-color: #5cb85c;
           color: white;
           border: none;
-          width: 60px;
-          height: 40px;
+          padding: 8px 15px;
           border-radius: 4px;
           font-weight: bold;
           text-decoration: none;
           font-size: 14px;
         }
-
+        
         .hamburger {
-          background-color: #007bff;
+          background: #6a1b9a;
           color: white;
           border: none;
-          width: 40px;
-          height: 40px;
-          border-radius: 4px;
-          font-size: 24px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
+          font-size: 1.8em;
+          padding: 10px 15px;
           cursor: pointer;
-          margin-left: auto;
+          border-radius: 5px;
+          z-index: 1000;
+          touch-action: manipulation;
+          -webkit-tap-highlight-color: transparent;
+          user-select: none;
         }
-
+        
         .close-btn {
-          background-color: #dc3545;
+          background: #42155c;
         }
-
+        
         .roadmap {
-          position: fixed;
-          top: 60px;
-          right: -250px;
-          width: 250px;
-          height: 100vh;
-          background-color: #333;
-          padding: 20px;
-          transition: right 0.3s ease;
-          z-index: 999;
-          display: flex;
+          display: none;
           flex-direction: column;
-          gap: 15px;
+          width: 100%;
+          background-color: #333;
+          padding: 0;
+          margin: 0;
         }
-
+        
         .roadmap.open {
-          right: 0;
+          display: flex;
+          animation: slideDown 0.3s ease-in-out;
         }
-
+        
         .roadmap a {
           color: white;
           text-decoration: none;
           font-size: 18px;
-          padding: 10px;
-          border-radius: 4px;
+          padding: 15px;
           transition: background-color 0.2s;
+          text-align: center;
         }
-
+        
         .roadmap a:hover {
           background-color: #444;
+        }
+        
+        @keyframes slideDown {
+          from { opacity: 0; transform: translateY(-10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @media (max-width: 768px) {
+          .hamburger {
+            display: block;
+          }
         }
       `}</style>
     </div>
