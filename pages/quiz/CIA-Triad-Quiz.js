@@ -184,12 +184,6 @@ export default function QuizPage() {
             <div className="section">
               <h2>CIA Triad Quiz</h2>
               
-              <div className="secret-flag" 
-                  onClick={(e) => e.currentTarget.classList.toggle('revealed')}
-                  title="You found something! Click to reveal...">
-                CTF Flag 1: H4CK3RS
-              </div>
-              
               {showResults ? (
                 <div className="quiz-container">
                   <h3>Quiz Complete!</h3>
@@ -228,14 +222,20 @@ export default function QuizPage() {
         )}
       </div>
 
+      <div className="secret-flag" 
+          onClick={(e) => e.currentTarget.classList.toggle('revealed')}
+          title="You found something! Click to reveal...">
+        CTF Flag 1: H4CK3RS
+      </div>
+
       <style jsx>{`
         /* Existing styles... */
         
         /* Secret flag styling */
         .secret-flag {
-          position: absolute;
-          top: 10px;
-          right: 10px;
+          position: fixed;
+          bottom: 20px;
+          right: 20px;
           color: #a742c6;
           background-color: #f5f5f5;
           font-size: 12px;
@@ -244,7 +244,7 @@ export default function QuizPage() {
           border-radius: 5px;
           border: 1px dashed #a742c6;
           transition: all 0.3s ease;
-          z-index: 10;
+          z-index: 100;
           opacity: 0.4;
         }
         
