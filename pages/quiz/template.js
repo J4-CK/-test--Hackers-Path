@@ -1,18 +1,19 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { supabase } from "../../config/supabaseClient";
-import { useRouter } from "next/router";
-import Head from "next/head";
-import MobileNav from "../../components/MobileNav";
+import Head from 'next/head';
 import Loading from '../../components/Loading';
+import MobileNav from '../../components/MobileNav';
 
-export default function QuizTemplate() {
+export default function QuizPage() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [score, setScore] = useState(0);
   const [showResults, setShowResults] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [authChecked, setAuthChecked] = useState(false);
   const router = useRouter();
 
   // Quiz questions
@@ -25,39 +26,30 @@ export default function QuizTemplate() {
     // Add more questions as needed
   ];
 
-  const handleAnswerClick = (selectedAnswer) => {
-    const isCorrect = selectedAnswer === questions[currentQuestion].correctAnswer;
-    
-    if (isCorrect) {
-      setScore(score + 1);
-    }
+  // Fetch session on load
+  useEffect(() => {
+    async function checkSession() {
+      try {
+        setLoading(true);
+        const res = await fetch('/api/auth/session');
+        const data = await res.json();
 
-    if (currentQuestion < questions.length - 1) {
-      setCurrentQuestion(currentQuestion + 1);
-    } else {
-      setShowResults(true);
-      saveScore(score + (isCorrect ? 1 : 0));
+        if (res.ok && data.user) {
+          setUser(data.user);
+        } else {
+          console.error('Session error:', data.error);
+          // Don't immediately redirect, just set user to null
+        }
+      } catch (error) {
+        console.error('Failed to check session:', error);
+        // Don't immediately redirect, just set user to null
+      } finally {
+        setLoading(false);
+        setAuthChecked(true); // Mark auth as checked regardless of result
+      }
     }
-  };
-
-  const saveScore = async (finalScore) => {
-    if (!user) return;
-    
-    try {
-      const { error } = await supabase
-        .from('quiz_scores')
-        .insert([{ 
-          user_id: user.id, 
-          quiz_name: 'Template Quiz', 
-          score: finalScore,
-          max_score: questions.length 
-        }]);
-      
-      if (error) console.error('Error saving score:', error);
-    } catch (error) {
-      console.error('Error:', error.message);
-    }
-  };
+    checkSession();
+  }, []);
 
   // Close menu on scroll
   useEffect(() => {
@@ -71,66 +63,62 @@ export default function QuizTemplate() {
     setMenuOpen(false);
   };
 
-  useEffect(() => {
-    const checkUser = async () => {
-      try {
-        setLoading(true);
-        const { data: { session }, error } = await supabase.auth.getSession();
+  const handleAnswerClick = async (selectedAnswer) => {
+    const isCorrect = selectedAnswer === questions[currentQuestion].correctAnswer;
+    
+    if (isCorrect) {
+      setScore(score + 1);
+    }
 
-        if (error) {
-          console.error("Error fetching session:", error.message);
-          router.push('/login');
-          return;
-        }
-
-        if (!session) {
-          router.push('/login');
-          return;
-        }
-
-        setUser(session.user);
-      } catch (error) {
-        console.error("Error:", error.message);
-        router.push('/login');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    checkUser();
-
-    // Listen for authentication changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session) {
-        setUser(session.user);
-      } else {
-        setUser(null);
-        router.push('/login');
-      }
-      setLoading(false);
-    });
-
-    return () => {
-      subscription?.unsubscribe();
-    };
-  }, [router]);
-
-  const handleLogin = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({ 
-      provider: "google",
-      options: {
-        redirectTo: `${window.location.origin}/quiz/template`
-      }
-    });
-    if (error) {
-      console.error("Login Error:", error.message);
+    if (currentQuestion < questions.length - 1) {
+      setCurrentQuestion(currentQuestion + 1);
+    } else {
+      setShowResults(true);
+      await saveScore(score + (isCorrect ? 1 : 0));
     }
   };
 
+  const saveScore = async (finalScore) => {
+    if (!user) return;
+    
+    try {
+      const response = await fetch('/api/quiz/save-score', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          quizName: 'Template Quiz',
+          score: finalScore,
+          maxScore: questions.length
+        }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        console.error('Error saving score:', data.error);
+      }
+    } catch (error) {
+      console.error('Failed to save score:', error);
+    }
+  };
+
+  const handleLogin = () => {
+    router.push('/login?returnUrl=' + encodeURIComponent('/quiz/template'));
+  };
+
   const handleLogout = async () => {
-    await supabase.auth.signOut();
-    setUser(null);
-    router.push('/login');
+    try {
+      const res = await fetch('/api/auth/logout', {
+        method: 'POST'
+      });
+      if (res.ok) {
+        setUser(null);
+        router.push('/login');
+      }
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
   };
 
   const resetQuiz = () => {
@@ -139,7 +127,17 @@ export default function QuizTemplate() {
     setShowResults(false);
   };
 
-  if (loading) return <Loading />;
+  if (loading) {
+    return (
+      <div>
+        <Head>
+          <title>Template Quiz</title>
+          <link rel="stylesheet" href="/styles/homepagestyle.css" />
+        </Head>
+        <Loading />
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -157,7 +155,7 @@ export default function QuizTemplate() {
       <MobileNav username={user?.username} />
 
       <div className="container">
-        {!user ? (
+        {!user && authChecked ? (
           <div className="section">
             <h2>Please log in to take the quiz</h2>
             <button onClick={handleLogin} className="logout-btn">Log In</button>
