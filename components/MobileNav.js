@@ -73,10 +73,6 @@ export default function MobileNav({ username }) {
       <div className={`mobile-menu ${menuOpen ? 'open' : ''}`}>
         <div className="menu-header">
           <div className="user-info">
-            <div className="avatar">
-              {username ? username.charAt(0).toUpperCase() : "U"}
-            </div>
-            <span className="username">{username || "User"}</span>
             <Link href="/profile">
               <div className="avatar-container">
                 <div className="avatar-wrapper">
