@@ -158,7 +158,7 @@ export default function MobileNav({ username }) {
           width: 100%;
           padding: 10px 0;
           background: #531d73;
-          z-index: 100;
+          z-index: 1500;
           box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
           height: 60px;
         }
@@ -180,7 +180,7 @@ export default function MobileNav({ username }) {
           height: 40px;
           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
           transition: background-color 0.2s;
-          z-index: 1002; /* Ensure it's above other elements */
+          z-index: 1501; /* Ensure it's above other elements */
         }
         
         .home-btn:hover {
@@ -205,7 +205,7 @@ export default function MobileNav({ username }) {
           cursor: pointer;
           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
           transition: background-color 0.2s;
-          z-index: 1002; /* Increased z-index to ensure visibility */
+          z-index: 1501; /* Increased z-index to ensure visibility */
           overflow: hidden;
         }
         
@@ -263,7 +263,7 @@ export default function MobileNav({ username }) {
           right: 0;
           bottom: 0;
           background-color: rgba(0, 0, 0, 0.5);
-          z-index: 999;
+          z-index: 1499;
           visibility: hidden;
           opacity: 0;
           transition: opacity 0.3s, visibility 0.3s;
@@ -287,6 +287,7 @@ export default function MobileNav({ username }) {
           transform: translateX(100%);
           transition: transform 0.3s ease-in-out;
           box-shadow: -2px 0 10px rgba(0, 0, 0, 0.3);
+          z-index: 1500;
         }
         
         .menu-overlay.active .mobile-menu {
@@ -330,6 +331,12 @@ export default function MobileNav({ username }) {
           /* Adjust page wrapper margin */
           #page-wrapper {
             margin-top: 0;
+          }
+          
+          /* Fix for lesson pages specifically */
+          .lesson-content, .lesson-sidebar, .lesson-container {
+            position: relative;
+            z-index: 1;
           }
         }
       `}</style>
