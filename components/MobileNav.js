@@ -363,13 +363,14 @@ export default function MobileNav({ username }) {
         
         /* Add top padding to the body to prevent content from going behind fixed header */
         :global(body) {
-          padding-top: 60px;
+          padding-top: 70px; /* Increased from 60px to 70px for more space */
         }
         
         /* Ensure the page wrapper stays visible */
         :global(#page-wrapper) {
           position: relative;
           z-index: 1;
+          padding-top: 10px; /* Added padding to the page wrapper */
         }
         
         /* Add top margin to the header to push it below the navbar */

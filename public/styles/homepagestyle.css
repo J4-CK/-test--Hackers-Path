@@ -131,7 +131,7 @@ header h1 a:hover {
 .container {
     width: 100%;
     max-width: 1200px;
-    margin: 2rem auto;
+    margin: 4rem auto 2rem;
     padding: 20px;
     box-sizing: border-box;
 }
@@ -235,11 +235,12 @@ header h1 a:hover {
 
     /* Adjustments for container spacing */
     .container {
-        margin-top: 0; /* Remove extra margin at top */
+        margin-top: 5rem;
     }
 
     .stats {
-        margin-top: 0; /* Reduce space at top of stats */
+        margin-top: 10px;
+        padding-top: 30px;
     }
 
     .roadmap a {
@@ -270,6 +271,7 @@ header h1 a:hover {
     justify-content: center;
     gap: 20px;
     margin: 20px 0;
+    padding-top: 20px;
 }
 
 .stats .box {
