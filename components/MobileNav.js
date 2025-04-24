@@ -55,8 +55,8 @@ export default function MobileNav({ username }) {
           <a href="/leaderboard">Leaderboard</a>
           <a href="/lessons">Lessons</a>
           <a href="/quiz">Quizzes</a>
-          <a href="/profile">
-            {username ? `Profile (${username})` : 'Profile'}
+          <a href="/profile" className="profile-link">
+            <span className="user-icon">👤</span> Profile
           </a>
         </nav>
       </div>
@@ -78,15 +78,11 @@ export default function MobileNav({ username }) {
           aria-expanded={menuOpen}
           type="button"
         >
-          {menuOpen ? (
-            <span className="close-icon">&#10005;</span>
-          ) : (
-            <>
-              <span className="hamburger-line"></span>
-              <span className="hamburger-line"></span>
-              <span className="hamburger-line"></span>
-            </>
-          )}
+          <span className="hamburger-icon">
+            <span className="hamburger-line"></span>
+            <span className="hamburger-line"></span>
+            <span className="hamburger-line"></span>
+          </span>
         </button>
       </div>
       
@@ -96,8 +92,8 @@ export default function MobileNav({ username }) {
           <a href="/leaderboard" onClick={handleNavLinkClick}>Leaderboard</a>
           <a href="/lessons" onClick={handleNavLinkClick}>Lessons</a>
           <a href="/quiz" onClick={handleNavLinkClick}>Quizzes</a>
-          <a href="/profile" onClick={handleNavLinkClick}>
-            {username ? `Profile (${username})` : 'Profile'}
+          <a href="/profile" onClick={handleNavLinkClick} className="profile-link">
+            <span className="user-icon">👤</span> Profile
           </a>
         </div>
       </div>
@@ -141,6 +137,18 @@ export default function MobileNav({ username }) {
         .roadmap a:hover {
           background-color: #42155c;
           color: #ffffff;
+        }
+        
+        /* Profile link with user icon */
+        .profile-link {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+        }
+        
+        .user-icon {
+          font-size: 1.2rem;
         }
         
         /* Mobile Navigation Controls */
@@ -198,34 +206,53 @@ export default function MobileNav({ username }) {
           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
           transition: background-color 0.2s;
           z-index: 1002; /* Increased z-index to ensure visibility */
+          overflow: hidden;
         }
         
         .hamburger:hover {
           background: #42155c;
         }
         
+        /* Hamburger to X animation */
+        .hamburger-icon {
+          position: relative;
+          width: 24px;
+          height: 18px;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          transition: transform 0.3s ease;
+        }
+        
         .hamburger-line {
           display: block;
           width: 24px;
           height: 2px;
-          margin: 2px 0;
           background-color: white;
           border-radius: 2px;
-          transition: transform 0.3s, opacity 0.3s;
+          transition: all 0.3s ease;
+          transform-origin: center;
+        }
+        
+        .hamburger.active .hamburger-icon {
+          transform: rotate(180deg);
+        }
+        
+        .hamburger.active .hamburger-line:nth-child(1) {
+          transform: translateY(8px) rotate(45deg);
+        }
+        
+        .hamburger.active .hamburger-line:nth-child(2) {
+          opacity: 0;
+          transform: scale(0);
+        }
+        
+        .hamburger.active .hamburger-line:nth-child(3) {
+          transform: translateY(-8px) rotate(-45deg);
         }
         
         .hamburger.active {
           background: #42155c;
-        }
-        
-        .close-icon {
-          font-size: 18px;
-          color: white;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          width: 100%;
-          height: 100%;
         }
         
         /* Mobile Menu Overlay */
