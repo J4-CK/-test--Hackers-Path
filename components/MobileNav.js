@@ -189,7 +189,7 @@ export default function MobileNav({ username }) {
         
         /* Animated Hamburger Button */
         .hamburger {
-          position: absolute;
+          position: fixed;
           right: 15px;
           top: 10px;
           display: flex;
