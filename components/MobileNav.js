@@ -1,375 +1,401 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { HiBars3, HiXMark, HiHome } from 'react-icons/hi2';
+import { IoLocationOutline } from 'react-icons/io5';
 
 export default function MobileNav({ username }) {
   const [menuOpen, setMenuOpen] = useState(false);
-  
-  // Handle window clicks to close menu if clicking outside
-  useEffect(() => {
-    function handleClickOutside(e) {
-      // If click is outside menu and not on hamburger button
-      if (menuOpen && !e.target.closest('.mobile-menu') && 
-          !e.target.classList.contains('hamburger')) {
-        setMenuOpen(false);
-      }
-    }
-    
-    // Only add listener when menu is open
-    if (menuOpen) {
-      document.addEventListener('click', handleClickOutside);
-    }
-    
-    return () => {
-      document.removeEventListener('click', handleClickOutside);
-    };
-  }, [menuOpen]);
+  const [currentPath, setCurrentPath] = useState('');
 
-  // Close menu on scroll
   useEffect(() => {
+    // Set current path on client side
+    setCurrentPath(window.location.pathname);
+
+    // Close menu on scroll
     const handleScroll = () => {
-      if (menuOpen) {
+      if (menuOpen) setMenuOpen(false);
+    };
+
+    // Close menu when clicking outside of it
+    const handleClickOutside = (e) => {
+      const menu = document.querySelector('.mobile-menu');
+      const hamburgerBtn = document.querySelector('.hamburger-btn');
+      
+      if (menuOpen && menu && !menu.contains(e.target) && !hamburgerBtn.contains(e.target)) {
         setMenuOpen(false);
       }
     };
-    
+
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
   }, [menuOpen]);
 
-  // Close menu on link click
-  const handleNavLinkClick = () => {
-    setMenuOpen(false);
-  };
-  
-  // Toggle menu without triggering other events
-  const toggleMenu = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const toggleMenu = () => {
     setMenuOpen(!menuOpen);
   };
 
   return (
     <>
-      {/* Desktop Navigation */}
-      <div className="desktop-nav">
-        <nav className="roadmap">
-          <a href="/leaderboard">Leaderboard</a>
-          <a href="/lessons">Lessons</a>
-          <a href="/quiz">Quizzes</a>
-          <a href="/profile" className="profile-link">
-            <span className="user-icon">👤</span> Profile
-          </a>
-        </nav>
-      </div>
-      
-      {/* Mobile Navigation Controls */}
       <div className="mobile-nav-controls">
-        <a 
-          href="/" 
-          className="home-btn"
-          aria-label="Go to homepage"
-        >
-          &#8962;
-        </a>
-        
-        <div className="site-title">
-          <a href="/">Hacker's Path</a>
+        <div className="nav-left">
+          <Link href="/" legacyBehavior>
+            <a className="home-btn" aria-label="Home">
+              <HiHome />
+            </a>
+          </Link>
+          <Link href="/location" legacyBehavior>
+            <a className="location-btn" aria-label="Location">
+              <IoLocationOutline />
+            </a>
+          </Link>
         </div>
         
-        <button 
-          className={`hamburger ${menuOpen ? 'active' : ''}`}
-          onClick={toggleMenu} 
-          aria-label={menuOpen ? "Close menu" : "Open menu"}
-          aria-expanded={menuOpen}
-          type="button"
-        >
-          <span className="hamburger-icon">
-            <span className="hamburger-line"></span>
-            <span className="hamburger-line"></span>
-            <span className="hamburger-line"></span>
-          </span>
-        </button>
-      </div>
-      
-      {/* Mobile Menu Overlay */}
-      <div className={`menu-overlay ${menuOpen ? 'active' : ''}`} aria-hidden={!menuOpen}>
-        <div className="mobile-menu">
-          <a href="/leaderboard" onClick={handleNavLinkClick}>Leaderboard</a>
-          <a href="/lessons" onClick={handleNavLinkClick}>Lessons</a>
-          <a href="/quiz" onClick={handleNavLinkClick}>Quizzes</a>
-          <a href="/profile" onClick={handleNavLinkClick} className="profile-link">
-            <span className="user-icon">👤</span> Profile
-          </a>
+        <div className="site-title">Hacker's Path</div>
+        
+        <div className="nav-right">
+          <button 
+            className={`hamburger-btn ${menuOpen ? 'open' : ''}`} 
+            onClick={toggleMenu}
+            aria-label="Toggle menu"
+            aria-expanded={menuOpen}
+          >
+            {menuOpen ? <HiXMark /> : <HiBars3 />}
+          </button>
         </div>
       </div>
 
+      {/* Overlay that appears when menu is open */}
+      <div 
+        className={`menu-overlay ${menuOpen ? 'open' : ''}`} 
+        onClick={() => setMenuOpen(false)}
+      ></div>
+
+      {/* Mobile menu */}
+      <div className={`mobile-menu ${menuOpen ? 'open' : ''}`}>
+        <div className="menu-header">
+          <div className="user-info">
+            <div className="avatar">
+              {username ? username.charAt(0).toUpperCase() : "U"}
+            </div>
+            <span className="username">{username || "User"}</span>
+          </div>
+        </div>
+        <nav className="menu-nav">
+          <h3>Main Menu</h3>
+          <ul>
+            <li className={currentPath === '/' ? 'active' : ''}>
+              <Link href="/">
+                <span>Home</span>
+              </Link>
+            </li>
+          </ul>
+          
+          <h3>Lessons</h3>
+          <ul>
+            <li className={currentPath === '/lessons/strong-passwords-presentation' ? 'active' : ''}>
+              <Link href="/lessons/strong-passwords-presentation">
+                <span>Strong Passwords</span>
+              </Link>
+            </li>
+            <li className={currentPath === '/lessons/CIA-triad-presentation' ? 'active' : ''}>
+              <Link href="/lessons/CIA-triad-presentation">
+                <span>CIA Triad</span>
+              </Link>
+            </li>
+            <li className={currentPath === '/lessons/risk-basics-presentation' ? 'active' : ''}>
+              <Link href="/lessons/risk-basics-presentation">
+                <span>Risk Basics</span>
+              </Link>
+            </li>
+            <li className={currentPath === '/lessons/risk-continued' ? 'active' : ''}>
+              <Link href="/lessons/risk-continued">
+                <span>Risk Continued</span>
+              </Link>
+            </li>
+            <li className={currentPath === '/lessons/security-controls-presentation' ? 'active' : ''}>
+              <Link href="/lessons/security-controls-presentation">
+                <span>Security Controls</span>
+              </Link>
+            </li>
+          </ul>
+          
+          <h3>Quizzes</h3>
+          <ul>
+            <li className={currentPath === '/quiz/CIA-Triad-Quiz' ? 'active' : ''}>
+              <Link href="/quiz/CIA-Triad-Quiz">
+                <span>CIA Triad Quiz</span>
+              </Link>
+            </li>
+            <li className={currentPath === '/quiz/strong-passwords-quiz' ? 'active' : ''}>
+              <Link href="/quiz/strong-passwords-quiz">
+                <span>Strong Passwords Quiz</span>
+              </Link>
+            </li>
+            <li className={currentPath === '/quiz/risk-basics-quiz' ? 'active' : ''}>
+              <Link href="/quiz/risk-basics-quiz">
+                <span>Risk Basics Quiz</span>
+              </Link>
+            </li>
+            <li className={currentPath === '/quiz/risk-continued-quiz' ? 'active' : ''}>
+              <Link href="/quiz/risk-continued-quiz">
+                <span>Risk Continued Quiz</span>
+              </Link>
+            </li>
+            <li className={currentPath === '/quiz/security-controls-quiz' ? 'active' : ''}>
+              <Link href="/quiz/security-controls-quiz">
+                <span>Security Controls Quiz</span>
+              </Link>
+            </li>
+          </ul>
+          
+          <div className="menu-footer">
+            <form action="/api/auth/logout" method="POST">
+              <button type="submit" className="logout-btn">Logout</button>
+            </form>
+          </div>
+        </nav>
+      </div>
+
+      {/* Global styles for the mobile navigation */}
       <style jsx>{`
-        /* Desktop Navigation */
-        .desktop-nav {
-          width: 100%;
-          background: #531d73;
-          padding: 0;
-          margin: 0;
-          display: block;
-        }
-        
-        .roadmap {
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          flex-wrap: wrap;
-          gap: 10px;
-          padding: 15px;
-          width: 100%;
-          max-width: 1200px;
-          margin: 0 auto;
-          box-sizing: border-box;
-        }
-        
-        .roadmap a {
-          flex: 1;
-          min-width: 150px;
-          max-width: 250px;
-          padding: 10px 20px;
-          text-decoration: none;
-          color: #e0e0e0;
-          background-color: #6a1b9a;
-          border-radius: 5px;
-          text-align: center;
-          transition: all 0.3s ease;
-        }
-        
-        .roadmap a:hover {
-          background-color: #42155c;
-          color: #ffffff;
-        }
-        
-        /* Profile link with user icon */
-        .profile-link {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 8px;
-        }
-        
-        .user-icon {
-          font-size: 1.2rem;
-        }
-        
-        /* Mobile Navigation Controls */
+        /* Navigation bar fixed at the top */
         .mobile-nav-controls {
-          display: none;
-          position: relative;
-          width: 100%;
-          padding: 10px 0;
-          background: #531d73;
-          z-index: 1500;
-          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-          height: 60px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-        
-        /* Site Title */
-        .site-title {
-          flex: 1;
-          text-align: center;
-        }
-        
-        .site-title a {
-          color: #e0e0e0;
-          text-decoration: none;
-          font-size: 1.8rem;
-          font-weight: bold;
-          display: block;
-          margin: 0;
-          line-height: 1;
-        }
-        
-        .site-title a:hover {
-          color: #8c30c2;
-          transition: color 0.3s ease;
-        }
-        
-        .home-btn {
-          position: absolute;
-          left: 15px;
-          top: 10px;
-          background: #6a1b9a;
-          color: white;
-          border: none;
-          font-size: 1.5rem;
-          border-radius: 5px;
-          text-decoration: none;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          width: 40px;
-          height: 40px;
-          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-          transition: background-color 0.2s;
-          z-index: 1501; /* Ensure it's above other elements */
-        }
-        
-        .home-btn:hover {
-          background: #42155c;
-        }
-        
-        /* Animated Hamburger Button */
-        .hamburger {
-          position: fixed;
-          right: 15px;
-          top: 10px;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
-          width: 40px;
-          height: 40px;
-          padding: 8px;
-          background: #6a1b9a;
-          border: none;
-          border-radius: 5px;
-          cursor: pointer;
-          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-          transition: background-color 0.2s;
-          z-index: 1501; /* Increased z-index to ensure visibility */
-          overflow: hidden;
-        }
-        
-        .hamburger:hover {
-          background: #42155c;
-        }
-        
-        /* Hamburger to X animation */
-        .hamburger-icon {
-          position: relative;
-          width: 24px;
-          height: 18px;
-          display: flex;
-          flex-direction: column;
-          justify-content: space-between;
-          transition: transform 0.3s ease;
-        }
-        
-        .hamburger-line {
-          display: block;
-          width: 24px;
-          height: 2px;
-          background-color: white;
-          border-radius: 2px;
-          transition: all 0.3s ease;
-          transform-origin: center;
-        }
-        
-        .hamburger.active .hamburger-icon {
-          transform: rotate(180deg);
-        }
-        
-        .hamburger.active .hamburger-line:nth-child(1) {
-          transform: translateY(8px) rotate(45deg);
-        }
-        
-        .hamburger.active .hamburger-line:nth-child(2) {
-          opacity: 0;
-          transform: scale(0);
-        }
-        
-        .hamburger.active .hamburger-line:nth-child(3) {
-          transform: translateY(-8px) rotate(-45deg);
-        }
-        
-        .hamburger.active {
-          background: #42155c;
-        }
-        
-        /* Mobile Menu Overlay */
-        .menu-overlay {
           position: fixed;
           top: 0;
           left: 0;
           right: 0;
-          bottom: 0;
-          background-color: rgba(0, 0, 0, 0.5);
-          z-index: 1499;
-          visibility: hidden;
-          opacity: 0;
-          transition: opacity 0.3s, visibility 0.3s;
+          height: 60px;
           display: flex;
-          justify-content: flex-end;
+          justify-content: space-between;
+          align-items: center;
+          background-color: #1a1a2e;
+          color: white;
+          padding: 0 15px;
+          z-index: 1000;
+          box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
         }
         
-        .menu-overlay.active {
-          visibility: visible;
-          opacity: 1;
+        .nav-left, .nav-right {
+          display: flex;
+          align-items: center;
+          min-width: 40px; /* Ensure consistent spacing */
         }
         
-        .mobile-menu {
-          width: 270px;
+        .site-title {
+          font-size: 20px;
+          font-weight: bold;
+          color: #8c30c2;
+          text-shadow: 0 0 5px rgba(140, 48, 194, 0.3);
+          flex: 1;
+          text-align: center;
+        }
+        
+        .home-btn, .location-btn {
+          background: none;
+          border: none;
+          font-size: 24px;
+          color: white;
+          cursor: pointer;
+          padding: 5px;
+          margin-right: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: color 0.3s ease;
+        }
+        
+        .home-btn:hover, .location-btn:hover {
+          color: #8c30c2;
+        }
+        
+        .hamburger-btn {
+          background: none;
+          border: none;
+          font-size: 28px;
+          color: white;
+          cursor: pointer;
+          padding: 5px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: transform 0.3s ease, color 0.3s ease;
+        }
+        
+        .hamburger-btn:hover {
+          color: #8c30c2;
+        }
+        
+        .hamburger-btn.open {
+          transform: rotate(90deg);
+          color: #8c30c2;
+        }
+        
+        /* Menu overlay */
+        .menu-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
           height: 100%;
-          background-color: #2a0e3b;
-          padding: 60px 0 20px;
+          background-color: rgba(0, 0, 0, 0.7);
+          z-index: 1001;
+          opacity: 0;
+          visibility: hidden;
+          transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        
+        .menu-overlay.open {
+          opacity: 1;
+          visibility: visible;
+        }
+        
+        /* Mobile menu */
+        .mobile-menu {
+          position: fixed;
+          top: 0;
+          right: -280px;
+          width: 280px;
+          height: 100%;
+          background-color: #0f0f1a;
+          z-index: 1002;
+          overflow-y: auto;
+          transition: right 0.3s ease;
+          box-shadow: -2px 0 10px rgba(0, 0, 0, 0.5);
           display: flex;
           flex-direction: column;
-          overflow-y: auto;
-          transform: translateX(100%);
-          transition: transform 0.3s ease-in-out;
-          box-shadow: -2px 0 10px rgba(0, 0, 0, 0.3);
-          z-index: 1500;
         }
         
-        .menu-overlay.active .mobile-menu {
-          transform: translateX(0);
+        .mobile-menu.open {
+          right: 0;
         }
         
-        .mobile-menu a {
-          padding: 15px 25px;
+        .menu-header {
+          padding: 20px;
+          background-color: #1a1a2e;
+          border-bottom: 1px solid #292945;
+        }
+        
+        .user-info {
+          display: flex;
+          align-items: center;
+        }
+        
+        .avatar {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background-color: #8c30c2;
           color: white;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: bold;
+          margin-right: 10px;
+        }
+        
+        .username {
+          color: white;
+          font-weight: 500;
+        }
+        
+        .menu-nav {
+          padding: 15px;
+          flex: 1;
+        }
+        
+        .menu-nav h3 {
+          color: #8c30c2;
+          margin: 15px 0 10px;
+          font-size: 14px;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+        }
+        
+        .menu-nav ul {
+          list-style: none;
+          padding: 0;
+          margin: 0 0 20px;
+        }
+        
+        .menu-nav li {
+          margin-bottom: 2px;
+          border-radius: 4px;
+          transition: background-color 0.3s ease;
+        }
+        
+        .menu-nav li.active {
+          background-color: rgba(140, 48, 194, 0.2);
+        }
+        
+        .menu-nav li a {
+          padding: 10px 15px;
+          color: #e0e0e0;
           text-decoration: none;
-          font-size: 18px;
-          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-          transition: background-color 0.2s;
+          display: block;
+          border-radius: 4px;
+          transition: background-color 0.3s ease;
         }
         
-        .mobile-menu a:hover {
-          background-color: #42155c;
+        .menu-nav li a:hover {
+          background-color: rgba(255, 255, 255, 0.05);
         }
         
-        /* Media Queries */
-        @media (max-width: 768px) {
-          .desktop-nav {
-            display: none;
+        .menu-footer {
+          padding: 15px;
+          border-top: 1px solid #292945;
+          margin-top: auto;
+        }
+        
+        .logout-btn {
+          width: 100%;
+          padding: 10px;
+          background-color: #8c30c2;
+          color: white;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          font-weight: 500;
+          transition: background-color 0.3s ease;
+        }
+        
+        .logout-btn:hover {
+          background-color: #7628a0;
+        }
+        
+        /* Add top padding to the body to prevent content from going behind fixed header */
+        :global(body) {
+          padding-top: 60px;
+        }
+        
+        /* Ensure the page wrapper stays visible */
+        :global(#page-wrapper) {
+          position: relative;
+          z-index: 1;
+        }
+        
+        /* Add top margin to the header to push it below the navbar */
+        :global(header) {
+          margin-top: 5px;
+          display: none; /* Hide the duplicate header since we have the title in the navbar */
+        }
+        
+        /* Mobile adjustments */
+        @media (max-width: 480px) {
+          .site-title {
+            font-size: 18px;
           }
           
-          .mobile-nav-controls {
-            display: flex;
+          .home-btn, .location-btn {
+            font-size: 22px;
           }
           
-          /* Hide the regular header since we now have the title in the navbar */
-          header {
-            display: none !important;
-          }
-          
-          /* Remove top margin from header since nav is now below header */
-          header h1 {
-            margin-top: 0 !important;
-            padding-top: 0 !important;
-          }
-          
-          /* Remove top padding from body since nav is no longer fixed */
-          body {
-            padding-top: 0;
-          }
-          
-          /* Adjust page wrapper margin */
-          #page-wrapper {
-            margin-top: 0;
-          }
-          
-          /* Fix for lesson pages specifically */
-          .lesson-content, .lesson-sidebar, .lesson-container {
-            position: relative;
-            z-index: 1;
+          .hamburger-btn {
+            font-size: 26px;
           }
         }
       `}</style>

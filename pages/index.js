@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
+import Image from 'next/image';
 import Loading from '../components/Loading';
 import Footer from '../components/Footer';
 import MobileNav from '../components/MobileNav';
@@ -73,7 +74,7 @@ export default function HomePage() {
               <p>1</p>
             </div>
           </div>
-
+          
           <div className="section">
             <h2>Lessons</h2>
             <div className="buttons">
