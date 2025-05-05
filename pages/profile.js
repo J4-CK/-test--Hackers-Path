@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { supabase } from '../utils/supabaseClient';
+import { supabase } from '../lib/supabase';
 import QuizHistory from '../components/QuizHistory';
 
 export default function Profile() {
