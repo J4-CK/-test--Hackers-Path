@@ -101,6 +101,11 @@ export default function MobileNav({ username }) {
                 <span>Profile</span>
               </Link>
             </li>
+            <li className={currentPath === '/leaderboard' ? 'active' : ''}>
+              <Link href="/leaderboard">
+                <span>Leaderboard</span>
+              </Link>
+            </li>
           </ul>
           
           <h3>Lessons</h3>
