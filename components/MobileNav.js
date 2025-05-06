@@ -160,6 +160,11 @@ export default function MobileNav({ username }) {
               </Link>
             </li>
           </ul>
+            <li className={currentPath === '/leaderboard' ? 'active' : ''}>
+              <Link href="/leaderboard">
+                <span>Leaderboard</span>
+              </link>
+            
           
           <div className="menu-footer">
             <form action="/api/auth/logout" method="POST">
