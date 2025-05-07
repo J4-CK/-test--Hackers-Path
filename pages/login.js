@@ -14,6 +14,16 @@ export default function LoginPage() {
     if (queryReturnUrl) {
       setReturnUrl(queryReturnUrl);
     }
+
+    // Check if this is a logout request
+    const { logout } = router.query;
+    if (logout) {
+      // Call the logout API endpoint
+      fetch('/api/auth/logout', {
+        method: 'POST',
+        credentials: 'include'
+      });
+    }
   }, [router.query]);
 
   async function handleLogin(e) {
