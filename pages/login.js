@@ -1,115 +1,70 @@
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
-import Loading from '../components/Loading';
-import Head from 'next/head';
+import { createClient } from '@supabase/supabase-js';
+import cookie from 'cookie';
+import rateLimit from 'express-rate-limit';
 
-export default function LoginPage() {
-  const router = useRouter();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [returnUrl, setReturnUrl] = useState('');
-  const [loading, setLoading] = useState(false);
+// Supabase client setup
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_ANON_KEY
+);
 
-  useEffect(() => {
-    // Get the return URL from the query parameters if it exists
-    const { returnUrl: queryReturnUrl } = router.query;
-    if (queryReturnUrl) {
-      setReturnUrl(queryReturnUrl);
-    }
-  }, [router.query]);
+// Rate limiting configuration
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // 5 attempts per window
+  message: 'Too many login attempts, please try again later.'
+});
 
-  async function handleSubmit(e) {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
+export default async function handler(req, res) {
+  // Set security headers
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+  res.setHeader('Content-Security-Policy', "default-src 'self'");
 
-    const formData = new FormData(e.target);
-    const email = formData.get('email');
-    const password = formData.get('password');
-
-    try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (res.ok) {
-        router.push('/');
-      } else {
-        const data = await res.json();
-        setError(data.error || 'Login failed');
-        setLoading(false);
-      }
-    } catch (err) {
-      setError('An error occurred');
-      setLoading(false);
-    }
+  // Allow only POST requests
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  if (loading) {
-    return (
-      <div>
-        <link rel="stylesheet" href="/styles/homepagestyle.css" />
-        <Loading />
-      </div>
+  // Apply rate limiting
+  try {
+    await limiter(req, res);
+  } catch (error) {
+    return res.status(429).json({ error: 'Too many login attempts, please try again later.' });
+  }
+
+  const { email, password } = req.body;
+
+  try {
+    // Authenticate user with Supabase
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    // Handle authentication errors
+    if (error) {
+      return res.status(401).json({ error: 'Invalid credentials' }); // Generic error message for security
+    }
+
+    // Set an HTTP-only cookie with the session token
+    res.setHeader(
+      'Set-Cookie',
+      cookie.serialize('token', data.session.access_token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production', // Secure in production
+        sameSite: 'Strict', // Protect against CSRF
+        path: '/',
+        maxAge: 60 * 60 * 24 * 7, // 7 days
+      })
     );
-  }
 
-  return (
-    <div className="container">
-      <Head>
-        <title>Login - Hacker's Path</title>
-        <link rel="icon" href="/favicon.ico" />
-        <link rel="icon" type="image/png" href="/images/favicon.png" />
-      </Head>
-      
-      <div className="section">
-        {/* Include External CSS */}
-        <link rel="stylesheet" href="/styles/login.css"/>
-        
-        <h1>Login to Hacker's Path</h1>
-        
-        <div className="login-form">
-          {error && <div className="error-message">{error}</div>}
-          
-          <form onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label htmlFor="email">Email</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
-            
-            <div className="form-group">
-              <label htmlFor="password">Password</label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-              <button type="submit" className="logout-btn">
-                {loading ? <Loading size="small" /> : 'Login'}
-              </button>
-            </div>
-          </form>
-          
-          <div className="register-link">
-            <p>Don't have an account? <a href="/register">Create one here</a></p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+    // Respond with user data
+    return res.status(200).json({ user: data.user });
+  } catch (err) {
+    console.error('API Error:', err); // Log error to Vercel logs
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
 }
