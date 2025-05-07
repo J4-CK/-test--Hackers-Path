@@ -28,7 +28,7 @@ export default async function handler(req, res) {
     // First, get the current user data including points
     const { data: userData, error: fetchError } = await supabase
       .from('accounts')
-      .select('quiz_scores, total_points, monthly_points')
+      .select('quiz_scores, total_points, monthly_points, name')
       .eq('user_id', userId)
       .single();
 
@@ -65,6 +65,24 @@ export default async function handler(req, res) {
       throw updateError;
     }
 
+    // Update leaderboard data
+    const { error: leaderboardError } = await supabase
+      .from('leaderboard')
+      .upsert({
+        user_id: userId,
+        name: userData?.name || 'Anonymous',
+        total_points: newTotalPoints,
+        monthly_points: newMonthlyPoints,
+        last_updated: new Date().toISOString()
+      }, {
+        onConflict: 'user_id'
+      });
+
+    if (leaderboardError) {
+      console.error('Error updating leaderboard:', leaderboardError);
+      // Don't return error here as the score and points were saved successfully
+    }
+
     // Log the activity
     const { error: activityError } = await supabase
       .from('user_activity')
@@ -94,4 +112,4 @@ export default async function handler(req, res) {
     console.error('Error saving quiz score:', error);
     return res.status(500).json({ error: 'Internal server error' });
   }
-} 
+}
