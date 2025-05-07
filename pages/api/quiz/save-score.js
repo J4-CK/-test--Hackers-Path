@@ -65,47 +65,6 @@ export default async function handler(req, res) {
       throw updateError;
     }
 
-    // Update leaderboard data
-    const { error: leaderboardError } = await supabase
-      .from('leaderboard')
-      .upsert({
-        user_id: userId,
-        name: userData?.name || 'Anonymous',
-        total_points: newTotalPoints,
-        monthly_points: newMonthlyPoints,
-        last_updated: new Date().toISOString()
-      }, {
-        onConflict: 'user_id'
-      });
-
-    if (leaderboardError) {
-      console.error('Error updating leaderboard:', leaderboardError);
-    }
-
-    // Update user profile
-    const { error: profileError } = await supabase
-      .from('profiles')
-      .update({
-        total_points: newTotalPoints,
-        monthly_points: newMonthlyPoints,
-        last_points_update: new Date().toISOString(),
-        completed_quizzes: supabase.rpc('append_to_array', {
-          array_field: 'completed_quizzes',
-          value_to_append: {
-            quiz_name: quizName,
-            score: score,
-            max_score: maxScore,
-            points_earned: pointsEarned,
-            completed_at: new Date().toISOString()
-          }
-        })
-      })
-      .eq('id', userId);
-
-    if (profileError) {
-      console.error('Error updating profile:', profileError);
-    }
-
     // Log the activity
     const { error: activityError } = await supabase
       .from('user_activity')
