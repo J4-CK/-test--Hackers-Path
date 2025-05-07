@@ -1,6 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
 import cookie from 'cookie';
-import rateLimit from 'express-rate-limit';
 
 // Supabase client setup
 const supabase = createClient(
@@ -8,12 +7,42 @@ const supabase = createClient(
   process.env.SUPABASE_ANON_KEY
 );
 
-// Rate limiting configuration
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5, // 5 attempts per window
-  message: 'Too many login attempts, please try again later.'
-});
+// In-memory store for rate limiting
+const loginAttempts = new Map();
+
+// Rate limiting middleware
+function rateLimit(ip) {
+  const WINDOW_MS = 15 * 60 * 1000; // 15 minutes
+  const MAX_ATTEMPTS = 5;
+  
+  const now = Date.now();
+  const windowStart = now - WINDOW_MS;
+  
+  // Get attempts for this IP
+  const attempts = loginAttempts.get(ip) || [];
+  
+  // Remove old attempts
+  const recentAttempts = attempts.filter(timestamp => timestamp > windowStart);
+  
+  if (recentAttempts.length >= MAX_ATTEMPTS) {
+    return false;
+  }
+  
+  // Add new attempt
+  recentAttempts.push(now);
+  loginAttempts.set(ip, recentAttempts);
+  
+  // Clean up old entries periodically
+  if (Math.random() < 0.1) { // 10% chance to clean up
+    for (const [key, value] of loginAttempts.entries()) {
+      if (value.every(timestamp => timestamp < windowStart)) {
+        loginAttempts.delete(key);
+      }
+    }
+  }
+  
+  return true;
+}
 
 export default async function handler(req, res) {
   // Set security headers
@@ -28,10 +57,11 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
+  // Get client IP
+  const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+
   // Apply rate limiting
-  try {
-    await limiter(req, res);
-  } catch (error) {
+  if (!rateLimit(ip)) {
     return res.status(429).json({ error: 'Too many login attempts, please try again later.' });
   }
 
