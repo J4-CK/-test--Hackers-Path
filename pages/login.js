@@ -1,100 +1,81 @@
-import { createClient } from '@supabase/supabase-js';
-import cookie from 'cookie';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
 
-// Supabase client setup
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_ANON_KEY
-);
+export default function LoginPage() {
+  const router = useRouter();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [returnUrl, setReturnUrl] = useState('');
 
-// In-memory store for rate limiting
-const loginAttempts = new Map();
+  useEffect(() => {
+    // Get the return URL from the query parameters if it exists
+    const { returnUrl: queryReturnUrl } = router.query;
+    if (queryReturnUrl) {
+      setReturnUrl(queryReturnUrl);
+    }
+  }, [router.query]);
 
-// Rate limiting middleware
-function rateLimit(ip) {
-  const WINDOW_MS = 15 * 60 * 1000; // 15 minutes
-  const MAX_ATTEMPTS = 5;
-  
-  const now = Date.now();
-  const windowStart = now - WINDOW_MS;
-  
-  // Get attempts for this IP
-  const attempts = loginAttempts.get(ip) || [];
-  
-  // Remove old attempts
-  const recentAttempts = attempts.filter(timestamp => timestamp > windowStart);
-  
-  if (recentAttempts.length >= MAX_ATTEMPTS) {
-    return false;
-  }
-  
-  // Add new attempt
-  recentAttempts.push(now);
-  loginAttempts.set(ip, recentAttempts);
-  
-  // Clean up old entries periodically
-  if (Math.random() < 0.1) { // 10% chance to clean up
-    for (const [key, value] of loginAttempts.entries()) {
-      if (value.every(timestamp => timestamp < windowStart)) {
-        loginAttempts.delete(key);
+  async function handleLogin(e) {
+    e.preventDefault();
+    setError('');
+
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+        credentials: 'include' // Important for cookies
+      });
+
+      const result = await res.json();
+
+      if (res.ok) {
+        // If we have a return URL, go there, otherwise go home
+        router.push(returnUrl || '/');
+      } else {
+        setError(result.error || 'Login failed.');
       }
+    } catch (err) {
+      setError('An error occurred. Please try again.');
     }
   }
-  
-  return true;
-}
 
-export default async function handler(req, res) {
-  // Set security headers
-  res.setHeader('X-Content-Type-Options', 'nosniff');
-  res.setHeader('X-Frame-Options', 'DENY');
-  res.setHeader('X-XSS-Protection', '1; mode=block');
-  res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
-  res.setHeader('Content-Security-Policy', "default-src 'self'");
-
-  // Allow only POST requests
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
-
-  // Get client IP
-  const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-
-  // Apply rate limiting
-  if (!rateLimit(ip)) {
-    return res.status(429).json({ error: 'Too many login attempts, please try again later.' });
-  }
-
-  const { email, password } = req.body;
-
-  try {
-    // Authenticate user with Supabase
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-
-    // Handle authentication errors
-    if (error) {
-      return res.status(401).json({ error: 'Invalid credentials' }); // Generic error message for security
-    }
-
-    // Set an HTTP-only cookie with the session token
-    res.setHeader(
-      'Set-Cookie',
-      cookie.serialize('token', data.session.access_token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production', // Secure in production
-        sameSite: 'Strict', // Protect against CSRF
-        path: '/',
-        maxAge: 60 * 60 * 24 * 7, // 7 days
-      })
-    );
-
-    // Respond with user data
-    return res.status(200).json({ user: data.user });
-  } catch (err) {
-    console.error('API Error:', err); // Log error to Vercel logs
-    return res.status(500).json({ error: 'Internal Server Error' });
-  }
+  return (
+    <div className="section">
+      {/* Include External CSS */}
+      <link rel="stylesheet" href="/styles/login.css" />
+      <header>
+        <h1><a href="/">Hacker's Path</a></h1>
+      </header>
+      <div className="section">
+        <h2>Login</h2>
+        <form onSubmit={handleLogin}>
+          <input
+            type="email"
+            id="email"
+            placeholder="Enter your email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <input
+            type="password"
+            id="password"
+            placeholder="Enter your password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <button type="submit" className="logout-btn">
+            {returnUrl ? 'Login & Return' : 'Login'}
+          </button>
+          {error && <p id="error">{error}</p>}
+        </form>
+        <div className="register-link">
+          <p>Don't have an account? <a href="/register">Create one here</a></p>
+        </div>
+      </div>
+    </div>
+  );
 }
