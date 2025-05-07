@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/router';
 
 export default function LoginPage() {
@@ -6,25 +6,6 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [returnUrl, setReturnUrl] = useState('');
-
-  useEffect(() => {
-    // Get the return URL from the query parameters if it exists
-    const { returnUrl: queryReturnUrl } = router.query;
-    if (queryReturnUrl) {
-      setReturnUrl(queryReturnUrl);
-    }
-
-    // Check if this is a logout request
-    const { logout } = router.query;
-    if (logout) {
-      // Call the logout API endpoint
-      fetch('/api/auth/logout', {
-        method: 'POST',
-        credentials: 'include'
-      });
-    }
-  }, [router.query]);
 
   async function handleLogin(e) {
     e.preventDefault();
@@ -35,14 +16,13 @@ export default function LoginPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
-        credentials: 'include' // Important for cookies
+        credentials: 'include'
       });
 
       const result = await res.json();
 
       if (res.ok) {
-        // If we have a return URL, go there, otherwise go home
-        router.push(returnUrl || '/');
+        router.push('/');
       } else {
         setError(result.error || 'Login failed.');
       }
@@ -53,7 +33,6 @@ export default function LoginPage() {
 
   return (
     <div className="section">
-      {/* Include External CSS */}
       <link rel="stylesheet" href="/styles/login.css" />
       <header>
         <h1><a href="/">Hacker's Path</a></h1>
@@ -77,9 +56,7 @@ export default function LoginPage() {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-          <button type="submit" className="logout-btn">
-            {returnUrl ? 'Login & Return' : 'Login'}
-          </button>
+          <button type="submit">Login</button>
           {error && <p id="error">{error}</p>}
         </form>
         <div className="register-link">
