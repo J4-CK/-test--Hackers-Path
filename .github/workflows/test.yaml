@@ -22,7 +22,7 @@ jobs:
         run: npm test
 
       - name: Upload coverage report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v3.1.3
         with:
           name: coverage-report
           path: coverage
