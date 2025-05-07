@@ -1,113 +1,89 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import Loading from '../components/Loading';
-import Head from 'next/head';
+import crypto from 'crypto';
 
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [returnUrl, setReturnUrl] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [nonce, setNonce] = useState('');
+  const [timestamp, setTimestamp] = useState('');
 
+  // Generate nonce and timestamp on component mount
   useEffect(() => {
-    // Get the return URL from the query parameters if it exists
-    const { returnUrl: queryReturnUrl } = router.query;
-    if (queryReturnUrl) {
-      setReturnUrl(queryReturnUrl);
-    }
-  }, [router.query]);
+    setNonce(crypto.randomBytes(16).toString('hex'));
+    setTimestamp(Date.now().toString());
+  }, []);
 
-  async function handleSubmit(e) {
+  async function handleLogin(e) {
     e.preventDefault();
-    setLoading(true);
     setError('');
-
-    const formData = new FormData(e.target);
-    const email = formData.get('email');
-    const password = formData.get('password');
 
     try {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        headers: { 
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': nonce,
+          'X-Request-Timestamp': timestamp,
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify({ 
+          email, 
+          password,
+          nonce,
+          timestamp 
+        }),
+        credentials: 'include'
       });
+
+      const result = await res.json();
 
       if (res.ok) {
         router.push('/');
       } else {
-        const data = await res.json();
-        setError(data.error || 'Login failed');
-        setLoading(false);
+        setError(result.error || 'Login failed.');
       }
     } catch (err) {
-      setError('An error occurred');
-      setLoading(false);
+      setError('An error occurred. Please try again.');
     }
   }
 
-  if (loading) {
-    return (
-      <div>
-        <link rel="stylesheet" href="/styles/homepagestyle.css" />
-        <Loading />
-      </div>
-    );
-  }
-
   return (
-    <div className="container">
-      <Head>
-        <title>Login - Hacker's Path</title>
-        <link rel="icon" href="/favicon.ico" />
-        <link rel="icon" type="image/png" href="/images/favicon.png" />
-      </Head>
-      
+    <div className="section">
+      <link rel="stylesheet" href="/styles/login.css" />
+      <header>
+        <h1><a href="/">Hacker's Path</a></h1>
+      </header>
       <div className="section">
-        {/* Include External CSS */}
-        <link rel="stylesheet" href="/styles/login.css"/>
-        
-        <h1>Login to Hacker's Path</h1>
-        
-        <div className="login-form">
-          {error && <div className="error-message">{error}</div>}
-          
-          <form onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label htmlFor="email">Email</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
-            
-            <div className="form-group">
-              <label htmlFor="password">Password</label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-              <button type="submit" className="logout-btn">
-                {loading ? <Loading size="small" /> : 'Login'}
-              </button>
-            </div>
-          </form>
-          
-          <div className="register-link">
-            <p>Don't have an account? <a href="/register">Create one here</a></p>
-          </div>
+        <h2>Login</h2>
+        <form onSubmit={handleLogin} autoComplete="off">
+          <input
+            type="email"
+            id="email"
+            placeholder="Enter your email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            autoComplete="off"
+          />
+          <input
+            type="password"
+            id="password"
+            placeholder="Enter your password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            autoComplete="new-password"
+          />
+          <input type="hidden" name="nonce" value={nonce} />
+          <input type="hidden" name="timestamp" value={timestamp} />
+          <button type="submit">Login</button>
+          {error && <p id="error">{error}</p>}
+        </form>
+        <div className="register-link">
+          <p>Don't have an account? <a href="/register">Create one here</a></p>
         </div>
       </div>
     </div>
