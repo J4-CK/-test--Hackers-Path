@@ -83,7 +83,7 @@ export default function LoginPage() {
           {error && <p id="error">{error}</p>}
         </form>
         <div className="register-link">
-          <p>Don't have an account? <a href="/register">Create one here</a></p>
+          <p>Don't have an account? <a href="/register">Create one here!</a></p>
         </div>
       </div>
     </div>
